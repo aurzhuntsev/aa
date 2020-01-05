@@ -1,0 +1,124 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cc="clr-namespace:AudioMark.UI.Controls.Common"
+        xmlns:cm="clr-namespace:AudioMark.UI.Controls.Measurements"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AudioMark.UI.MainWindow" MinWidth="800" MinHeight="600"
+        Title="AudioMark">
+  <Window.Resources>
+    <SolidColorBrush x:Key="ControlBorderBrush" Color="#ff8400"  />
+  </Window.Resources>
+  <Window.Styles>
+    <Style Selector="Window">
+      <Setter Property="Background" Value="#2d2d30" />
+      <Setter Property="Foreground" Value="#c8c8c8" />
+    </Style>
+    <Style Selector="TextBlock.InSentence">
+      <Setter Property="Margin" Value="0 5 5 0" />
+      <Setter Property="Height" Value="24" />
+    </Style>
+    <Style Selector="TextBox.InSentence">
+      <Setter Property="BorderBrush" Value="#3f3f46" />
+      <Setter Property="BorderThickness" Value="0 0 0 1" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Padding" Value="2 1 1 0" />
+      <Setter Property="Margin" Value="0 -2 2 0" />
+      <Setter Property="Background" Value="#333337" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="SelectionBrush" Value="#007acc" />
+      <Setter Property="CaretBrush" Value="White" />
+    </Style>
+
+    <Style Selector="TextBox.InSentence:pointerover">
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Background" Value="#3f3f46" />
+      <Setter Property="BorderBrush" Value="#007acc" />
+    </Style>
+
+    <StyleInclude Source="resm:AudioMark.UI.Styles.ComboBox.xaml?assembly=AudioMark.UI" />
+    <Style Selector="ComboBox.InSentence">
+      <Setter Property="BorderBrush" Value="#3f3f46" />
+      <Setter Property="BorderThickness" Value="0 0 0 1" />
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Padding" Value="4 1 1 0" />
+      <Setter Property="Margin" Value="0 -2 2 0" />
+      <Setter Property="Background" Value="#333337" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="ComboBox.InSentence:pointerover">
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Background" Value="#3f3f46" />
+      <Setter Property="BorderBrush" Value="#007acc" />
+    </Style>
+
+    <Style Selector="PopupRoot">
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="ComboBox.InSentence > ComboBoxItem">
+      <Setter Property="Background" Value="#333337" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <StyleInclude Source="resm:AudioMark.UI.Styles.CheckBox.xaml?assembly=AudioMark.UI" />
+
+    <Style Selector="ComboBox.InSentence > ComboBoxItem:pointerover">
+      <Setter Property="Background" Value="#3f3f46" />
+    </Style>
+
+
+    <Style Selector="CheckBox.InSentence">
+      <Style.Resources>
+        <SolidColorBrush x:Key="HighlightBrush">Green</SolidColorBrush>
+      </Style.Resources>
+      <Setter Property="BorderBrush" Value="#3f3f46" />
+      <Setter Property="BorderThickness" Value="1" />
+
+    </Style>
+
+    <Style Selector="Button.InSentence">
+      <Setter Property="BorderBrush" Value="#3f3f46" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="5 0 5 1" />
+      <Setter Property="Margin" Value="2 0 2 0" />
+      <Setter Property="Height" Value="18" />
+    </Style>
+
+    <Style Selector="Button.IconButton:pointerover">
+      <Setter Property="Background" Value="#3f3f46" />
+    </Style>
+
+    <Style Selector="Button.IconButton:pressed">
+      <Setter Property="Background" Value="#007acc" />
+    </Style>
+
+    <Style Selector="Button.IconButton">
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Classes="IconButton" Background="{TemplateBinding Background}">
+            <StackPanel Orientation="Horizontal">
+              <Path Name="icon" Margin="0 -5 0 0" Fill="#8ed28a" />
+              <ContentPresenter Name="PART_ContentPresenter"                                  
+                             ContentTemplate="{TemplateBinding ContentTemplate}"
+                             Content="{TemplateBinding Content}"
+                             Padding="{TemplateBinding Padding}" />
+            </StackPanel>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.IconButton /template/ Path#icon">
+      <Setter Property="Data" Value="M 8 8.9581818 V 19.14 l 8 -5.090909 z" />
+    </Style>
+
+  </Window.Styles>
+  <cc:PropertySection Width="300" HorizontalAlignment="Left" Title="Signal options" Expanded="True">
+    <cc:PropertySection.Properties>
+      <cm:ThdMeasurementControl />
+    </cc:PropertySection.Properties>
+  </cc:PropertySection>
+</Window>
+

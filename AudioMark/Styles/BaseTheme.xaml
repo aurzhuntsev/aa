@@ -1,0 +1,17 @@
+﻿<Style xmlns="https://github.com/avaloniaui"  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style.Resources>
+    <Color x:Key="Level1BackgroundColor">#cccccc</Color>
+    <Color x:Key="Level2BackgroundColor">#dddddd</Color>
+    <Color x:Key="Level3BackgroundColor">#eeeeee</Color>
+
+    <Color x:Key="ForegroundColor">#111111</Color>
+    <Color x:Key="HighlighForegroundColor">#0000ff</Color>
+
+    <SolidColorBrush x:Key="Level1BackgroundBrush" Color="{DynamicResource Level1BackgroundColor}" />
+    <SolidColorBrush x:Key="Level2BackgroundBrush" Color="{DynamicResource Level2BackgroundColor}" />
+    <SolidColorBrush x:Key="Level3BackgroundBrush" Color="{DynamicResource Level3BackgroundColor}" />
+
+    <SolidColorBrush x:Key="ForegroundBrush" Color="{DynamicResource ForegroundColor}" />
+    <SolidColorBrush x:Key="HighlightForegroundBrush" Color="{DynamicResource HighlighForegroundColor}" />
+  </Style.Resources>
+</Style>

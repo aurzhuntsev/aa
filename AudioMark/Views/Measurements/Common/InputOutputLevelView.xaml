@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.Measurements.Common.InputOutputLevelView">
+  <Grid HorizontalAlignment="Stretch">
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="3*" />
+      <ColumnDefinition Width="2*" />
+      <ColumnDefinition Width="1*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition/>
+      <RowDefinition Height="24"/>
+    </Grid.RowDefinitions>
+
+
+    <TextBlock Grid.Column="0" Grid.Row="0">Output level:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+      <TextBlock Margin="-9 0 0 0">−</TextBlock>
+      <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">3.00</TextBox>
+      <TextBlock >dBTP</TextBlock>
+    </StackPanel>
+
+    <CheckBox Grid.Column="0" Grid.Row="1">Match input level:</CheckBox>
+    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+      <TextBlock Margin="-9 0 0 0">−</TextBlock>
+      <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">3.00</TextBox>
+      <ComboBox Classes="Inline" SelectedIndex="0">
+        <ComboBoxItem>dBTP</ComboBoxItem>
+        <ComboBoxItem>dBFS</ComboBoxItem>
+      </ComboBox>
+    </StackPanel>
+
+    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+      <Button Classes="Inline" Margin="0 0 2 0" Width="46">Tune</Button>
+      <Button Classes="Inline" Width="47">Test</Button>
+    </StackPanel>
+
+  </Grid>
+</UserControl>

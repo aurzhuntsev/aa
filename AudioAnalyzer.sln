@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D988D01E-02FF-429F-A029-D83CDA16AC64}"
+	ProjectSection(SolutionItems) = preProject
+		Overview.puml = Overview.puml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioMark.Core", "AudioAnalyzer\AudioMark.Core.csproj", "{B83CEBEC-079E-4758-879A-A5CA21BA5664}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortAudioWrapper", "PortAudio\PortAudioWrapper.csproj", "{E70B4315-C2D2-40C8-90F0-27410133FC68}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioAnalyzer.Tests", "AudioAnalyzer.Tests\AudioAnalyzer.Tests.csproj", "{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioMark.UI", "AudioMark.UI\AudioMark.UI.csproj", "{6156C708-E710-4556-8A3D-7CDFE98D057C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioMark", "AudioMark\AudioMark.csproj", "{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B83CEBEC-079E-4758-879A-A5CA21BA5664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B83CEBEC-079E-4758-879A-A5CA21BA5664}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B83CEBEC-079E-4758-879A-A5CA21BA5664}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B83CEBEC-079E-4758-879A-A5CA21BA5664}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E70B4315-C2D2-40C8-90F0-27410133FC68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E70B4315-C2D2-40C8-90F0-27410133FC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E70B4315-C2D2-40C8-90F0-27410133FC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E70B4315-C2D2-40C8-90F0-27410133FC68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF22777D-C104-4D65-BD7D-1797B3A0D602}
+	EndGlobalSection
+EndGlobal

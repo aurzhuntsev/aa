@@ -1,0 +1,59 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.UI.Controls.Common.PropertySection" Name="PropertySection">
+
+  <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Background="#252526">
+    <Grid Cursor="Hand" Name="SectionTitle" PointerPressed="OnSectionTitlePointerPressed">
+      <Grid.Styles>
+        <Style Selector="Grid">
+          <Setter Property="Background" Value="#2d2d30" />
+        </Style>
+        <Style Selector="Path">
+          <Setter Property="Fill" Value="White" />
+          <Setter Property="Margin" Value="-8 -10 8 0" />
+          <Setter Property="Width" Value="12" />
+          <Setter Property="Height" Value="14" />
+        </Style>
+        <Style Selector="TextBlock">
+          <Setter Property="Foreground" Value="#c8c8c8" />
+        </Style>
+        <Style Selector="TextBlock:pointerover">
+          <Setter Property="Foreground" Value="White" />
+        </Style>
+      </Grid.Styles>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="20" />        
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Path Grid.Column="0" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded, ElementName=PropertySection}"/>
+      <Path Grid.Column="0" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded, ElementName=PropertySection}"/>
+
+      <TextBlock  Grid.Column="1" Text="{Binding Title, ElementName=PropertySection}" FontWeight="Bold" Height="18">
+        Section Title
+      </TextBlock>
+
+    </Grid>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="16" />
+        <ColumnDefinition Width="4" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#2d2d30" Grid.Column="0"></Panel>
+      <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#252526" Grid.Column="1"></Panel>
+      
+      <StackPanel Grid.Column="2" Orientation="Vertical" Name="ContentPanel" IsVisible="{Binding Expanded, , ElementName=PropertySection}">
+        <ContentControl Content="{Binding Properties, ElementName=PropertySection}"/>
+      </StackPanel>
+    </Grid>
+    
+  </StackPanel>
+
+</UserControl>

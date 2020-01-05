@@ -1,0 +1,146 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:vmc="clr-namespace:AudioMark.Views.Measurements.Common;assembly=AudioMark"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             x:Class="AudioMark.Views.Measurements.ThdMeasurementView">
+  <UserControl.Styles>
+    <Style Selector="TextBox.Inline">
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Padding" Value="2 0 2 0" />
+      <Setter Property="BorderThickness" Value="0 0 0 1" />
+      <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+    </Style>
+
+    <Style Selector="ComboBox.Inline">
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Padding" Value="2 0 2 0" />
+      <Setter Property="BorderThickness" Value="0 0 0 1" />
+      <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.Inline">
+      <Setter Property="Height" Value="18" />
+      <Setter Property="Padding" Value="2 0 2 0" />
+      <Setter Property="BorderThickness" Value="0 0 0 1" />
+      <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+    </Style>
+
+  </UserControl.Styles>
+  <StackPanel Orientation="Vertical">
+
+    <cc:PropertySection Title="Test signal" Expanded="true">
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <Grid HorizontalAlignment="Stretch">
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0">Base frequency:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">10000.00</TextBox>
+              <TextBlock >hz</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <vmc:InputOutputLevelView />
+
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Title="Warm-up signal" Expanded="true">
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <CheckBox Classes="Inline" IsChecked="true">Use test signal options</CheckBox>
+          <Grid HorizontalAlignment="Stretch">
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.Row="0">Warm-up duration:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">10</TextBox>
+              <TextBlock >seconds</TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Column="0" Grid.Row="1">Warm-up signal frequency:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">10000.00</TextBox>
+              <TextBlock >hz</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <vmc:InputOutputLevelView />
+
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Title="Analysis" Expanded="true">
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0">Harmonic detection window:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">1</TextBox>
+              <TextBlock >bin(s)</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <CheckBox Grid.Column="0" Grid.Row="0">Apply correction profile:</CheckBox>
+
+            <TextBlock Grid.Column="0" Grid.Row="1">(no profile loaded)</TextBlock>
+            <Button Grid.Column="1" Grid.Row="1" Classes="Inline" Width="45" HorizontalAlignment="Left">Load</Button>
+          </Grid>
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Title="Stop conditions">
+      <cc:PropertySection.Properties>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Title="FFT">
+      <cc:PropertySection.Properties>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+  </StackPanel>
+</UserControl>

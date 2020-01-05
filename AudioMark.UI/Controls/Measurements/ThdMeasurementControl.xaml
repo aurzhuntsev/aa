@@ -1,0 +1,71 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.UI.Controls.Measurements.ThdMeasurementControl">
+  <StackPanel Orientation="Vertical">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="1*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="18"/>
+        <RowDefinition Height="18"/>
+        <RowDefinition Height="18"/>
+      </Grid.RowDefinitions>
+
+      <TextBlock Grid.Column="0" Grid.Row="0" Classes="InSentence">Base frequency:</TextBlock>
+      <StackPanel Orientation="Horizontal"  Grid.Column="1" Grid.Row="0">
+        <TextBox KeyDown="OnNumericTextInput"          
+          Text="{Binding SignalOptions.Frequency, Mode=TwoWay}" Grid.Column="1" Grid.Row="0" Classes="InSentence" TextAlignment="Right" Width="54" MaxLength="8">
+          10000.00
+        </TextBox>
+        <TextBlock Classes="InSentence">hz</TextBlock>
+      </StackPanel>
+
+
+      <TextBlock  Grid.Column="0" Grid.Row="1" Classes="InSentence">Output signal level:</TextBlock>
+      <StackPanel  Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+        <TextBox Classes="InSentence" TextAlignment="Right" Width="54" MaxLength="7">
+          -140.00
+        </TextBox>
+        <TextBlock Classes="InSentence">dBTP</TextBlock>
+      </StackPanel>
+
+      <CheckBox Grid.Column="0" Grid.Row="2" Classes="InSentence">Match input level:</CheckBox>
+      <StackPanel  Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+        <TextBox Classes="InSentence" TextAlignment="Right" Width="54" MaxLength="7">
+          -3.00
+        </TextBox>
+        <ComboBox Classes="InSentence" SelectedIndex="0">
+          <ComboBoxItem>dBTP</ComboBoxItem>
+          <ComboBoxItem>dBFS</ComboBoxItem>
+        </ComboBox>
+      </StackPanel>
+    </Grid>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="1*" />
+        <ColumnDefinition Width="1*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="18" />
+      </Grid.RowDefinitions>
+
+      <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+        <Panel Height="9" HorizontalAlignment="Stretch" Background="#8ed28a" Margin="0 5 0 0" VerticalAlignment="Center"/>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
+        <Button Classes="InSentence IconButton TestIcon">Test</Button>
+        <Button Classes="InSentence">Tune</Button>
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>

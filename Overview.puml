@@ -1,0 +1,15 @@
+@startuml
+
+
+package Audio {
+	Device --> [Sound Data Provider]
+}
+
+package Analysis {
+}
+
+package AudioAnalyzer {
+}
+
+package UI {
+}
