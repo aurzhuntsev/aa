@@ -21,23 +21,23 @@
     <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
       <TextBlock Margin="-9 0 0 0">−</TextBlock>
       <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" 
-               Text="{Binding OutputLevel}"/>      
+               Text="{Binding OutputLevel}" IsEnabled="{Binding !MatchInputLevel}"/>      
       <TextBlock >dBTP</TextBlock>
     </StackPanel>
 
     <CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding MatchInputLevel}">Match input level:</CheckBox>
     <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
       <TextBlock Margin="-9 0 0 0">−</TextBlock>
-      <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" Text="{Binding InputLevel}" />
-      <ComboBox Classes="Inline" SelectedIndex="{Binding InputLevelMode}">
+      <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" Text="{Binding InputLevel}" IsEnabled="{Binding MatchInputLevel}" />
+      <ComboBox Classes="Inline" SelectedIndex="{Binding InputLevelMode}" IsEnabled="{Binding MatchInputLevel}">
         <ComboBoxItem>dBTP</ComboBoxItem>
         <ComboBoxItem>dBFS</ComboBoxItem>
       </ComboBox>
     </StackPanel>
 
     <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
-      <Button Classes="Inline" Margin="0 0 2 0" Width="46">Tune</Button>
-      <Button Classes="Inline" Width="47">Test</Button>
+      <Button Classes="Inline" Margin="0 0 2 0" Width="46" IsEnabled="{Binding MatchInputLevel}">Tune</Button>
+      <Button Classes="Inline" Width="47" IsEnabled="{Binding MatchInputLevel}">Test</Button>
     </StackPanel>
 
   </Grid>

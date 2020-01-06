@@ -14,22 +14,26 @@
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#aaaaaa">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="24" />
-      <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="24" />
-    </Grid.ColumnDefinitions>
+  <DockPanel>
+    <v:CurrentMeasurementView DockPanel.Dock="Top" Content="{Binding CurrentMeasurement}"/>
+    <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#aaaaaa">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="24" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="24" />
+      </Grid.ColumnDefinitions>
 
-    <Grid.RowDefinitions>
-      <RowDefinition />
-    </Grid.RowDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition />
+      </Grid.RowDefinitions>
 
-    <Panel Grid.Column="0" Grid.Row="0" Background="{StaticResource Level3BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-    <Panel Grid.Column="1" Grid.Row="0" Background="{DynamicResource Level1BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-      <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="360" Content="{Binding Measurements}" />
-    </Panel>
-    <Panel Grid.Column="2" Grid.Row="0" Background="{DynamicResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
-  </Grid>
+      <Panel Grid.Column="0" Grid.Row="0" Background="{StaticResource Level3BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+      <Panel Grid.Column="1" Grid.Row="0" Background="{DynamicResource Level1BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="360" Content="{Binding Measurements}" />
+      </Panel>
+      <Panel Grid.Column="2" Grid.Row="0" Background="{DynamicResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
+    </Grid>
+
+  </DockPanel>
 
 </Window>

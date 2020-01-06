@@ -44,7 +44,7 @@ namespace AudioMark.Controls
         public object OriginalDataContext { get; set; }
 
         public void OnSectionTitlePointerPressed(object sender, PointerPressedEventArgs e)
-        {
+        {            
             Expanded = !Expanded;
         }
 

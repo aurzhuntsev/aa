@@ -15,13 +15,21 @@
       <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
       <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
     </Style>
-
+    <Style Selector="TextBox.Inline:disabled">
+      <Setter Property="Background"  Value="{DynamicResource Level1BackgroundBrush} "/>
+      <Setter Property="Foreground"  Value="{DynamicResource DimmedForegroundBrush} "/>
+    </Style>
+    
     <Style Selector="ComboBox.Inline">
       <Setter Property="Height" Value="18" />
       <Setter Property="Padding" Value="2 0 2 0" />
       <Setter Property="BorderThickness" Value="0 0 0 1" />
       <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
       <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+    </Style>
+    <Style Selector="ComboBox.Inline:disabled">
+      <Setter Property="Background"  Value="{DynamicResource Level1BackgroundBrush} "/>
+      <Setter Property="Foreground"  Value="{DynamicResource DimmedForegroundBrush} "/>
     </Style>
 
     <Style Selector="Button.Inline">
@@ -54,7 +62,7 @@
             </StackPanel>
           </Grid>
 
-          <vmc:InputOutputLevelView DataContext="{Binding Measurement.TestSignalOptions.InputOutputOptions}" />
+          <vmc:InputOutputLevelView DataContext="{Binding TestSignalInputOutputLevelOptions}" />
 
         </StackPanel>
       </cc:PropertySection.Properties>
@@ -78,32 +86,34 @@
               <RowDefinition />
             </Grid.RowDefinitions>
 
-            <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Measurement.WarmUpEnabled}">Enable warm-up</CheckBox>
+            <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding WarmUpEnabled}">Enable warm-up</CheckBox>
 
             <TextBlock Grid.Column="0" Grid.Row="1">Warm-up duration:</TextBlock>
             <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" 
-                       IsEnabled="{Binding Measurement.WarmUpEnabled}" Text="{Binding Measurement.WarmUpDurationSeconds}"/>
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       IsEnabled="{Binding WarmUpEnabled}" Text="{Binding WarmUpDurationSeconds}"/>
               <TextBlock >seconds</TextBlock>
             </StackPanel>
 
             <CheckBox Grid.Column="0" Grid.Row="2" Classes="Inline"
-                      IsEnabled="{Binding Measurement.WarmUpEnabled}"
-                      IsChecked="{Binding !Measurement.OverrideWarmUpSignalOptions}"
+                      IsEnabled="{Binding WarmUpEnabled}"
+                      IsChecked="{Binding !OverrideWarmUpSignalOptions}"
                       >Use test signal options</CheckBox>
 
             <TextBlock Grid.Column="0" Grid.Row="3">Warm-up signal frequency:</TextBlock>
             <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
               <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
-                       IsEnabled="{Binding !Measurement.OverrideWarmUpSignalOption}"
-                       Text="{Binding Measurement.TestSignalOptions.Frequency}"/>
+                       IsEnabled="{Binding WarmupSignalOptionsEnabled}"
+                       Text="{Binding WarmUpSignalFrequency}"/>
               <TextBlock >hz</TextBlock>
             </StackPanel>
 
           </Grid>
 
-          <vmc:InputOutputLevelView IsEnabled="{Binding !Measurement.OverrideWarmUpSignalOption}"
-            DataContext="{Binding Measurement.WarmUpSignalOptions.InputOutputOptions}"/>
+          <Panel IsEnabled="{Binding WarmupSignalOptionsEnabled}">
+            <vmc:InputOutputLevelView IsEnabled="{Binding WarmupSignalOptionsEnabled}"
+              DataContext="{Binding WarmUpSignalInputOutputLevelOptions}"/>
+          </Panel>
 
         </StackPanel>
       </cc:PropertySection.Properties>

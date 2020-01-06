@@ -15,6 +15,7 @@
     <AvaloniaResource Remove="Controls\PropertySection.xaml" />
     <AvaloniaResource Remove="Styles\BaseTheme.xaml" />
     <AvaloniaResource Remove="Styles\Icons.xaml" />
+    <AvaloniaResource Remove="Views\CurrentMeasurementView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementsPanelView.xaml" />
     <AvaloniaResource Remove="Views\Measurements\Common\InputOutputLevelView.xaml" />
     <AvaloniaResource Remove="Views\Measurements\NoiseMeasurementView.xaml" />
@@ -23,6 +24,7 @@
     <None Remove="Controls\PropertySection.xaml" />
     <None Remove="Styles\BaseTheme.xaml" />
     <None Remove="Styles\Icons.xaml" />
+    <None Remove="Views\CurrentMeasurementView.xaml" />
     <None Remove="Views\MeasurementsPanelView.xaml" />
     <None Remove="Views\Measurements\Common\InputOutputLevelView.xaml" />
     <None Remove="Views\Measurements\NoiseMeasurementView.xaml" />
@@ -61,6 +63,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\Measurements\Common\InputOutputLevelView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\CurrentMeasurementView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

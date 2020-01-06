@@ -20,7 +20,8 @@ namespace AudioMark.ViewModels
             get => _selectedIndex;
             set => this.RaiseAndSetIfChanged(ref _selectedIndex, value);
         }
-        
+
+        private MeasurementViewModelBase _content = null;
         public MeasurementViewModelBase Content
         {
             get
@@ -30,10 +31,13 @@ namespace AudioMark.ViewModels
                         item.Item1 == MeasurementsFactory.List().First(item => 
                             item.Name == Items[SelectedIndex]).Type).Item2;
 
-                var measurementViewModel = (MeasurementViewModelBase)Activator.CreateInstance(type);
-                measurementViewModel.Measurement = MeasurementsFactory.Create(Items[SelectedIndex]);
+                if (_content == null || _content.GetType() != type)
+                {
+                    _content = (MeasurementViewModelBase)Activator.CreateInstance(type);
+                    _content.Measurement = MeasurementsFactory.Create(Items[SelectedIndex]);                    
+                }
 
-                return measurementViewModel;
+                return _content;
             }
         }
 
@@ -59,10 +63,22 @@ namespace AudioMark.ViewModels
             });
         }
 
-        public void Run()
-        {            
-            var measurement = MeasurementsFactory.Create(Items[SelectedIndex]);
-            measurement.Run();
+        public void Run(Button sender)
+        {
+            if (sender.Classes.Any(c => c == "PlayIcon"))
+            {
+                sender.Classes.Remove("PlayIcon");
+                sender.Classes.Add("StopIcon");
+                sender.Content = "Stop";
+                /* TODO: That's bad */
+                //Content.Measurement.Run();
+            }
+            else
+            {
+                sender.Classes.Add("PlayIcon");
+                sender.Classes.Remove("StopIcon");
+                sender.Content = "Run";
+            }
         }
     }
 }

@@ -6,6 +6,7 @@
 
     <Color x:Key="ForegroundColor">#111111</Color>
     <Color x:Key="HighlighForegroundColor">#0000ff</Color>
+    <Color x:Key="DimmedForegroundColor">#ff0000</Color>
 
     <SolidColorBrush x:Key="Level1BackgroundBrush" Color="{DynamicResource Level1BackgroundColor}" />
     <SolidColorBrush x:Key="Level2BackgroundBrush" Color="{DynamicResource Level2BackgroundColor}" />
@@ -13,5 +14,6 @@
 
     <SolidColorBrush x:Key="ForegroundBrush" Color="{DynamicResource ForegroundColor}" />
     <SolidColorBrush x:Key="HighlightForegroundBrush" Color="{DynamicResource HighlighForegroundColor}" />
+    <SolidColorBrush x:Key="DimmedForegroundBrush" Color="{DynamicResource DimmedForegroundColor}" />
   </Style.Resources>
 </Style>

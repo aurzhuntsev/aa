@@ -23,6 +23,15 @@ namespace AudioMark.Core.Measurements
         public bool MatchInputLevel { get; set; } = true;
         public double InputLevel { get; set; } = 3.0;
         public SignalLevelMode InputLevelMode { get; set; } = SignalLevelMode.DBFS;
+
+        public override string ToString()
+        {
+            if (MatchInputLevel)
+            {
+                return $"In {InputLevel}{InputLevelMode}";
+            }
+            return $"Out {OutputLevel}dBTP";
+        }
     }
 
     [Measurement("Total Harmonic Distortion")]
@@ -47,7 +56,9 @@ namespace AudioMark.Core.Measurements
         public IEnumerable<ActivityBase> Activities => _activities;
         
         public ActivityBase CurrentActivity { get; private set; }
-        
+
+        public string Title { get; private set; }
+
         public void Run()
         {
             TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, TestSignalOptions.Frequency);
@@ -65,7 +76,7 @@ namespace AudioMark.Core.Measurements
                 /* TODO: Add input level tune activity */
             }            
 
-            if (true/*WarmUpEnabled && WarmUpDurationSeconds > 0*/)
+            if (WarmUpEnabled && WarmUpDurationSeconds > 0)
             {
                 var warmUpActivity = new GeneratorActivity("Warming up...");
                 warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, WarmupSignalGenerator);
@@ -73,7 +84,9 @@ namespace AudioMark.Core.Measurements
 
                 _activities.Add(warmUpActivity);
             }
-            
+
+            Title = $"THD - {TestSignalOptions.InputOutputOptions}@{TestSignalOptions.Frequency}hz";
+
             foreach (var activity in Activities)
             {
                 CurrentActivity = activity;

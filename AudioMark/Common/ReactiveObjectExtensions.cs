@@ -8,7 +8,7 @@ namespace AudioMark.Common
 {
     public static class ReactiveObjectExtensions
     {
-        public static void RaiseAndSetIfPropertyChanged<T>(this ReactiveObject reactiveObject, Expression<Func<T>> selector, T value, string propertyName)
+        public static void RaiseAndSetIfPropertyChanged<T>(this ReactiveObject reactiveObject, Expression<Func<T>> selector, T value, string propertyName = null)
         {
             var constExpression = Expression.Constant(value);
             var assignExpression = Expression.Assign(selector.Body, constExpression);
@@ -16,7 +16,7 @@ namespace AudioMark.Common
 
             lambda.Compile().DynamicInvoke();
 
-            reactiveObject.RaisePropertyChanged(propertyName);
+            reactiveObject.RaisePropertyChanged(propertyName ?? selector.Body.GetMemberInfo().Name);
         }
     }
 }

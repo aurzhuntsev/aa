@@ -30,6 +30,8 @@ namespace AudioMark.Core.Measurements
 
         public ActivityBase CurrentActivity => throw new NotImplementedException();
 
+        public string Title => throw new NotImplementedException();
+
         protected virtual void Initialize()
         {
 
