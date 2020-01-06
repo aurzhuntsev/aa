@@ -6,5 +6,7 @@ namespace AudioMark.Core.Measurements
 {
     public interface IStopCondition
     {
+        TimeSpan Remaining { get; }
+        bool Met { get; }
     }
 }

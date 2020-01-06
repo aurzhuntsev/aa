@@ -26,6 +26,10 @@ namespace AudioMark.Core.Measurements
         public StopConditions StopConditions { get; set; }
         public bool OverrideStopConditions { get; set; }
 
+        public IEnumerable<ActivityBase> Activities => throw new NotImplementedException();
+
+        public ActivityBase CurrentActivity => throw new NotImplementedException();
+
         protected abstract IGenerator GetGenerator();
 
         protected virtual void Initialize()
@@ -39,7 +43,7 @@ namespace AudioMark.Core.Measurements
 
             Data = new SpectralData(AppSettings.Current.Fft.WindowSize, AppSettings.Current.Device.SampleRate);
 
-            var adapter = AudioDataAdapterFactory.Get();
+            var adapter = AudioDataAdapterProvider.Get();
 
             adapter.OnWrite = new IAudioDataAdapter.DataWriteEventHandler((sender, buffer) =>
             {

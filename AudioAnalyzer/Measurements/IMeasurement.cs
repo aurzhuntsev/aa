@@ -6,9 +6,7 @@ namespace AudioMark.Core.Measurements
 {
     public interface IMeasurement
     {
-        IEnumerable<IActivity> Activities { get; }
-        IActivity CurrentActivity { get; }
-
-
+        IEnumerable<ActivityBase> Activities { get; }
+        ActivityBase CurrentActivity { get; }
     }
 }

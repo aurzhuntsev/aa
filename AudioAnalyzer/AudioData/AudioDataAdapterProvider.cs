@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AudioMark.Core.AudioData
 {
-    public static class AudioDataAdapterFactory
+    public static class AudioDataAdapterProvider
     {
         public static IAudioDataAdapter Get()
         {
