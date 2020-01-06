@@ -30,7 +30,10 @@ namespace AudioMark.ViewModels
                         item.Item1 == MeasurementsFactory.List().First(item => 
                             item.Name == Items[SelectedIndex]).Type).Item2;
 
-                return (MeasurementViewModelBase)Activator.CreateInstance(type);
+                var measurementViewModel = (MeasurementViewModelBase)Activator.CreateInstance(type);
+                measurementViewModel.Measurement = MeasurementsFactory.Create(Items[SelectedIndex]);
+
+                return measurementViewModel;
             }
         }
 
@@ -54,6 +57,12 @@ namespace AudioMark.ViewModels
             {
                 this.RaisePropertyChanged("Content");
             });
+        }
+
+        public void Run()
+        {            
+            var measurement = MeasurementsFactory.Create(Items[SelectedIndex]);
+            measurement.Run();
         }
     }
 }

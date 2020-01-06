@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Threading;
 
 namespace AudioMark.Core.Measurements
 {
     public class ActivityCompleteEventArgs
-    {        
+    {
     }
 
     public class ActivityErrorEventArgs
@@ -19,9 +20,11 @@ namespace AudioMark.Core.Measurements
 
     public abstract class ActivityBase
     {
-        IEnumerable<IStopCondition> StopConditions { get; }
-        
+        private List<IStopCondition> _stopConditions = new List<IStopCondition>();
+        IEnumerable<IStopCondition> StopConditions => _stopConditions;
+
         public bool Running { get; protected set; }
+        private EventWaitHandle _waitHandle { get; } = new EventWaitHandle(true, EventResetMode.ManualReset);
 
         private DateTime _startedAt;
         public TimeSpan Elapsed
@@ -33,7 +36,7 @@ namespace AudioMark.Core.Measurements
         {
             get => StopConditions.Min(stopCondition => stopCondition.Remaining);
         }
-        
+
         public string Description { get; }
 
         event ActivityCompleteEventHandler OnComplete;
@@ -42,18 +45,51 @@ namespace AudioMark.Core.Measurements
         public ActivityBase(string description)
         {
             Description = description;
+            _stopConditions = new List<IStopCondition>();
         }
 
         public virtual void Start()
         {
             _startedAt = DateTime.Now;
+
+            foreach (var stopCondition in StopConditions)
+            {
+                stopCondition.Set();
+            }
+
             Running = true;
+            _waitHandle.Reset();
         }
 
         public virtual void Stop()
         {
             Running = false;
-            OnComplete(this, new ActivityCompleteEventArgs());
+            _waitHandle.Set();
+
+            OnComplete?.Invoke(this, new ActivityCompleteEventArgs());
+        }
+
+        public void AddStopCondition(IStopCondition stopCondition)
+        {
+            stopCondition.OnMet += (s) =>
+            {
+                Stop();
+            };
+
+            _stopConditions.Add(stopCondition);
+        }
+
+        public void CheckStopConditions()
+        {
+            foreach (var stopCondition in StopConditions)
+            {
+                stopCondition.Check();
+            }
+        }
+
+        public void WaitToComplete()
+        {
+            _waitHandle.WaitOne();
         }
     }
 }

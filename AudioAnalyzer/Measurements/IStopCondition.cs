@@ -4,9 +4,14 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements
 {
+    public delegate void StopConditionMetEventHandler(IStopCondition sender);
+
     public interface IStopCondition
     {
         TimeSpan Remaining { get; }
-        bool Met { get; }
+        event StopConditionMetEventHandler OnMet;
+
+        void Set();
+        void Check();
     }
 }

@@ -20,7 +20,6 @@ namespace AudioMark.Core.Measurements
             public double Frequency { get; set; } = 100500;
             public double Amplitude { get; set; } = -3.0;
 
-            public AutoTuneMode TargetMode { get; set; }
             public double TargetValue { get; set; }
         }
 
@@ -30,10 +29,5 @@ namespace AudioMark.Core.Measurements
         public bool OverrideWarmUpOptions { get; set; }
 
         public int HarmonicWindowSize { get; set; }
-
-        protected override IGenerator GetGenerator()
-        {
-            return null;
-        }
     }
 }

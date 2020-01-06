@@ -41,6 +41,8 @@ namespace AudioMark.Controls
             set { SetValue(ExpandedProperty, value); }
         }
 
+        public object OriginalDataContext { get; set; }
+
         public void OnSectionTitlePointerPressed(object sender, PointerPressedEventArgs e)
         {
             Expanded = !Expanded;
@@ -53,8 +55,7 @@ namespace AudioMark.Controls
 
         private void InitializeComponent()
         {
-            AvaloniaXamlLoader.Load(this);
-            DataContext = this;
-        }
+            AvaloniaXamlLoader.Load(this);            
+        }                
     }
 }

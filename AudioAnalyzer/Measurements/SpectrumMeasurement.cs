@@ -30,8 +30,6 @@ namespace AudioMark.Core.Measurements
 
         public ActivityBase CurrentActivity => throw new NotImplementedException();
 
-        protected abstract IGenerator GetGenerator();
-
         protected virtual void Initialize()
         {
 
@@ -47,7 +45,7 @@ namespace AudioMark.Core.Measurements
 
             adapter.OnWrite = new IAudioDataAdapter.DataWriteEventHandler((sender, buffer) =>
             {
-                buffer[AppSettings.Current.Device.PrimaryOutputChannel - 1] = GetGenerator().Next();
+                buffer[AppSettings.Current.Device.PrimaryOutputChannel - 1] = 0;// GetGenerator().Next();
                 return buffer.Length;
             });
 

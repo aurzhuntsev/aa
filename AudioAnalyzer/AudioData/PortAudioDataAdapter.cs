@@ -96,6 +96,7 @@ namespace AudioMark.Core.AudioData
         public override void Initialize()
         {
             base.Initialize();
+            PortAudio.Initialize();
 
             var inputStreamParameters = new PaStreamParameters()
             {

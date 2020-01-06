@@ -19,7 +19,6 @@
     <AvaloniaResource Remove="Views\Measurements\Common\InputOutputLevelView.xaml" />
     <AvaloniaResource Remove="Views\Measurements\NoiseMeasurementView.xaml" />
     <AvaloniaResource Remove="Views\Measurements\ThdMeasurementView.xaml" />
-    <Folder Include="ViewModels\Common\" />
     <Folder Include="Views\Common\" />
     <None Remove="Controls\PropertySection.xaml" />
     <None Remove="Styles\BaseTheme.xaml" />

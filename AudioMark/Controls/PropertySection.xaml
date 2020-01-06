@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
-             x:Class="AudioMark.Controls.PropertySection" Name="PropertySection">
+             x:Class="AudioMark.Controls.PropertySection" Name="PropertySection"
+             x:Name="PropertySection">
 
   <Grid PointerPressed="OnSectionTitlePointerPressed" HorizontalAlignment="Stretch"
         Background="{DynamicResource Level2BackgroundBrush}">
@@ -34,18 +35,18 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Path Grid.Column="0" Grid.Row="0" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded}"/>
-    <Path Grid.Column="0" Grid.Row="0" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded}"/>
+    <Path Grid.Column="0" Grid.Row="0" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded, ElementName=PropertySection}"/>
+    <Path Grid.Column="0" Grid.Row="0" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded, ElementName=PropertySection}"/>
 
     <TextBlock Cursor="Hand" Name="title" Grid.Column="1" Grid.Row="0" FontWeight="Bold" Height="18"
-               Margin="2 0 0 0" Text="{Binding Title}" />
+               Margin="2 0 0 0" Text="{Binding Title, ElementName=PropertySection}" />
 
     <Panel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch"
            VerticalAlignment="Stretch" Background="{DynamicResource Level2BackgroundBrush}"></Panel>
 
-    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" IsVisible="{Binding Expanded}"
+    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" IsVisible="{Binding Expanded, ElementName=PropertySection}"
                 Background="{DynamicResource Level1BackgroundBrush}">
-      <ContentControl Content="{Binding Properties}" Margin="2 0 0 0"/>
+      <ContentControl Content="{Binding Properties, ElementName=PropertySection}" Margin="2 0 0 0"/>
     </StackPanel>
 
   </Grid>

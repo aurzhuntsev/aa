@@ -39,7 +39,7 @@ namespace AudioMark.Core.AudioData
         }
 
         public virtual void Initialize()
-        {
+        {            
             InputBuffer = new RingBuffer(ringBufferSize * AppSettings.Current.Device.BufferSize, AppSettings.Current.Device.InputDevice.ChannelsCount);
             OutputBuffer = new RingBuffer(ringBufferSize * AppSettings.Current.Device.BufferSize, AppSettings.Current.Device.OutputDevice.ChannelsCount);
         }

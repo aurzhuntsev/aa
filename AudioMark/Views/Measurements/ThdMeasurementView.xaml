@@ -5,7 +5,8 @@
              xmlns:cc="clr-namespace:AudioMark.Controls"
              xmlns:vmc="clr-namespace:AudioMark.Views.Measurements.Common;assembly=AudioMark"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
-             x:Class="AudioMark.Views.Measurements.ThdMeasurementView">
+             x:Class="AudioMark.Views.Measurements.ThdMeasurementView"
+             x:Name="ThdMeasurementView">
   <UserControl.Styles>
     <Style Selector="TextBox.Inline">
       <Setter Property="Height" Value="18" />
@@ -47,12 +48,13 @@
 
             <TextBlock Grid.Column="0">Base frequency:</TextBlock>
             <StackPanel Grid.Column="1"  Orientation="Horizontal">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">10000.00</TextBox>
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       Text="{Binding TestSignalFrequency}"/>
               <TextBlock >hz</TextBlock>
             </StackPanel>
           </Grid>
 
-          <vmc:InputOutputLevelView />
+          <vmc:InputOutputLevelView DataContext="{Binding Measurement.TestSignalOptions.InputOutputOptions}" />
 
         </StackPanel>
       </cc:PropertySection.Properties>
@@ -61,7 +63,6 @@
     <cc:PropertySection Title="Warm-up signal" Expanded="true">
       <cc:PropertySection.Properties>
         <StackPanel Orientation="Vertical">
-          <CheckBox Classes="Inline" IsChecked="true">Use test signal options</CheckBox>
           <Grid HorizontalAlignment="Stretch">
 
             <Grid.ColumnDefinitions>
@@ -73,22 +74,36 @@
             <Grid.RowDefinitions>
               <RowDefinition />
               <RowDefinition />
+              <RowDefinition />
+              <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="0">Warm-up duration:</TextBlock>
-            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">10</TextBox>
+            <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Measurement.WarmUpEnabled}">Enable warm-up</CheckBox>
+
+            <TextBlock Grid.Column="0" Grid.Row="1">Warm-up duration:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" 
+                       IsEnabled="{Binding Measurement.WarmUpEnabled}" Text="{Binding Measurement.WarmUpDurationSeconds}"/>
               <TextBlock >seconds</TextBlock>
             </StackPanel>
 
-            <TextBlock Grid.Column="0" Grid.Row="1">Warm-up signal frequency:</TextBlock>
-            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">10000.00</TextBox>
+            <CheckBox Grid.Column="0" Grid.Row="2" Classes="Inline"
+                      IsEnabled="{Binding Measurement.WarmUpEnabled}"
+                      IsChecked="{Binding !Measurement.OverrideWarmUpSignalOptions}"
+                      >Use test signal options</CheckBox>
+
+            <TextBlock Grid.Column="0" Grid.Row="3">Warm-up signal frequency:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       IsEnabled="{Binding !Measurement.OverrideWarmUpSignalOption}"
+                       Text="{Binding Measurement.TestSignalOptions.Frequency}"/>
               <TextBlock >hz</TextBlock>
             </StackPanel>
+
           </Grid>
 
-          <vmc:InputOutputLevelView />
+          <vmc:InputOutputLevelView IsEnabled="{Binding !Measurement.OverrideWarmUpSignalOption}"
+            DataContext="{Binding Measurement.WarmUpSignalOptions.InputOutputOptions}"/>
 
         </StackPanel>
       </cc:PropertySection.Properties>

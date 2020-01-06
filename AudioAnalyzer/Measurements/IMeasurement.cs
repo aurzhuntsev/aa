@@ -8,5 +8,7 @@ namespace AudioMark.Core.Measurements
     {
         IEnumerable<ActivityBase> Activities { get; }
         ActivityBase CurrentActivity { get; }
+
+        void Run();
     }
 }

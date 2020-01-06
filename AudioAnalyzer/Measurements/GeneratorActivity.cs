@@ -35,7 +35,8 @@ namespace AudioMark.Core.Measurements
 
             _adapter.OnRead = new IAudioDataAdapter.DataReadEventHandler((sender, buffer, length) =>
             {
-                OnRead(buffer);
+                CheckStopConditions();
+                OnRead?.Invoke(buffer);
             });
         }        
         

@@ -1,4 +1,6 @@
-﻿using AudioMark.Core.Measurements;
+﻿using AudioMark.Common;
+using AudioMark.Core.Measurements;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,9 +9,15 @@ namespace AudioMark.ViewModels.Measurements
 {
     public class ThdMeasurementViewModel : MeasurementViewModelBase
     {
-        public string Test
+        private ThdMeasurement Model
         {
-            get => "FAIL!";
+            get => (ThdMeasurement)Measurement;
+        }
+
+        public double TestSignalFrequency
+        {
+            get => Model.TestSignalOptions.Frequency;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.TestSignalOptions.Frequency, value, nameof(TestSignalFrequency));
         }
     }
 }
