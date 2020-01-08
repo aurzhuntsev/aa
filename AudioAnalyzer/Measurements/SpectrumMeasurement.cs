@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AudioMark.Core.Measurements
 {
-    public abstract class SpectrumMeasurement : IMeasurement
+    public abstract class SpectrumMeasurement : MeasurementBase
     {
         public delegate void DataUpdate(SpectralData data);
         public DataUpdate OnDataUpdate { get; set; }
@@ -31,11 +31,6 @@ namespace AudioMark.Core.Measurements
         public ActivityBase CurrentActivity => throw new NotImplementedException();
 
         public string Title => throw new NotImplementedException();
-
-        protected virtual void Initialize()
-        {
-
-        }
 
         public void Run()
         {
@@ -70,6 +65,11 @@ namespace AudioMark.Core.Measurements
             });
 
             adapter.Start();
+        }
+
+        public void Stop()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -29,7 +29,8 @@
 
       <Panel Grid.Column="0" Grid.Row="0" Background="{StaticResource Level3BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
       <Panel Grid.Column="1" Grid.Row="0" Background="{DynamicResource Level1BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="360" Content="{Binding Measurements}" />
+        <v:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DataContext="{Binding Graph}" />
+        <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="360" Content="{Binding Measurements}" />                         
       </Panel>
       <Panel Grid.Column="2" Grid.Row="0" Background="{DynamicResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  />
     </Grid>

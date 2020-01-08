@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Threading;
+using AudioMark.Core.Common;
 
 namespace AudioMark.Core.Measurements
 {
@@ -17,7 +18,7 @@ namespace AudioMark.Core.Measurements
 
     public delegate void ActivityCompleteEventHandler(ActivityBase sender, ActivityCompleteEventArgs arg);
     public delegate void ActivityErrorEventHandler(ActivityBase sender, ActivityErrorEventArgs arg);
-
+    
     public abstract class ActivityBase
     {
         private List<IStopCondition> _stopConditions = new List<IStopCondition>();
@@ -39,8 +40,8 @@ namespace AudioMark.Core.Measurements
 
         public string Description { get; }
 
-        event ActivityCompleteEventHandler OnComplete;
-        event ActivityErrorEventHandler OnError;
+        public event ActivityCompleteEventHandler OnComplete;
+        public event ActivityErrorEventHandler OnError;        
 
         public ActivityBase(string description)
         {

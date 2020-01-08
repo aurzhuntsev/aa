@@ -14,7 +14,7 @@ namespace AudioMark.Core.Measurements
 {
     public enum SignalLevelMode
     {
-        DBTP = 0, DBFS = 1
+        dBTP = 0, dBFS = 1
     }
 
     public class InputOutputLevel
@@ -22,7 +22,7 @@ namespace AudioMark.Core.Measurements
         public double OutputLevel { get; set; } = 3.0;
         public bool MatchInputLevel { get; set; } = true;
         public double InputLevel { get; set; } = 3.0;
-        public SignalLevelMode InputLevelMode { get; set; } = SignalLevelMode.DBFS;
+        public SignalLevelMode InputLevelMode { get; set; } = SignalLevelMode.dBFS;
 
         public override string ToString()
         {
@@ -35,7 +35,7 @@ namespace AudioMark.Core.Measurements
     }
 
     [Measurement("Total Harmonic Distortion")]
-    public class ThdMeasurement : IMeasurement
+    public class ThdMeasurement : MeasurementBase
     {
         public class SignalOptions
         {
@@ -51,16 +51,9 @@ namespace AudioMark.Core.Measurements
         public int WarmUpDurationSeconds { get; set; } = 10;
         public SignalOptions WarmUpSignalOptions { get; set; } = new SignalOptions();
         public SineGenerator WarmupSignalGenerator { get; set; }
-
-        private List<ActivityBase> _activities = new List<ActivityBase>();
-        public IEnumerable<ActivityBase> Activities => _activities;
         
-        public ActivityBase CurrentActivity { get; private set; }
-
-        public string Title { get; private set; }
-
-        public void Run()
-        {
+        protected override void Initialize()
+        {            
             TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, TestSignalOptions.Frequency);
             if (!OverrideWarmUpSignalOptions)
             {
@@ -70,11 +63,11 @@ namespace AudioMark.Core.Measurements
             {
                 WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, WarmUpSignalOptions.Frequency);
             }
-            
+
             if (TestSignalOptions.InputOutputOptions.MatchInputLevel)
             {
                 /* TODO: Add input level tune activity */
-            }            
+            }
 
             if (WarmUpEnabled && WarmUpDurationSeconds > 0)
             {
@@ -82,17 +75,23 @@ namespace AudioMark.Core.Measurements
                 warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, WarmupSignalGenerator);
                 warmUpActivity.AddStopCondition(new TimeoutStopCondition(WarmUpDurationSeconds * 1000));
 
-                _activities.Add(warmUpActivity);
+                var warmUpDataProcessor = new SpectralDataProcessor()
+                {
+                    OnItemProcessed = (data) =>
+                    {
+                        InvokeDataUpdate(data);
+                    }
+                };
+
+                warmUpActivity.OnRead += (buffer) =>
+                {
+                    warmUpDataProcessor.Add(buffer[AppSettings.Current.Device.PrimaryInputChannel - 1]);
+                };
+
+                Activities.Add(warmUpActivity);
             }
 
             Title = $"THD - {TestSignalOptions.InputOutputOptions}@{TestSignalOptions.Frequency}hz";
-
-            foreach (var activity in Activities)
-            {
-                CurrentActivity = activity;
-                CurrentActivity.Start();
-                CurrentActivity.WaitToComplete();
-            }
         }
     }
 }

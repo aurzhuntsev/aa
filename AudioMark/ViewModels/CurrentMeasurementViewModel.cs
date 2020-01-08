@@ -1,8 +1,10 @@
 ﻿using AudioMark.Core.Measurements;
 using Avalonia;
+using Avalonia.Threading;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Timers;
 
@@ -10,6 +12,8 @@ namespace AudioMark.ViewModels
 {
     public class CurrentMeasurementViewModel : ViewModelBase
     {
+        private readonly TimeSpan MonitorInterval = new TimeSpan(0, 0, 1);
+
         private string _title;
         public string Title
         {
@@ -59,10 +63,66 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _progressWidth, value);
         }
 
-        private IMeasurement _measurement;
-        public CurrentMeasurementViewModel(IMeasurement measurement)
+        private MeasurementBase _measurement;
+        private DispatcherTimer _timer;
+        public void StartMonitoring(MeasurementBase measurement)
         {
-            _measurement = measurement;            
+            if (measurement != null)
+            {
+                _measurement = measurement;
+                
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                }
+
+                _timer = new DispatcherTimer(MonitorInterval, DispatcherPriority.Normal, (s, e) =>
+                {
+                    UpdateViewModel();
+                });                
+
+                UpdateViewModel();
+                _timer.Start();
+            }
+        }
+
+        public void StopMonitoring()
+        {
+            if (_timer != null)
+            {
+                _timer.Stop();
+                ResetViewModel();
+            }
+        }
+
+        private void ResetViewModel()
+        {
+            Title = string.Empty;
+            StepTitle = string.Empty;
+            StepNumber = string.Empty;
+            Remaining = string.Empty;
+            Elapsed = string.Empty;
+        }
+
+        private void UpdateViewModel()
+        {
+            try
+            {
+                Title = _measurement.Title;
+
+                var currentStepNumber = _measurement.Activities.IndexOf(_measurement.CurrentActivity) + 1;
+                var totalSteps = _measurement.Activities.Count;
+
+                StepTitle = _measurement.CurrentActivity.Description;
+                StepNumber = $"[{currentStepNumber}/{totalSteps}]";
+
+                Remaining = _measurement.CurrentActivity.Remaining.ToString(@"hh\:mm\:ss");
+                Elapsed = _measurement.CurrentActivity.Elapsed.ToString(@"hh\:mm\:ss");
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
     }
 }

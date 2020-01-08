@@ -29,5 +29,10 @@ namespace AudioMark.Core.Measurements
         public bool OverrideWarmUpOptions { get; set; }
 
         public int HarmonicWindowSize { get; set; }
+
+        protected override void Initialize()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

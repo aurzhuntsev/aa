@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.AudioData;
+using AudioMark.Core.Common;
 using AudioMark.Core.Generators;
 using AudioMark.Core.Settings;
 using System;
@@ -8,14 +9,13 @@ using System.Text;
 namespace AudioMark.Core.Measurements
 {
     public class GeneratorActivity : ActivityBase
-    {
-        private IGenerator _generator;
+    {        
         private IAudioDataAdapter _adapter;
 
         public Dictionary<int, IGenerator> Generators { get; }
 
         public delegate void ReadEvent(double[] buffer);
-        public event ReadEvent OnRead;
+        public event ReadEvent OnRead;                
 
         public GeneratorActivity(string description)
             : base(description)

@@ -12,9 +12,14 @@
         <Button Classes="Icon NoText LoadIcon"/>
         <Button Classes="Icon NoText SaveIcon"/>
         <Button Classes="Icon NoText RefreshIcon"/>
-        <Button Classes="Icon PlayIcon" Command="{Binding Run}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" Margin="10 0 0 0">
+        
+        <Button Classes="Icon PlayIcon" Command="{Binding Run}" Margin="10 0 0 0" IsVisible="{Binding !Running}" >
           Run
         </Button>
+        <Button Classes="Icon StopIcon" Command="{Binding Run}" Margin="10 0 0 0" IsVisible="{Binding Running}" >
+          Stop
+        </Button>
+
       </StackPanel>
       <ScrollViewer>
         <ContentControl Content="{Binding Content}" />

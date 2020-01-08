@@ -8,8 +8,8 @@ namespace AudioMark.ViewModels.Measurements
 {
     public class MeasurementViewModelBase : ViewModelBase
     {
-        private IMeasurement _measurement;
-        public IMeasurement Measurement
+        private MeasurementBase _measurement;
+        public MeasurementBase Measurement
         {
             get => _measurement;
             set => this.RaiseAndSetIfChanged(ref _measurement, value);

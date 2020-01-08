@@ -35,6 +35,7 @@ namespace AudioMark.Core.Measurements
 
         public SpectralDataProcessor()
         {
+            /* TODO: Move these options to the ctor */
             buffer = new RingBuffer((int)Math.Ceiling(1.0 / AppSettings.Current.Fft.WindowOverlapFactor) + 1,
                                     (int)Math.Ceiling(CorrectedWindowSize * AppSettings.Current.Fft.WindowOverlapFactor));
 
