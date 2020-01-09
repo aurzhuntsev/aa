@@ -46,7 +46,7 @@ namespace AudioMark.Core.Measurements
                 return buffer.Length;
             });
 
-            var proc = new SpectralDataProcessor()
+            var proc = new SpectralDataProcessor(0,0)
             {
                 OnItemProcessed = (data) =>
                 {

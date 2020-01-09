@@ -49,19 +49,10 @@ namespace AudioMark.ViewModels
                     _content.Measurement.OnComplete += (m) => { Running = false; };
                     _content.Measurement.OnDataUpdate += (m, e) =>
                     {
-                        var data = e as double[];
+                        var data = e as SpectralData;
                         if (data != null)
                         {
-                            if (_graph.Data == null)
-                            {
-                                _graph.Data = new double[data.Length];
-                            };
-
-                            for (var i = 0; i < _graph.Data.Length; i++)
-                            {
-                                _graph.Data[i] = data[i];
-                            }
-
+                            _graph.Data = data;
                             _graph.Render();
                         }
                     };

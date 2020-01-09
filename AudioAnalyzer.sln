@@ -14,9 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortAudioWrapper", "PortAud
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioAnalyzer.Tests", "AudioAnalyzer.Tests\AudioAnalyzer.Tests.csproj", "{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioMark.UI", "AudioMark.UI\AudioMark.UI.csproj", "{6156C708-E710-4556-8A3D-7CDFE98D057C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioMark", "AudioMark\AudioMark.csproj", "{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AudioMark", "AudioMark\AudioMark.csproj", "{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +34,6 @@ Global
 		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5D7D122-67E6-4DF8-9936-DDDC4E19E852}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6156C708-E710-4556-8A3D-7CDFE98D057C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E14BC0C-6D92-4070-82FF-479F95E5E1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU

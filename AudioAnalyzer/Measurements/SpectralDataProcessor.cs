@@ -22,9 +22,11 @@ namespace AudioMark.Core.Measurements
         public ItemProcessedEventHandler OnItemProcessed { get; set; }
 
         private readonly int MaxTasks = Environment.ProcessorCount - 1;
-        private int CorrectedWindowSize => AppSettings.Current.Fft.WindowSize % 2 == 0 
-            ? AppSettings.Current.Fft.WindowSize + 2
-            : AppSettings.Current.Fft.WindowSize + 1;
+
+        public int WindowSize { get; private set; }
+        public  double OverlapFactor { get; private set; }
+
+        private int CorrectedWindowSize => WindowSize % 2 == 0 ? WindowSize + 2 : WindowSize + 1;
 
         private readonly RingBuffer buffer = null;
 
@@ -33,13 +35,15 @@ namespace AudioMark.Core.Measurements
 
         private List<ProcessingItem> processingItems = new List<ProcessingItem>();
 
-        public SpectralDataProcessor()
+        public SpectralDataProcessor(int windowSize, double overlapFactor)
         {
-            /* TODO: Move these options to the ctor */
-            buffer = new RingBuffer((int)Math.Ceiling(1.0 / AppSettings.Current.Fft.WindowOverlapFactor) + 1,
-                                    (int)Math.Ceiling(CorrectedWindowSize * AppSettings.Current.Fft.WindowOverlapFactor));
+            WindowSize = windowSize;
+            OverlapFactor = overlapFactor;
+            
+            buffer = new RingBuffer((int)Math.Ceiling(1.0 / OverlapFactor) + 1,
+                                    (int)Math.Ceiling(CorrectedWindowSize * OverlapFactor));
 
-            accumulator = new double[(int)Math.Ceiling(CorrectedWindowSize * AppSettings.Current.Fft.WindowOverlapFactor)];
+            accumulator = new double[(int)Math.Ceiling(CorrectedWindowSize * OverlapFactor)];
         }
 
         public void Add(double value)
@@ -116,6 +120,9 @@ namespace AudioMark.Core.Measurements
                             {
                                 currentItem.Data[i] = Math.Abs(currentItem.Data[i] / AppSettings.Current.Fft.WindowSize);
                             }
+
+                            currentItem.Data[0] = 0.0;
+                            currentItem.Data[1] = 0.0;
 
                             OnItemProcessed(currentItem.Data);
                         }

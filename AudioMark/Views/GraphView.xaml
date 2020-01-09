@@ -8,8 +8,7 @@
              Name="GraphView">
 
   <Image HorizontalAlignment="Stretch" Name="img"
-         VerticalAlignment="Stretch"
-         Source="{Binding Source}"
+         VerticalAlignment="Stretch" PointerMoved="OnPointerUpdate" PointerEnter="OnPointerUpdate" PointerLeave="OnPointerLeave"
          />
 
 </UserControl>
