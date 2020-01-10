@@ -38,5 +38,10 @@ namespace AudioMark.Views.GraphView
             _kFrequencyToViewX = (Bounds.Width / Math.Log10(MaxFrequency));
             _kDbToViewY = (Bounds.Height / Math.Log10(Math.Pow(10.0, -MinValueExponent)));
         }
+
+        internal object DbToViewY(object frequency)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

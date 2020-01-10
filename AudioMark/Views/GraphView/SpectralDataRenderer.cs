@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using Avalonia;
 using Avalonia.Controls;
 using SkiaSharp;
 using System;
@@ -14,43 +15,22 @@ namespace AudioMark.Views.GraphView
             Color = new SKColor(255, 45, 0, 255),
             IsAntialias = true
         };
-
-        public SpectralData DataSource { get; set; }
-
+        
         public SpectralDataRenderer(Image target) : base(target) { }
 
         protected override void RenderInternal(SKCanvas canvas)
         {
             canvas.Clear();
 
-            if (DataSource != null)
+            if (Bins != null)
             {
-                int currentOffset = 0;
-                int binWidth = 0;
-                int startingBin = 2;
-                int bins = 0;
                 bool isFirstPoint = true;
                 int lx = 0, ly = 0;
 
-                while (startingBin + bins < Context.MaxFrequency)
+                foreach (var bin in Bins)
                 {
-                    while (currentOffset == (binWidth = Context.FreqToViewX(startingBin + bins)))
-                    {
-                        bins++;
-                    }
-
-                    var meanFrequency = double.MinValue;
-                    for (var i = startingBin; i < startingBin + bins; i++)
-                    {
-                        var stat = DataSource.Statistics[i];
-                        if (meanFrequency < stat.Mean)
-                        {
-                            meanFrequency = stat.Mean;
-                        }
-                    }
-
-                    var x = currentOffset + (int)((binWidth - currentOffset) * 0.5);
-                    var y = Context.DbToViewY(meanFrequency);
+                    var x = bin.Left + (int)((bin.Right - bin.Left) * 0.5);
+                    var y = Context.DbToViewY(bin.Frequency);
 
                     if (isFirstPoint)
                     {
@@ -63,11 +43,6 @@ namespace AudioMark.Views.GraphView
 
                     lx = x;
                     ly = y;
-
-                    startingBin = startingBin + bins;
-                    bins = 0;
-
-                    currentOffset = binWidth;
                 }
             }
         }

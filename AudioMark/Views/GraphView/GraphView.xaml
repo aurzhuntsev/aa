@@ -8,12 +8,13 @@
              Name="GraphView">
 
   <Canvas HorizontalAlignment="Stretch" Name="img"
-         VerticalAlignment="Stretch">
+         VerticalAlignment="Stretch" PointerMoved="OnPointerMoved" PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">    
     <Image Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Stretch" Name="BackgroundImage"
            VerticalAlignment="Stretch" />
     <Image Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Stretch" Name="DataImage"
            VerticalAlignment="Stretch" />
     <Image Canvas.Left="0" Canvas.Top="0" HorizontalAlignment="Stretch" Name="CursorsImage"
            VerticalAlignment="Stretch" />
+    <Panel Name="pnl" Width="5" Canvas.Left="{Binding LeftLeft}" Height="500" Background="Red" />
   </Canvas>
 </UserControl>

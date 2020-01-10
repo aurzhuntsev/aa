@@ -28,7 +28,16 @@ namespace AudioMark.Views.GraphView
             get => _target;
         }
 
-        public ViewContext Context { get; private set; }
+        public ViewContext Context 
+        {
+            get;
+            private set; 
+        }
+
+        public IEnumerable<Bin> Bins
+        {
+            get; set;
+        }
 
         public double MaxFramesPerSecond
         {
@@ -44,6 +53,8 @@ namespace AudioMark.Views.GraphView
         private SKImageInfo _skImageInfo;
         private SKSurface _skSurface;
         private Bitmap _bitmap = null;
+
+        private volatile object _sync = new object();
 
         public ImageRendererBase(Image target)
         {
@@ -67,30 +78,33 @@ namespace AudioMark.Views.GraphView
 
                     try
                     {
-                        RenderInternal(_skSurface.Canvas);
-
-                        using (var image = _skSurface.Snapshot())
+                        lock (_sync)
                         {
-                            using (var bitmap = SKBitmap.FromImage(image))
+                            RenderInternal(_skSurface.Canvas);
+
+                            using (var image = _skSurface.Snapshot())
                             {
-                                var previousBitmap = _bitmap;
-                                _bitmap = new Bitmap(bitmap.ColorType.ToPixelFormat(),
-                                                        bitmap.GetPixels(),
-                                                        new PixelSize(bitmap.Width,
-                                                        bitmap.Height),
-                                                        SkiaPlatform.DefaultDpi,
-                                                        bitmap.RowBytes);
-
-                                Dispatcher.UIThread.Post(() =>
+                                using (var bitmap = SKBitmap.FromImage(image))
                                 {
-                                    _target.Source = _bitmap;
-                                    _target.InvalidateVisual();
+                                    var previousBitmap = _bitmap;
+                                    _bitmap = new Bitmap(bitmap.ColorType.ToPixelFormat(),
+                                                            bitmap.GetPixels(),
+                                                            new PixelSize(bitmap.Width,
+                                                            bitmap.Height),
+                                                            SkiaPlatform.DefaultDpi,
+                                                            bitmap.RowBytes);
 
-                                    if (previousBitmap != null)
+                                    Dispatcher.UIThread.Post(() =>
                                     {
-                                        previousBitmap.Dispose();
-                                    }
-                                });
+                                        _target.Source = _bitmap;
+                                        _target.InvalidateVisual();
+
+                                        if (previousBitmap != null)
+                                        {
+                                            previousBitmap.Dispose();
+                                        }
+                                    }, DispatcherPriority.MaxValue);
+                                }
                             }
                         }
                     }

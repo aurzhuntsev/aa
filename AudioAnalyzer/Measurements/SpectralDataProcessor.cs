@@ -21,7 +21,7 @@ namespace AudioMark.Core.Measurements
 
         public ItemProcessedEventHandler OnItemProcessed { get; set; }
 
-        private readonly int MaxTasks = Math.Max(1, Environment.ProcessorCount / 2);
+        private readonly int MaxTasks = Math.Max(1, Environment.ProcessorCount - 1);
 
         public int WindowSize { get; private set; }
         public  double OverlapFactor { get; private set; }
