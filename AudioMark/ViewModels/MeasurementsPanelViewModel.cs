@@ -1,6 +1,7 @@
 ﻿using AudioMark.Core.Common;
 using AudioMark.Core.Measurements;
 using AudioMark.ViewModels.Measurements;
+using AudioMark.Views;
 using Avalonia.Controls;
 using ReactiveUI;
 using System;
@@ -29,7 +30,7 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _running, value);
         }
 
-        private GraphViewModel _graph;
+        private Action<SpectralData> _dataUpdate;
 
         private MeasurementViewModelBase _content = null;
         public MeasurementViewModelBase Content
@@ -52,8 +53,7 @@ namespace AudioMark.ViewModels
                         var data = e as SpectralData;
                         if (data != null)
                         {
-                            _graph.Data = data;
-                            _graph.Render();
+                            _dataUpdate(data); 
                         }
                     };
                 }
@@ -72,10 +72,11 @@ namespace AudioMark.ViewModels
             RegisterMeasurementViewModelAssociation<ThdMeasurement, ThdMeasurementViewModel>();
         }
 
-        public MeasurementsPanelViewModel(GraphViewModel graph)
+        public MeasurementsPanelViewModel(Action<SpectralData> dataUpdate)
         {
-            Items = new ObservableCollection<string>(MeasurementsFactory.List().Select(item => item.Name));
-            _graph = graph;
+            _dataUpdate = dataUpdate;
+
+            Items = new ObservableCollection<string>(MeasurementsFactory.List().Select(item => item.Name));            
 
             RegisterMeasurementViewModelAssociations();
 

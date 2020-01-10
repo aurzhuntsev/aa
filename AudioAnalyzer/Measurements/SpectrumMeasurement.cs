@@ -52,7 +52,7 @@ namespace AudioMark.Core.Measurements
                 {
                     lock (Data)
                     {
-                        Data.Add(data);                        
+                        Data.Set(data);                        
                     }
 
                     OnDataUpdate(Data);

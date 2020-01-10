@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using AudioMark.Core.Common;
+using AudioMark.Views;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +12,30 @@ namespace AudioMark.ViewModels
     {
         public MeasurementsPanelViewModel Measurements { get; }
         public CurrentMeasurementViewModel CurrentMeasurement { get; }
-        public GraphViewModel Graph { get; }
 
-        public double[] Data { get; set; }
+        private SpectralData _data;
+        public SpectralData Data
+        {
+            get => _data;
+            set => this.RaiseAndSetIfChanged(ref _data, value);
+        }
+
+        private bool _dynamicRender;
+        public bool DynamicRender
+        {
+            get => _dynamicRender;
+            set => this.RaiseAndSetIfChanged(ref _dynamicRender, value);
+        }
 
         public MainWindowViewModel()
         {
-            Graph = new GraphViewModel();
-            Measurements = new MeasurementsPanelViewModel(Graph);
-            CurrentMeasurement = new CurrentMeasurementViewModel();            
+            Measurements = new MeasurementsPanelViewModel((data) =>
+            {
+                Data = data;
+                this.RaisePropertyChanged(nameof(Data));
+            });
+
+            CurrentMeasurement = new CurrentMeasurementViewModel();
 
             this.WhenAnyValue(_ => _.Measurements.Running)
                 .Subscribe(running =>
@@ -28,13 +45,15 @@ namespace AudioMark.ViewModels
                         if (running)
                         {
                             CurrentMeasurement.StartMonitoring(Measurements.Content.Measurement);
+                            DynamicRender = true;
                         }
                         else
                         {
                             CurrentMeasurement.StopMonitoring();
+                            DynamicRender = false;
                         }
                     }
-                });                       
+                });
         }
     }
 }

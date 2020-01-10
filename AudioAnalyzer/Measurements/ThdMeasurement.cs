@@ -80,7 +80,7 @@ namespace AudioMark.Core.Measurements
                 {
                     OnItemProcessed = (data) =>
                     {
-                        warmUpData.Add(data);
+                        warmUpData.Set(data);
                         InvokeDataUpdate(warmUpData);
                     }                    
                 };

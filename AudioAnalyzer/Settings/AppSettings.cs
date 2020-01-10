@@ -34,11 +34,11 @@ namespace AudioMark.Core.Settings
         private static string GetSettingsFilePath() => Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
 
         private static AppSettings Load()
-        {
+        {           
             using (var streamReader = new StreamReader(GetSettingsFilePath()))
             {
                 return JsonSerializer.Deserialize<AppSettings>(streamReader.ReadToEnd());
-            }
+            }            
         }
 
         public void Save()

@@ -21,7 +21,7 @@ namespace AudioMark.Core.Measurements
 
         public ItemProcessedEventHandler OnItemProcessed { get; set; }
 
-        private readonly int MaxTasks = Environment.ProcessorCount - 1;
+        private readonly int MaxTasks = Math.Max(1, Environment.ProcessorCount / 2);
 
         public int WindowSize { get; private set; }
         public  double OverlapFactor { get; private set; }
@@ -109,28 +109,29 @@ namespace AudioMark.Core.Measurements
                         });
                     }
 
-                    (new Thread(() =>
-                    {
-                        try
-                        {                            
-                            MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(currentItem.Data, currentItem.Data.Length - 2, 
-                                MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
-
-                            for (var i = 0; i < AppSettings.Current.Fft.WindowSize; i++)
+                    ThreadPool.QueueUserWorkItem((x) => { 
+                        
+                            try
                             {
-                                currentItem.Data[i] = Math.Abs(currentItem.Data[i] / AppSettings.Current.Fft.WindowSize);
+                                MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(currentItem.Data, currentItem.Data.Length - 2,
+                                    MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
+
+                                for (var i = 0; i < AppSettings.Current.Fft.WindowSize; i++)
+                                {
+                                    currentItem.Data[i] = Math.Abs(currentItem.Data[i] / AppSettings.Current.Fft.WindowSize);
+                                }
+
+                                currentItem.Data[0] = 0.0;
+                                currentItem.Data[1] = 0.0;
+
+                                OnItemProcessed(currentItem.Data);
                             }
-
-                            currentItem.Data[0] = 0.0;
-                            currentItem.Data[1] = 0.0;
-
-                            OnItemProcessed(currentItem.Data);
-                        }
-                        finally
-                        {
-                            currentItem.Semaphore.Release();
-                        }
-                    })).Start();
+                            finally
+                            {
+                                currentItem.Semaphore.Release();
+                            }
+                        
+                    });
                 }
 
                 accumulatorCounter = 0;

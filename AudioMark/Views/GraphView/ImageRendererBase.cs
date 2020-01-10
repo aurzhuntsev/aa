@@ -1,0 +1,170 @@
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Skia;
+using Avalonia.Threading;
+using SkiaSharp;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace AudioMark.Views.GraphView
+{
+    public abstract class ImageRendererBase : IDisposable
+    {
+        private bool _autoUpdate;
+        public bool AutoUpdate
+        {
+            get => _autoUpdate;
+            set => _autoUpdate = value;
+        }
+
+        private Image _target;
+        public Image Target
+        {
+            get => _target;
+        }
+
+        public ViewContext Context { get; private set; }
+
+        public double MaxFramesPerSecond
+        {
+            get; set;
+        } = 25;
+
+        private int MaxRenderThreadSleepTime => (int)(1000.0 / MaxFramesPerSecond);
+
+        private EventWaitHandle _renderWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+        private bool _running = true;
+        private bool _isDisposed = false;
+
+        private SKImageInfo _skImageInfo;
+        private SKSurface _skSurface;
+        private Bitmap _bitmap = null;
+
+        public ImageRendererBase(Image target)
+        {
+            _target = target;
+
+            /* TODO: Better to implement this task explicitly */
+            Task.Run(() =>
+            {
+                DateTime lastUpdated = DateTime.Now;
+                while (_running)
+                {
+                    if (AutoUpdate)
+                    {
+                        _renderWaitHandle.WaitOne(MaxRenderThreadSleepTime);
+                    }
+                    else
+                    {
+                        _renderWaitHandle.WaitOne();
+                    }
+                    _renderWaitHandle.Reset();
+
+                    try
+                    {
+                        RenderInternal(_skSurface.Canvas);
+
+                        using (var image = _skSurface.Snapshot())
+                        {
+                            using (var bitmap = SKBitmap.FromImage(image))
+                            {
+                                var previousBitmap = _bitmap;
+                                _bitmap = new Bitmap(bitmap.ColorType.ToPixelFormat(),
+                                                        bitmap.GetPixels(),
+                                                        new PixelSize(bitmap.Width,
+                                                        bitmap.Height),
+                                                        SkiaPlatform.DefaultDpi,
+                                                        bitmap.RowBytes);
+
+                                Dispatcher.UIThread.Post(() =>
+                                {
+                                    _target.Source = _bitmap;
+                                    _target.InvalidateVisual();
+
+                                    if (previousBitmap != null)
+                                    {
+                                        previousBitmap.Dispose();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(ex);
+                    }
+
+                    if (AutoUpdate)
+                    {
+                        var frameDuration = (int)DateTime.Now.Subtract(lastUpdated).Duration().TotalMilliseconds;
+                        lastUpdated = DateTime.Now;
+
+                        if (frameDuration < MaxRenderThreadSleepTime)
+                        {
+                            Thread.Sleep(MaxRenderThreadSleepTime - frameDuration);
+                        }
+                    }
+                }
+            });
+        }
+
+        ~ImageRendererBase()
+        {
+            _running = false;
+            if (_skSurface != null)
+            {
+                _skSurface.Dispose();
+            }
+        }
+
+        public void Update(ViewContext viewContext)
+        {
+            Context = viewContext;
+
+            if (_skSurface != null)
+            {
+                _skSurface.Dispose();
+            }
+
+            _skImageInfo = new SKImageInfo((int)Context.Bounds.Width, (int)Context.Bounds.Height);
+            _skSurface = SKSurface.Create(_skImageInfo);
+
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            _renderWaitHandle.Set();
+        }
+
+        protected abstract void RenderInternal(SKCanvas canvas);
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    _running = false;
+                    if (_skSurface != null)
+                    {
+                        _skSurface.Dispose();
+                    }
+                }
+
+                _isDisposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+    }
+}

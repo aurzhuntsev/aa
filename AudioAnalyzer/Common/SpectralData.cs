@@ -7,20 +7,25 @@ namespace AudioMark.Core.Common
 {
     public class SpectralData
     {        
-        public class StatisticsRecord
-        {
+        public class StatisticsItem
+        {            
+            public double LastValue { get; set; }
             public double Sum { get; set; } = 0;
             public double Min { get; set; } = double.MaxValue;
             public double Max { get; set; } = double.MinValue;
             public double Mean { get; set; } = double.NaN;
+            public double StandardDeviation { get; set; } = double.NaN;            
+
+            internal double PreviousValue { get; set; } = double.NaN;
+            internal double PreviousMean { get; set; } = double.NaN;
+            internal double M2 { get; set; } = 0.0;
         }
 
         public int Size { get; set; }
         public double MaxFrequency { get; set; }
-        public int Count { get; private set; }
+        public int Count { get; set; } = 0;
 
-        public List<double>[] Data { get; private set; }
-        public StatisticsRecord[] Statistics { get; private set; }
+        public StatisticsItem[] Statistics { get; private set; }
 
         private object _sync = new object();
 
@@ -28,44 +33,11 @@ namespace AudioMark.Core.Common
         {
             Size = size;
             MaxFrequency = maxFrequency;
-
-            Data = new List<double>[Size];
+            
+            Statistics = new StatisticsItem[Size];
             for (var i = 0; i < size; i++)
             {
-                Data[i] = new List<double>();
-            }
-
-            Statistics = new StatisticsRecord[Size];
-            for (var i = 0; i < size; i++)
-            {
-                Statistics[i] = new StatisticsRecord();
-            }
-        }
-
-        public void Add(double[] values)
-        {
-            lock (_sync)
-            {
-                for (var i = 0; i < Size; i++)
-                {
-                    var value = values[i];
-                    Data[i].Add(value);
-
-                    var statistics = Statistics[i];
-                    statistics.Sum += value;
-                    if (value < statistics.Min)
-                    {
-                        statistics.Min = value;
-                    }
-                    if (value > statistics.Max)
-                    {
-                        statistics.Max = value;
-                    }
-
-                    statistics.Mean = statistics.Sum / Count;
-                }
-
-                Count++;
+                Statistics[i] = new StatisticsItem();
             }
         }
 
@@ -73,52 +45,36 @@ namespace AudioMark.Core.Common
         {
             lock (_sync)
             {
+                Count++;
+
                 for (var i = 0; i < Size; i++)
                 {
                     var value = values[i];
-                    if (Data[i].Count == 0)
+                    var stat = Statistics[i];
+
+                    stat.PreviousValue = stat.LastValue;
+                    stat.LastValue = value;
+
+                    stat.Sum += value;
+                    stat.PreviousMean = stat.Mean;
+                    stat.Mean = stat.Sum / Count;
+
+                    if (value > stat.Max)
                     {
-                        Data[i].Add(value);
+                        stat.Max = value;
                     }
-                    else if (Data[i].Count == 1)
+                    if (value < stat.Min)
                     {
-                        Data[i][Data[i].Count - 1] = value;
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Cannot Set because there are multiple items in the list.");
+                        stat.Min = value;
                     }
 
-                    var statistics = Statistics[i];
-                    statistics.Sum = value;                    
-                    statistics.Min = value;
-                    statistics.Max = value;
-                    statistics.Mean = value;
+                    if (Count > 1)
+                    {
+                        stat.M2 = stat.M2 + (value - stat.PreviousMean) * (value - stat.Mean);
+                        stat.StandardDeviation = Math.Sqrt(stat.M2 / (Count - 1.0));
+                    }
                 }
-
-                Count = Math.Max(1, Count);
             }
-        }
-
-        public double GetStandartDeviation(int index)
-        {
-            if (Count < 2)
-            {
-                return double.NaN;
-            }
-
-            double sum = 0.0;
-            var data = Data[index];
-            var mean = Statistics[index].Mean;
-
-            for (var i = 0; i < Count; i++)
-            {
-                var value = data[i];
-                var diff = (value - mean);
-                sum += diff * diff;
-            }
-
-            return Math.Sqrt(sum / (Count - 1));
         }
     }
 }
