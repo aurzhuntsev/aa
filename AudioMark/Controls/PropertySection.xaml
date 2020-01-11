@@ -8,8 +8,8 @@
 
   <Grid HorizontalAlignment="Stretch"
         Background="{DynamicResource Level2BackgroundBrush}">
-    <Grid.Styles>
-      <Style Selector="Path">
+    <Grid.Styles>      
+      <Style Selector="Path.Expander">
         <Setter Property="Margin" Value="-6 -3 0 0" />
         <Setter Property="Width" Value="12" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -35,8 +35,8 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Path PointerPressed="OnSectionTitlePointerPressed" Grid.Column="0" Grid.Row="0" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded, ElementName=PropertySection}"/>
-    <Path PointerPressed="OnSectionTitlePointerPressed" Grid.Column="0" Grid.Row="0" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded, ElementName=PropertySection}"/>
+    <Path Classes="Expander" PointerPressed="OnSectionTitlePointerPressed" Grid.Column="0" Grid.Row="0" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded, ElementName=PropertySection}"/>
+    <Path Classes="Expander" PointerPressed="OnSectionTitlePointerPressed" Grid.Column="0" Grid.Row="0" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded, ElementName=PropertySection}"/>
 
     <TextBlock PointerPressed="OnSectionTitlePointerPressed" Cursor="Hand" Name="title" Grid.Column="1" Grid.Row="0" FontWeight="Bold" Height="18"
                Margin="2 0 0 0" Text="{Binding Title, ElementName=PropertySection}" />

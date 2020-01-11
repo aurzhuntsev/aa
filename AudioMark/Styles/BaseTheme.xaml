@@ -1,19 +1,31 @@
 ﻿<Style xmlns="https://github.com/avaloniaui"  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Style.Resources>
-    <Color x:Key="Level1BackgroundColor">#cccccc</Color>
-    <Color x:Key="Level2BackgroundColor">#dddddd</Color>
-    <Color x:Key="Level3BackgroundColor">#eeeeee</Color>
+    <Color x:Key="Level1BackgroundColor">#1e1e1e</Color>
+    <Color x:Key="Level2BackgroundColor">#2d2d30</Color>
+    <Color x:Key="Level3BackgroundColor">#333337</Color>
+    <Color x:Key="Level4BackgroundColor">#3f3f46</Color>
+             
+    <Color x:Key="ForegroundColor">#c5c5c5</Color>
+    <Color x:Key="HighlightForegroundColor">#ffffff</Color>
+    <Color x:Key="DimmedForegroundColor">#656565</Color>
 
-    <Color x:Key="ForegroundColor">#111111</Color>
-    <Color x:Key="HighlighForegroundColor">#0000ff</Color>
-    <Color x:Key="DimmedForegroundColor">#ff0000</Color>
+    <Color x:Key="Accent1Color">#007acc</Color>
+    <Color x:Key="RedColor">#f38b76</Color>
+    <Color x:Key="GreenColor">#8ed28a</Color>
+    <Color x:Key="BlueColor">#7ac0ff</Color>    
 
     <SolidColorBrush x:Key="Level1BackgroundBrush" Color="{DynamicResource Level1BackgroundColor}" />
     <SolidColorBrush x:Key="Level2BackgroundBrush" Color="{DynamicResource Level2BackgroundColor}" />
     <SolidColorBrush x:Key="Level3BackgroundBrush" Color="{DynamicResource Level3BackgroundColor}" />
+    <SolidColorBrush x:Key="Level4BackgroundBrush" Color="{DynamicResource Level4BackgroundColor}" />
 
     <SolidColorBrush x:Key="ForegroundBrush" Color="{DynamicResource ForegroundColor}" />
-    <SolidColorBrush x:Key="HighlightForegroundBrush" Color="{DynamicResource HighlighForegroundColor}" />
+    <SolidColorBrush x:Key="HighlightForegroundBrush" Color="{DynamicResource HighlightForegroundColor}" />
     <SolidColorBrush x:Key="DimmedForegroundBrush" Color="{DynamicResource DimmedForegroundColor}" />
+
+    <SolidColorBrush x:Key="Accent1Brush" Color="{DynamicResource Accent1Color}" />
+    <SolidColorBrush x:Key="RedBrush" Color="{DynamicResource RedColor}" />
+    <SolidColorBrush x:Key="GreenBrush" Color="{DynamicResource GreenColor}" />
+    <SolidColorBrush x:Key="BlueBrush" Color="{DynamicResource BlueColor}" />
   </Style.Resources>
 </Style>

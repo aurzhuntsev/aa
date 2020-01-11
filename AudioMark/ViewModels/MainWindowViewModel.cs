@@ -13,6 +13,13 @@ namespace AudioMark.ViewModels
         public MeasurementsPanelViewModel Measurements { get; }
         public CurrentMeasurementViewModel CurrentMeasurement { get; }
 
+        private bool _measurementsPanelVisible;
+        public bool MeasurementsPanelVisible 
+        {
+            get => _measurementsPanelVisible;
+            set => this.RaiseAndSetIfChanged(ref _measurementsPanelVisible, value);
+        }
+
         private SpectralData _data;
         public SpectralData Data
         {
@@ -55,5 +62,7 @@ namespace AudioMark.ViewModels
                     }
                 });
         }
+
+        public void ToggleMeasurements() => MeasurementsPanelVisible = !MeasurementsPanelVisible;
     }
 }

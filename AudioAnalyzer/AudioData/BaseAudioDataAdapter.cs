@@ -120,5 +120,13 @@ namespace AudioMark.Core.AudioData
             
             /* TODO: Implement actual validation (e.g. missing device) */
         }
+
+        public void FillOutputBuffer()
+        {
+            while (OutputBuffer.Write((buffer) =>
+            {
+                return OnWrite(this, buffer);
+            })) { };
+        }
     }
 }

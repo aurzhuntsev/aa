@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace AudioMark.Views.GraphView
 {
+    /* TODO: Update to use RenderTargetBitmap/DrawingContext */
     public abstract class ImageRendererBase : IDisposable
     {
         private bool _autoUpdate;
@@ -28,10 +29,10 @@ namespace AudioMark.Views.GraphView
             get => _target;
         }
 
-        public ViewContext Context 
+        public ViewContext Context
         {
             get;
-            private set; 
+            private set;
         }
 
         public IEnumerable<Bin> Bins
@@ -76,42 +77,7 @@ namespace AudioMark.Views.GraphView
                     }
                     _renderWaitHandle.Reset();
 
-                    try
-                    {
-                        lock (_sync)
-                        {
-                            RenderInternal(_skSurface.Canvas);
-
-                            using (var image = _skSurface.Snapshot())
-                            {
-                                using (var bitmap = SKBitmap.FromImage(image))
-                                {
-                                    var previousBitmap = _bitmap;
-                                    _bitmap = new Bitmap(bitmap.ColorType.ToPixelFormat(),
-                                                            bitmap.GetPixels(),
-                                                            new PixelSize(bitmap.Width,
-                                                            bitmap.Height),
-                                                            SkiaPlatform.DefaultDpi,
-                                                            bitmap.RowBytes);
-
-                                    Dispatcher.UIThread.Post(() =>
-                                    {
-                                        _target.Source = _bitmap;
-                                        _target.InvalidateVisual();
-
-                                        if (previousBitmap != null)
-                                        {
-                                            previousBitmap.Dispose();
-                                        }
-                                    }, DispatcherPriority.MaxValue);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine(ex);
-                    }
+                    Render();
 
                     if (AutoUpdate)
                     {
@@ -127,12 +93,44 @@ namespace AudioMark.Views.GraphView
             });
         }
 
-        ~ImageRendererBase()
+        public void Render()
         {
-            _running = false;
-            if (_skSurface != null)
+            lock (_sync)
             {
-                _skSurface.Dispose();
+                try
+                {
+                    RenderInternal(_skSurface.Canvas);
+
+                    using (var image = _skSurface.Snapshot())
+                    {
+                        using (var bitmap = SKBitmap.FromImage(image))
+                        {
+                            var previousBitmap = _bitmap;
+                            _bitmap = new Bitmap(bitmap.ColorType.ToPixelFormat(),
+                                                    bitmap.GetPixels(),
+                                                    new PixelSize(bitmap.Width,
+                                                    bitmap.Height),
+                                                    SkiaPlatform.DefaultDpi,
+                                                    bitmap.RowBytes);
+
+                            Dispatcher.UIThread.Post(() =>
+                            {
+                                _target.Source = _bitmap;
+                                _target.InvalidateVisual();
+
+                                if (previousBitmap != null)
+                                {
+                                    previousBitmap.Dispose();
+                                }
+                            }, DispatcherPriority.MaxValue);
+                        }
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex);
+                }
             }
         }
 

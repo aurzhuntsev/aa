@@ -30,7 +30,7 @@ namespace AudioMark.Views.GraphView
                 foreach (var bin in Bins)
                 {
                     var x = bin.Left + (int)((bin.Right - bin.Left) * 0.5);
-                    var y = Context.DbToViewY(bin.Frequency);
+                    var y = Context.DbToViewY(bin.Value);
 
                     if (isFirstPoint)
                     {

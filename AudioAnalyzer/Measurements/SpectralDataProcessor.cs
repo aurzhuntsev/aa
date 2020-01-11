@@ -44,6 +44,10 @@ namespace AudioMark.Core.Measurements
                                     (int)Math.Ceiling(CorrectedWindowSize * OverlapFactor));
 
             accumulator = new double[(int)Math.Ceiling(CorrectedWindowSize * OverlapFactor)];
+
+
+            MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(new double[CorrectedWindowSize], CorrectedWindowSize - 2,
+                MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
         }
 
         public void Add(double value)
@@ -113,7 +117,7 @@ namespace AudioMark.Core.Measurements
                         
                             try
                             {
-                                MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(currentItem.Data, currentItem.Data.Length - 2,
+                                MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(currentItem.Data, AppSettings.Current.Fft.WindowSize,
                                     MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
 
                                 for (var i = 0; i < AppSettings.Current.Fft.WindowSize; i++)

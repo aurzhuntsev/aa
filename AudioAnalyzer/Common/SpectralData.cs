@@ -22,14 +22,18 @@ namespace AudioMark.Core.Common
         }
 
         public int Size { get; set; }
-        public double MaxFrequency { get; set; }
+        public int MaxFrequency { get; set; }
+        public double FrequencyPerBin => (double)MaxFrequency / Size;
+
         public int Count { get; set; } = 0;
+
+        public Func<StatisticsItem, double> DefaultValueSelector { get; set; } = (x) => x.Mean;
 
         public StatisticsItem[] Statistics { get; private set; }
 
         private object _sync = new object();
 
-        public SpectralData(int size, double maxFrequency)
+        public SpectralData(int size, int maxFrequency)
         {
             Size = size;
             MaxFrequency = maxFrequency;

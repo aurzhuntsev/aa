@@ -2,7 +2,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
              x:Class="AudioMark.Views.Measurements.NoiseMeasurementView">
-    Noise!
+
+  <UserControl.Styles>
+    <Style Selector="StackPanel">
+      <Setter Property="Background" Value="Black" />
+    </Style>
+
+
+
+  </UserControl.Styles>
+  <StackPanel Orientation="Vertical">
+    <TextBlock Classes="Inline">Normal TextBlock</TextBlock>
+    <TextBlock Classes="Inline" IsEnabled="false">Disabled TextBlock</TextBlock>
+
+    <TextBox Classes="Inline">Enabled TextBox</TextBox>
+    <TextBox Classes="Inline" IsEnabled="False">Disabled TextBox</TextBox>
+
+    <CheckBox Classes="Inline" IsChecked="true">Enabled Checked CheckBox</CheckBox>
+    <CheckBox Classes="Inline" IsChecked="false">Enabled UnChecked CheckBox</CheckBox>
+
+    <CheckBox Classes="Inline" IsChecked="true" IsEnabled="False">Disabled Checked CheckBox"</CheckBox>
+    <CheckBox Classes="Inline" IsChecked="false" IsEnabled="False">Disabled UnChecked CheckBox</CheckBox>
+
+    <ComboBox Classes="Inline" SelectedIndex="0">
+      <ComboBoxItem>Enabled ComboBox</ComboBoxItem>
+      <ComboBoxItem>Enabled ComboBox Item 2</ComboBoxItem>
+      <ComboBoxItem>Enabled ComboBox Item 3</ComboBoxItem>
+    </ComboBox>
+
+    <ComboBox Classes="Inline" SelectedIndex="0" IsEnabled="false">
+      <ComboBoxItem>Disabled ComboBox</ComboBoxItem>
+    </ComboBox>
+
+    <Button Classes="Inline">Enabled Button</Button>
+    <Button Classes="Inline" IsEnabled="False"> Disabled Button</Button>
+
+    <Button Classes="Inline Icon PlayIcon">Icon Button</Button>    
+
+  </StackPanel>
 </UserControl>
+

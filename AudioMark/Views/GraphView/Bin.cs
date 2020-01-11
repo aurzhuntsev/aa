@@ -6,7 +6,8 @@ namespace AudioMark.Views.GraphView
 {
     public class Bin
     {
-        internal double Frequency;
+        public double Value;
+        public double SpectrumBin { get; set; }
 
         public int Left { get; set; }
         public int Right { get; set; }

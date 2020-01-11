@@ -75,7 +75,11 @@ namespace AudioMark.Core.Measurements
                 warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, WarmupSignalGenerator);
                 warmUpActivity.AddStopCondition(new TimeoutStopCondition(WarmUpDurationSeconds * 1000));
 
-                var warmUpData = new SpectralData(AppSettings.Current.Fft.WindowSize, AppSettings.Current.Device.SampleRate / 2.0);
+                var warmUpData = new SpectralData(AppSettings.Current.Fft.WindowSize, (int)(AppSettings.Current.Device.SampleRate / 2.0))
+                {
+                    DefaultValueSelector = (x) => x.Mean
+                };
+
                 var warmUpDataProcessor = new SpectralDataProcessor(AppSettings.Current.Fft.WindowSize, AppSettings.Current.Fft.WindowOverlapFactor)
                 {
                     OnItemProcessed = (data) =>

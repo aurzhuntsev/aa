@@ -59,6 +59,7 @@ namespace AudioMark.Core.Measurements
         {
             base.Start();
 
+            _adapter.FillOutputBuffer();
             _adapter.Start();
         }
 

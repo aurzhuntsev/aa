@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
 using Avalonia.Platform;
@@ -76,10 +77,16 @@ namespace AudioMark.Views.GraphView
 
         private Point? _pointer;
 
-        public double MaxFrequency
+        public int MaxFrequency
         {
-            get => Data == null ? (AppSettings.Current.Device.SampleRate / 2.0) : Data.MaxFrequency;
+            get => Data == null ? (int)(AppSettings.Current.Device.SampleRate / 2.0) : Data.MaxFrequency;
         }
+
+        public int SpectrumBins
+        {
+            get => Data == null ? (AppSettings.Current.Fft.WindowSize) : Data.Size;
+        }
+
 
         public GraphView()
         {
@@ -101,7 +108,7 @@ namespace AudioMark.Views.GraphView
         {
             if (ViewBounds != null && ViewBounds.Width > 0 && ViewBounds.Height > 0)
             {
-                _viewContext.Update(ViewBounds, MaxFrequency);
+                _viewContext.Update(ViewBounds, MaxFrequency, SpectrumBins);
                 foreach (var renderer in _renderers)
                 {
                     renderer.Update(_viewContext);
@@ -119,20 +126,22 @@ namespace AudioMark.Views.GraphView
                 int startingBin = 2;
                 int bins = 0;
          
-                while (startingBin + bins < _viewContext.MaxFrequency)
+                while (startingBin + bins < Data.Size)
                 {
-                    while (currentOffset == (binWidth = _viewContext.FreqToViewX(startingBin + bins)))
+                    while (currentOffset == (binWidth = _viewContext.FreqToViewX((startingBin + bins) * Data.FrequencyPerBin)))
                     {
                         bins++;
                     }
 
-                    var meanFrequency = double.MinValue;
+                    var meanValue = double.MinValue;
+                    var meanValueBin = 0;
                     for (var i = startingBin; i < startingBin + bins; i++)
                     {
-                        var stat = Data.Statistics[i];
-                        if (meanFrequency < stat.Mean)
+                        var value = Data.DefaultValueSelector(Data.Statistics[i]);
+                        if (meanValue < value)
                         {
-                            meanFrequency = stat.Mean;
+                            meanValue = value;
+                            meanValueBin = i;
                         }
                     }
 
@@ -142,7 +151,8 @@ namespace AudioMark.Views.GraphView
                         Right = binWidth,
                         From = startingBin,
                         To = startingBin + bins,
-                        Frequency = meanFrequency
+                        Value = meanValue,
+                        SpectrumBin = meanValueBin
                     };
 
                     result.Add(bin);
@@ -163,14 +173,12 @@ namespace AudioMark.Views.GraphView
             get => GetValue(LeftLeftProperty);
             set => SetValue(LeftLeftProperty, value);
         }
-        
+
         public void OnPointerMoved(object sender, PointerEventArgs e)
-        {            
+        {
             _pointer = e.GetPosition(this);
             _cursorRenderer.Pointer = _pointer;
-            _cursorRenderer.Refresh();
-
-            e.Handled = true;
+            _cursorRenderer.Render();            
         }
 
         public void OnPointerEnter(object sender, PointerEventArgs e)
@@ -180,7 +188,8 @@ namespace AudioMark.Views.GraphView
         public void OnPointerLeave(object sender, PointerEventArgs e)
         {            
             _pointer = null;
-            _cursorRenderer.Pointer = _pointer;            
-        }
+            _cursorRenderer.Pointer = _pointer;
+            _cursorRenderer.Render();
+        }        
     }
 }

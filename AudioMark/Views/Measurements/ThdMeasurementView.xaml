@@ -4,41 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Controls"
              xmlns:vmc="clr-namespace:AudioMark.Views.Measurements.Common;assembly=AudioMark"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
              x:Class="AudioMark.Views.Measurements.ThdMeasurementView"
              x:Name="ThdMeasurementView">
   <UserControl.Styles>
-    <Style Selector="TextBox.Inline">
-      <Setter Property="Height" Value="18" />
-      <Setter Property="Padding" Value="2 0 2 0" />
-      <Setter Property="BorderThickness" Value="0 0 0 1" />
-      <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
-      <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
-    </Style>
-    <Style Selector="TextBox.Inline:disabled">
-      <Setter Property="Background"  Value="{DynamicResource Level1BackgroundBrush} "/>
-      <Setter Property="Foreground"  Value="{DynamicResource DimmedForegroundBrush} "/>
-    </Style>
-    
-    <Style Selector="ComboBox.Inline">
-      <Setter Property="Height" Value="18" />
-      <Setter Property="Padding" Value="2 0 2 0" />
-      <Setter Property="BorderThickness" Value="0 0 0 1" />
-      <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
-      <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
-    </Style>
-    <Style Selector="ComboBox.Inline:disabled">
-      <Setter Property="Background"  Value="{DynamicResource Level1BackgroundBrush} "/>
-      <Setter Property="Foreground"  Value="{DynamicResource DimmedForegroundBrush} "/>
-    </Style>
-
-    <Style Selector="Button.Inline">
-      <Setter Property="Height" Value="18" />
-      <Setter Property="Padding" Value="2 0 2 0" />
-      <Setter Property="BorderThickness" Value="0 0 0 1" />
-      <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
-      <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
-    </Style>
+   
 
   </UserControl.Styles>
   <StackPanel Orientation="Vertical">
@@ -51,14 +21,14 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="3*" />
               <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="16" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0">Base frequency:</TextBlock>
+            <TextBlock Classes="Inline" Grid.Column="0">Base frequency:</TextBlock>
             <StackPanel Grid.Column="1"  Orientation="Horizontal">
               <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
                        Text="{Binding TestSignalFrequency}"/>
-              <TextBlock >hz</TextBlock>
+              <TextBlock Classes="Inline" >hz</TextBlock>
             </StackPanel>
           </Grid>
 
@@ -76,7 +46,7 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="3*" />
               <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="16" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -86,26 +56,26 @@
               <RowDefinition />
             </Grid.RowDefinitions>
 
-            <CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding WarmUpEnabled}">Enable warm-up</CheckBox>
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0" IsChecked="{Binding WarmUpEnabled}">Enable warm-up</CheckBox>
 
             <TextBlock Grid.Column="0" Grid.Row="1">Warm-up duration:</TextBlock>
             <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
               <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
                        IsEnabled="{Binding WarmUpEnabled}" Text="{Binding WarmUpDurationSeconds}"/>
-              <TextBlock >seconds</TextBlock>
+              <TextBlock Classes="Inline">seconds</TextBlock>
             </StackPanel>
 
-            <CheckBox Grid.Column="0" Grid.Row="2" Classes="Inline"
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="2" 
                       IsEnabled="{Binding WarmUpEnabled}"
                       IsChecked="{Binding !OverrideWarmUpSignalOptions}"
                       >Use test signal options</CheckBox>
 
-            <TextBlock Grid.Column="0" Grid.Row="3">Warm-up signal frequency:</TextBlock>
+            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="3">Warm-up signal frequency:</TextBlock>
             <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
               <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
                        IsEnabled="{Binding WarmupSignalOptionsEnabled}"
                        Text="{Binding WarmUpSignalFrequency}"/>
-              <TextBlock >hz</TextBlock>
+              <TextBlock Classes="Inline">hz</TextBlock>
             </StackPanel>
 
           </Grid>
@@ -126,13 +96,13 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="3*" />
               <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="16" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0">Harmonic detection window:</TextBlock>
+            <TextBlock Classes="Inline" Grid.Column="0">Harmonic detection window:</TextBlock>
             <StackPanel Grid.Column="1"  Orientation="Horizontal">
               <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">1</TextBox>
-              <TextBlock >bin(s)</TextBlock>
+              <TextBlock Classes="Inline">bin(s)</TextBlock>
             </StackPanel>
           </Grid>
 
@@ -140,7 +110,7 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="3*" />
               <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="1*" />
+              <ColumnDefinition Width="16" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -148,9 +118,9 @@
               <RowDefinition />
             </Grid.RowDefinitions>
 
-            <CheckBox Grid.Column="0" Grid.Row="0">Apply correction profile:</CheckBox>
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0">Apply correction profile:</CheckBox>
 
-            <TextBlock Grid.Column="0" Grid.Row="1">(no profile loaded)</TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="1" Classes="Inline">(no profile loaded)</TextBlock>
             <Button Grid.Column="1" Grid.Row="1" Classes="Inline" Width="45" HorizontalAlignment="Left">Load</Button>
           </Grid>
         </StackPanel>

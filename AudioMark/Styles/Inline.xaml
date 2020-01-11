@@ -1,0 +1,211 @@
+﻿<Styles xmlns="https://github.com/avaloniaui" >
+
+  <Style Selector="TextBlock.Inline">
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="TextBlock.Inline:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource DimmedForegroundBrush}" />
+  </Style>
+
+  <Style Selector="TextBox.Inline">
+    <Setter Property="Height" Value="18" />
+    <Setter Property="Padding" Value="2 0 2 0" />
+    <Setter Property="BorderThickness" Value="0 0 0 1" />
+    <Setter Property="CaretBrush" Value="{DynamicResource HighlightForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Level4BackgroundBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="TextBox.Inline:pointerover">
+    <Setter Property="Background"  Value="{DynamicResource Level4BackgroundBrush} "/>
+    <Setter Property="Foreground"  Value="{DynamicResource HighlightForegroundBrush} "/>
+  </Style>
+  <Style Selector="TextBox.Inline:pointerover /template/ Border#border">
+    <Setter Property="BorderThickness" Value="0 0 0 1" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Accent1Brush}"/>
+  </Style>
+  <Style Selector="TextBox.Inline:disabled">
+    <Setter Property="Background"  Value="{DynamicResource Level2BackgroundBrush} "/>
+    <Setter Property="Foreground"  Value="{DynamicResource DimmedForegroundBrush} "/>
+  </Style>
+
+  <Style Selector="CheckBox.Inline">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Grid ColumnDefinitions="Auto,*">
+            <Border Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Width="12"
+                    Height="12"
+                    VerticalAlignment="Center">
+              <Panel>
+                <Border Padding="1 2 1 1">
+                  <Path Name="checkMark"
+                        Fill="{DynamicResource Accent1Brush}"
+                        Stretch="Uniform"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Data="M 10 7.142729 3.1428571 14 0 10.857084 0.8057143 10.051355 3.1428571 12.382827 9.194286 6.337 Z"/>
+                </Border>
+                <Rectangle Name="indeterminateMark"
+                           Fill="{DynamicResource HighlightBrush}"
+                           Width="10"
+                           Height="10"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+              </Panel>
+            </Border>
+            <ContentPresenter Name="PART_ContentPresenter"
+                              TextBlock.Foreground="{TemplateBinding Foreground}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              Content="{TemplateBinding Content}"
+                              Margin="{TemplateBinding Padding}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"                              
+                              Grid.Column="1"/>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style Selector="CheckBox.Inline">
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="CheckBox.Inline:pointerover /template/ Border#border">
+    <Setter Property="BorderBrush" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+  <Style Selector="CheckBox.Inline:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+  <Style Selector="CheckBox.Inline:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource DimmedForegroundBrush}" />
+  </Style>
+
+  <Style Selector="ComboBox.Inline">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Border Name="border"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid ColumnDefinitions="*,Auto">
+              <ContentControl Content="{TemplateBinding SelectionBoxItem}"
+                              ContentTemplate="{TemplateBinding ItemTemplate}"
+                              Margin="{TemplateBinding Padding}"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center"/>
+              <ToggleButton Name="toggle"
+                            BorderThickness="0"
+                              
+                            ClickMode="Press"
+                            Focusable="False"
+                            IsChecked="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                            Grid.Column="1">
+                <Path Width="8"
+                      Height="4"
+                      Stretch="Uniform"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z"/>
+              </ToggleButton>
+              <Popup Name="PART_Popup"
+                     IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                     MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                     MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                     PlacementTarget="{TemplateBinding}"
+                     ObeyScreenEdges="True"
+                     StaysOpen="False">
+                <Border BorderBrush="{DynamicResource ThemeBorderMidBrush}"
+                        BorderThickness="1">
+                  <ScrollViewer>
+                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                    Items="{TemplateBinding Items}"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}"
+                                    ItemTemplate="{TemplateBinding ItemTemplate}"
+                                    VirtualizationMode="{TemplateBinding VirtualizationMode}"
+                              />
+                  </ScrollViewer>
+                </Border>
+              </Popup>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style Selector="ComboBox.Inline">
+    <Setter Property="Height" Value="18" />
+    <Setter Property="Padding" Value="2 0 2 0" />
+    <Setter Property="BorderThickness" Value="0 0 0 1" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Level4BackgroundBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline /template/ Path">
+    <Setter Property="Fill" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline /template/ ToggleButton">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="ComboBox.Inline:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Level4BackgroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline:pointerover /template/ Path">
+    <Setter Property="Fill" Value="{DynamicResource Accent1Brush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline:pointerover /template/ Border">
+    <Setter Property="BorderBrush" Value="{DynamicResource Accent1Brush}" />
+  </Style>
+
+  <Style Selector="ComboBox.Inline /template/ ToggleButton[IsChecked=true] Path">
+    <Setter Property="Fill" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline /template/ ToggleButton[IsChecked=true]">
+    <Setter Property="Background" Value="{DynamicResource Accent1Brush}" />
+  </Style>
+
+  <Style Selector="ComboBox.Inline:disabled">
+    <Setter Property="Background"  Value="{DynamicResource Level1BackgroundBrush} "/>
+    <Setter Property="Foreground"  Value="{DynamicResource DimmedForegroundBrush} "/>
+  </Style>
+
+  <Style Selector="ComboBox.Inline ComboBoxItem">
+    <Setter Property="Background" Value="{DynamicResource Level1BackgroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline ComboBoxItem:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline ComboBoxItem:selected">
+    <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline ComboBoxItem:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Level3BackgroundBrush}" />
+  </Style>
+  <Style Selector="ComboBox.Inline ComboBoxItem:selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource Level4BackgroundBrush}" />
+  </Style>
+
+  <Style Selector="Button.Inline">
+    <Setter Property="Height" Value="18" />
+    <Setter Property="Padding" Value="2 0 2 0" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+    <Setter Property="Background" Value="{DynamicResource Level2BackgroundBrush}" />
+  </Style>
+  <Style Selector="Button.Inline:pointerover">
+    <Setter Property="Background" Value="{DynamicResource Level4BackgroundBrush}"/>
+    <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />    
+  </Style>
+
+  <Style Selector="Button.Inline:pressed">
+    <Setter Property="Background" Value="{DynamicResource Accent1Brush}"/>
+  </Style>
+
+</Styles>

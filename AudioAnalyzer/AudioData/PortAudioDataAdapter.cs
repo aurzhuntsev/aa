@@ -199,7 +199,7 @@ namespace AudioMark.Core.AudioData
         {
             stream.Stop();
         }
-
+        
         private PaStreamCallbackResult DataCallback(PortAudioDoubleBuffer inputBuffer, PortAudioDoubleBuffer outputBuffer, PaStreamCallbackTimeInfo timeInfo, uint streamFlags)
         {
             if (!Running)
@@ -221,6 +221,7 @@ namespace AudioMark.Core.AudioData
                 }))
                 {
                     InputWaitHandle.Set();
+                    break;
                     /* TODO: Handle underflow */
                 };                
             }
@@ -239,11 +240,12 @@ namespace AudioMark.Core.AudioData
                 }))
                 {
                     OutputWaitHandle.Set();
+                    break;
                     /* TODO: Handle underflow */
                 }
             }
             OutputWaitHandle.Set();
-
+            
             return PaStreamCallbackResult.PaContinue;
         }
     }

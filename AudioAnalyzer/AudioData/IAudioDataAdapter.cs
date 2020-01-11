@@ -21,6 +21,7 @@ namespace AudioMark.Core.AudioData
         DeviceInfo GetDefaultOutputDevice();
 
         void Initialize();
+        void FillOutputBuffer();
 
         void ValidateDeviceSettings();
 
