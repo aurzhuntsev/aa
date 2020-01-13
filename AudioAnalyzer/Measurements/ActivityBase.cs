@@ -33,9 +33,17 @@ namespace AudioMark.Core.Measurements
             get => DateTime.Now.Subtract(_startedAt).Duration();
         }
 
-        public TimeSpan Remaining
+        public TimeSpan? Remaining
         {
-            get => StopConditions.Min(stopCondition => stopCondition.Remaining);
+
+            get
+            {
+                if (StopConditions.Any(stopCondition => !stopCondition.Remaining.HasValue))
+                {
+                    return null;
+                }
+                return StopConditions.Min(stopCondition => stopCondition.Remaining.Value);
+            }
         }
 
         public string Description { get; }

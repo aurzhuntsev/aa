@@ -1,6 +1,7 @@
 ﻿using AudioMark.Core.Common;
 using AudioMark.Core.Settings;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,30 +25,35 @@ namespace AudioMark.Core.Measurements
         private readonly int MaxTasks = Math.Max(1, Environment.ProcessorCount - 1);
 
         public int WindowSize { get; private set; }
-        public  double OverlapFactor { get; private set; }
+        public double OverlapFactor { get; private set; }
 
         private int CorrectedWindowSize => WindowSize % 2 == 0 ? WindowSize + 2 : WindowSize + 1;
 
-        private readonly RingBuffer buffer = null;
+        private RingBuffer buffer = null;
 
         private double[] accumulator = null;
         private int accumulatorCounter = 0;
 
-        private List<ProcessingItem> processingItems = new List<ProcessingItem>();
+        private List<ProcessingItem> processingItems;
 
         public SpectralDataProcessor(int windowSize, double overlapFactor)
         {
             WindowSize = windowSize;
             OverlapFactor = overlapFactor;
-            
+
+            Reset();
+        }
+
+        /* TODO: Implement properly */
+        public void Reset()
+        {
             buffer = new RingBuffer((int)Math.Ceiling(1.0 / OverlapFactor) + 1,
-                                    (int)Math.Ceiling(CorrectedWindowSize * OverlapFactor));
+                         (int)Math.Ceiling(CorrectedWindowSize * OverlapFactor));
 
             accumulator = new double[(int)Math.Ceiling(CorrectedWindowSize * OverlapFactor)];
+            accumulatorCounter = 0;
 
-
-            MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(new double[CorrectedWindowSize], CorrectedWindowSize - 2,
-                MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
+            processingItems = new List<ProcessingItem>();
         }
 
         public void Add(double value)
@@ -98,7 +104,7 @@ namespace AudioMark.Core.Measurements
 
                     var j = 0;
                     for (var i = 0; i < buffer.Length - 1; i++)
-                    {                        
+                    {
                         buffer.Peek(i, (data, length) =>
                         {
                             for (var k = 0; k < length; k++)
@@ -113,31 +119,30 @@ namespace AudioMark.Core.Measurements
                         });
                     }
 
-                    ThreadPool.QueueUserWorkItem((x) => { 
-                        
-                            try
+                    ThreadPool.QueueUserWorkItem((item) =>
+                    {
+                        try
+                        {
+                            var processingItem = (ProcessingItem)item;
+                            MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(currentItem.Data, AppSettings.Current.Fft.WindowSize,
+                               MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
+
+                            for (var i = 0; i < AppSettings.Current.Fft.WindowSize; i++)
                             {
-                                MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(currentItem.Data, AppSettings.Current.Fft.WindowSize,
-                                    MathNet.Numerics.IntegralTransforms.FourierOptions.NoScaling);
-
-                                for (var i = 0; i < AppSettings.Current.Fft.WindowSize; i++)
-                                {
-                                    currentItem.Data[i] = Math.Abs(currentItem.Data[i] / AppSettings.Current.Fft.WindowSize);
-                                }
-
-                                currentItem.Data[0] = 0.0;
-                                currentItem.Data[1] = 0.0;
-
-                                OnItemProcessed(currentItem.Data);
+                                processingItem.Data[i] = Math.Abs(processingItem.Data[i] / AppSettings.Current.Fft.WindowSize);
                             }
-                            finally
-                            {
-                                currentItem.Semaphore.Release();
-                            }
-                        
-                    });
+
+                            processingItem.Data[0] = 0.0;
+                            processingItem.Data[1] = 0.0;
+
+                            OnItemProcessed?.Invoke(processingItem.Data);
+                        }
+                        finally
+                        {
+                            currentItem.Semaphore.Release();
+                        }
+                    }, currentItem);
                 }
-
                 accumulatorCounter = 0;
             }
         }

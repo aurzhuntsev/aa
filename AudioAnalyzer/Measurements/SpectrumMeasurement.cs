@@ -40,11 +40,7 @@ namespace AudioMark.Core.Measurements
 
             var adapter = AudioDataAdapterProvider.Get();
 
-            adapter.OnWrite = new IAudioDataAdapter.DataWriteEventHandler((sender, buffer) =>
-            {
-                buffer[AppSettings.Current.Device.PrimaryOutputChannel - 1] = 0;// GetGenerator().Next();
-                return buffer.Length;
-            });
+       
 
             var proc = new SpectralDataProcessor(0,0)
             {
@@ -59,12 +55,6 @@ namespace AudioMark.Core.Measurements
                 }
             };
             
-            adapter.OnRead = new IAudioDataAdapter.DataReadEventHandler((sender, buffer, length) =>
-            {
-                proc.Add(buffer[AppSettings.Current.Device.PrimaryInputChannel - 1]);
-            });
-
-            adapter.Start();
         }
 
         public void Stop()

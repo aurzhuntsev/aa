@@ -8,7 +8,7 @@ namespace AudioMark.Core.Measurements
 
     public interface IStopCondition
     {
-        TimeSpan Remaining { get; }
+        TimeSpan? Remaining { get; }
         event StopConditionMetEventHandler OnMet;
 
         void Set();

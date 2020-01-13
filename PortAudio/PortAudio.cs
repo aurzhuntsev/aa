@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace PortAudioWrapper
 {
-   
+
     public class PortAudio : SafeHandle
     {
         private static Lazy<PortAudio> _instance = new Lazy<PortAudio>(() => new PortAudio());
@@ -13,7 +14,9 @@ namespace PortAudioWrapper
         public static PortAudio Instance => _instance.Value;
 
         public override bool IsInvalid => false;
-         
+
+        private Thread _thread = null;
+
         private PortAudio() : base(IntPtr.Zero, true)
         {
             ThrowIfError(Imports.Pa_Initialize());

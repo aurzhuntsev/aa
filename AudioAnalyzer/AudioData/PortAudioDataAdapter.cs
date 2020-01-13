@@ -98,23 +98,24 @@ namespace AudioMark.Core.AudioData
             base.Initialize();
             PortAudio.Initialize();
 
+            /* TODO: Restore device settings */
             var inputStreamParameters = new PaStreamParameters()
             {
                 ChannelCount = AppSettings.Current.Device.InputDevice.ChannelsCount,
-                Device = AppSettings.Current.Device.InputDevice.Index,
+                Device = GetDefaultInputDevice().Index,//AppSettings.Current.Device.InputDevice.Index,
                 SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.InputDevice.SampleFormat),
-                SuggestedLatency = 0.128
+                SuggestedLatency = 0.256
             };
 
             var outputStreamParameters = new PaStreamParameters()
             {
                 ChannelCount = AppSettings.Current.Device.OutputDevice.ChannelsCount,
-                Device = AppSettings.Current.Device.OutputDevice.Index,
+                Device = GetDefaultOutputDevice().Index, //AppSettings.Current.Device.OutputDevice.Index,
                 SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.OutputDevice.SampleFormat),
-                SuggestedLatency = 0.128
+                SuggestedLatency = 0.256
             };
 
-            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000004 | 0x00000002,
+            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002 | 0x00000004,
                 DataCallback);
         }
 
@@ -202,11 +203,19 @@ namespace AudioMark.Core.AudioData
         
         private PaStreamCallbackResult DataCallback(PortAudioDoubleBuffer inputBuffer, PortAudioDoubleBuffer outputBuffer, PaStreamCallbackTimeInfo timeInfo, uint streamFlags)
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
             if (!Running)
             {
                 return PaStreamCallbackResult.PaComplete;
             }
 
+            if (streamFlags != 0)
+            {
+                DiscardInput = true;
+                DiscardOutput = true;
+            }
+            
             int read = 0;
             while (read < inputBuffer.Length)
             {
@@ -220,9 +229,9 @@ namespace AudioMark.Core.AudioData
                     return buffer.Length;
                 }))
                 {
+                    DiscardInput = true;
                     InputWaitHandle.Set();
-                    break;
-                    /* TODO: Handle underflow */
+                    break;                    
                 };                
             }
             InputWaitHandle.Set();
@@ -239,9 +248,9 @@ namespace AudioMark.Core.AudioData
                     }
                 }))
                 {
+                    DiscardOutput = true;
                     OutputWaitHandle.Set();
-                    break;
-                    /* TODO: Handle underflow */
+                    break;                   
                 }
             }
             OutputWaitHandle.Set();

@@ -9,7 +9,7 @@ namespace AudioMark.Core.Measurements
         private int _timeout = 0;
 
         private DateTime _startedAt;
-        public TimeSpan Remaining
+        public TimeSpan? Remaining
         {
             get
             {
@@ -31,7 +31,7 @@ namespace AudioMark.Core.Measurements
 
         public void Check()
         {
-            if (Remaining.TotalMilliseconds == 0)
+            if (Remaining.HasValue && Remaining.Value.TotalMilliseconds == 0)
             {
                 OnMet?.Invoke(this);
             }

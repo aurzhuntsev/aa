@@ -178,11 +178,12 @@ namespace AudioMark.Views.GraphView
         {
             _pointer = e.GetPosition(this);
             _cursorRenderer.Pointer = _pointer;
-            _cursorRenderer.Render();            
+            _cursorRenderer.Render();
         }
 
         public void OnPointerEnter(object sender, PointerEventArgs e)
-        {            
+        {
+            _pointer = e.GetPosition(this);
         }
 
         public void OnPointerLeave(object sender, PointerEventArgs e)

@@ -6,11 +6,13 @@ namespace AudioMark.Core.Settings
 {
     public class StopConditions
     {
-        public bool EnableToleranceMatching { get; set; }
+        public int CheckIntervalMilliseconds { get; set; }
+
+        public bool ToleranceMatchingEnabled { get; set; }
         public double Confidence { get; set; }
         public double Tolerance { get; set; }
 
-        public bool EnableTimeout { get; set; }
-        public double Timeout { get; set; }
+        public bool TimeoutEnabled { get; set; }
+        public int Timeout { get; set; }
     }
 }

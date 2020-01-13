@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Controls"
              xmlns:vmc="clr-namespace:AudioMark.Views.Measurements.Common;assembly=AudioMark"
-             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
              x:Class="AudioMark.Views.Measurements.ThdMeasurementView"
              x:Name="ThdMeasurementView">
   <UserControl.Styles>
-   
+
 
   </UserControl.Styles>
   <StackPanel Orientation="Vertical">
@@ -65,7 +65,7 @@
               <TextBlock Classes="Inline">seconds</TextBlock>
             </StackPanel>
 
-            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="2" 
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="2"
                       IsEnabled="{Binding WarmUpEnabled}"
                       IsChecked="{Binding !OverrideWarmUpSignalOptions}"
                       >Use test signal options</CheckBox>
@@ -127,8 +127,51 @@
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 
-    <cc:PropertySection Title="Stop conditions">
+    <cc:PropertySection Title="Stop conditions" Expanded="true">
       <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <CheckBox Classes="Inline" IsChecked="{Binding OverrideStopConditionsSettings}">Override global settings</CheckBox>
+
+          <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+
+            <CheckBox Grid.Row="0" Grid.Column="0" Classes="Inline" IsChecked="{Binding StopOnTimeoutEnabled}">Stop on time out:</CheckBox>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" Width="54" Text="{Binding StopOnTimeout}"  Margin="0 0 2 0"/>
+              <TextBlock Classes="Inline">seconds</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <CheckBox Grid.Row="0" Grid.Column="0" Classes="Inline" IsChecked="{Binding StopOnToleranceEnabled}">Stop when a tolerance of:</CheckBox>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" Width="54" Text="{Binding StopOnTolerance}" Margin="0 0 2 0"/>
+              <TextBlock Classes="Inline">%</TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Classes="Inline">...is achieved with a confedence of:</TextBlock>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" Width="54" Text="{Binding StopOnConfidence}"  Margin="0 0 2 0"/>
+              <TextBlock Classes="Inline">%</TextBlock>
+            </StackPanel>
+
+          </Grid>
+
+        </StackPanel>
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 

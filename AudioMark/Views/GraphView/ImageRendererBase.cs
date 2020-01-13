@@ -112,7 +112,7 @@ namespace AudioMark.Views.GraphView
                                                     bitmap.Height),
                                                     SkiaPlatform.DefaultDpi,
                                                     bitmap.RowBytes);
-
+                            
                             Dispatcher.UIThread.Post(() =>
                             {
                                 _target.Source = _bitmap;
@@ -122,7 +122,7 @@ namespace AudioMark.Views.GraphView
                                 {
                                     previousBitmap.Dispose();
                                 }
-                            }, DispatcherPriority.MaxValue);
+                            }, DispatcherPriority.Render);
                         }
                     }
                 }
@@ -146,11 +146,6 @@ namespace AudioMark.Views.GraphView
             _skImageInfo = new SKImageInfo((int)Context.Bounds.Width, (int)Context.Bounds.Height);
             _skSurface = SKSurface.Create(_skImageInfo);
 
-            Refresh();
-        }
-
-        public void Refresh()
-        {
             _renderWaitHandle.Set();
         }
 

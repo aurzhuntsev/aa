@@ -17,13 +17,15 @@ namespace AudioMark.Core.AudioData
         protected double[] xb = null;
 
         protected RingBuffer InputBuffer { get; set; }
-        protected EventWaitHandle InputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);
+        protected EventWaitHandle InputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);        
+        protected bool DiscardInput { get; set; }
 
         protected RingBuffer OutputBuffer { get; set; }
-        protected EventWaitHandle OutputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);
+        protected EventWaitHandle OutputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);                
+        protected bool DiscardOutput { get; set; }
 
-        private Task inputProcessingTask = null;                
-        private Task outputProcessingTask = null;        
+        private Thread inputProcessingThread = null;                
+        private Thread outputProcessingThread = null;        
 
         public IAudioDataAdapter.DataReadEventHandler OnRead { get; set; }
         public IAudioDataAdapter.DataWriteEventHandler OnWrite { get; set; }
@@ -55,8 +57,9 @@ namespace AudioMark.Core.AudioData
 
             if (OnRead != null)
             {
-                inputProcessingTask = new Task(() =>
+                inputProcessingThread = new Thread(() =>
                 {
+                    Thread.CurrentThread.Priority = ThreadPriority.Highest;
                     while (running)
                     {
                         InputWaitHandle.WaitOne();
@@ -64,18 +67,21 @@ namespace AudioMark.Core.AudioData
 
                         while (InputBuffer.Read((buffer, length) =>
                         {
-                            OnRead(this, buffer, length);
-                        })) { };                       
+                            OnRead(this, buffer, length, DiscardInput);
+                        })) { };
+
+                        DiscardInput = false;
                     }
                 });
 
-                inputProcessingTask.Start();
+                inputProcessingThread.Start();
             }
 
             if (OnWrite != null)
             {                
-                outputProcessingTask = new Task(() =>
+                outputProcessingThread = new Thread(() =>
                 {
+                    Thread.CurrentThread.Priority = ThreadPriority.Highest;
                     while (running)
                     {
                         OutputWaitHandle.WaitOne();
@@ -83,12 +89,14 @@ namespace AudioMark.Core.AudioData
 
                         while (OutputBuffer.Write((buffer) =>
                         {
-                            return OnWrite(this, buffer);
+                            return OnWrite(this, buffer, DiscardOutput);
                         })) { };
+
+                        DiscardOutput = false;
                     }
                 });
 
-                outputProcessingTask.Start();
+                outputProcessingThread.Start();
             }
 
             StartDevices();
@@ -125,7 +133,7 @@ namespace AudioMark.Core.AudioData
         {
             while (OutputBuffer.Write((buffer) =>
             {
-                return OnWrite(this, buffer);
+                return OnWrite(this, buffer, false);
             })) { };
         }
     }

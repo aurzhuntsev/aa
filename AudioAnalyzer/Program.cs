@@ -100,8 +100,6 @@ namespace AudioMark.Core
                 }))
             {
                 stream.Start();
-
-
             }
 
 

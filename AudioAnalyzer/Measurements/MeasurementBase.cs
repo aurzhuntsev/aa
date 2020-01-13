@@ -61,6 +61,7 @@ namespace AudioMark.Core.Measurements
             }
         }
 
+        /* TODO: Refactor to non-object */
         protected void InvokeDataUpdate(object data)
         {
             OnDataUpdate.Invoke(this, data);

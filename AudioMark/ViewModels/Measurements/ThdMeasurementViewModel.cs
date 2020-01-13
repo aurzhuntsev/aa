@@ -15,6 +15,7 @@ namespace AudioMark.ViewModels.Measurements
             get => (ThdMeasurement)Measurement;
         }
 
+        #region Test signal options
         public double TestSignalFrequency
         {
             get => Model.TestSignalOptions.Frequency;
@@ -25,7 +26,9 @@ namespace AudioMark.ViewModels.Measurements
         {
             get => new InputOutputLevelViewModel(Model.TestSignalOptions.InputOutputOptions);
         }
+        #endregion
 
+        #region Warmup signal options
         public bool WarmUpEnabled
         {
             get => Model.WarmUpEnabled;
@@ -67,6 +70,55 @@ namespace AudioMark.ViewModels.Measurements
         {
             get => new InputOutputLevelViewModel(Model.WarmUpSignalOptions.InputOutputOptions);
         }
+        #endregion
 
+        #region Stop conditions options
+
+        public bool OverrideStopConditionsSettings
+        {
+            get => Model.StopConditions.Overriden;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Overriden, value, nameof(OverrideStopConditionsSettings));
+        }
+
+        public bool StopOnTimeoutEnabled
+        {
+            get => Model.StopConditions.Value.TimeoutEnabled;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Value.TimeoutEnabled, value, nameof(StopOnTimeoutEnabled));
+
+        }
+
+        public int StopOnTimeout
+        {
+            get => Model.StopConditions.Value.Timeout;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Value.Timeout, value, nameof(StopOnTimeout));
+        }
+
+        public bool StopOnToleranceEnabled
+        {
+            get => Model.StopConditions.Value.ToleranceMatchingEnabled;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Value.ToleranceMatchingEnabled, value, nameof(StopOnToleranceEnabled));
+        }
+
+        public double StopOnTolerance
+        {
+            get => Model.StopConditions.Value.Tolerance * 100.0;
+            set
+            {
+                Model.StopConditions.Value.Tolerance = value / 100.0;
+                this.RaisePropertyChanged(nameof(StopOnTolerance));
+            }
+        }
+
+        public double StopOnConfidence
+        {
+            get => Model.StopConditions.Value.Confidence * 100.0;
+            set
+            {
+                Model.StopConditions.Value.Confidence = value / 100.0;
+                this.RaisePropertyChanged(nameof(StopOnConfidence));
+            }
+        }
+
+        #endregion
     }
 }

@@ -67,19 +67,20 @@ namespace AudioMark.ViewModels
         private DispatcherTimer _timer;
         public void StartMonitoring(MeasurementBase measurement)
         {
+
             if (measurement != null)
             {
                 _measurement = measurement;
-                
+
                 if (_timer != null)
                 {
                     _timer.Stop();
                 }
 
-                _timer = new DispatcherTimer(MonitorInterval, DispatcherPriority.Normal, (s, e) =>
+                _timer = new DispatcherTimer(MonitorInterval, DispatcherPriority.MinValue, (s, e) =>
                 {
                     UpdateViewModel();
-                });                
+                });
 
                 UpdateViewModel();
                 _timer.Start();
@@ -106,23 +107,29 @@ namespace AudioMark.ViewModels
 
         private void UpdateViewModel()
         {
-            try
+
+            Title = _measurement.Title;
+
+            var currentStepNumber = _measurement.Activities.IndexOf(_measurement.CurrentActivity) + 1;
+            var totalSteps = _measurement.Activities.Count;
+            if (_measurement.CurrentActivity != null)
             {
-                Title = _measurement.Title;
-
-                var currentStepNumber = _measurement.Activities.IndexOf(_measurement.CurrentActivity) + 1;
-                var totalSteps = _measurement.Activities.Count;
-
                 StepTitle = _measurement.CurrentActivity.Description;
                 StepNumber = $"[{currentStepNumber}/{totalSteps}]";
 
-                Remaining = _measurement.CurrentActivity.Remaining.ToString(@"hh\:mm\:ss");
+                var remaining = _measurement.CurrentActivity.Remaining;
+                if (remaining.HasValue)
+                {
+                    Remaining = _measurement.CurrentActivity.Remaining.Value.ToString(@"hh\:mm\:ss");
+                }
+                else
+                {
+                    Remaining = "???";
+                }
+
                 Elapsed = _measurement.CurrentActivity.Elapsed.ToString(@"hh\:mm\:ss");
             }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e);
-            }
+
         }
     }
 }
