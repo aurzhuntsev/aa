@@ -1,5 +1,4 @@
 ﻿using AudioMark.Core.Common;
-using AudioMark.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -42,7 +41,7 @@ namespace AudioMark.ViewModels
                 this.RaisePropertyChanged(nameof(Data));
             });
 
-            CurrentMeasurement = new CurrentMeasurementViewModel();
+            CurrentMeasurement = new CurrentMeasurementViewModel();            
 
             this.WhenAnyValue(_ => _.Measurements.Running)
                 .Subscribe(running =>

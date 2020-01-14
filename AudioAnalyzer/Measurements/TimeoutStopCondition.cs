@@ -22,18 +22,19 @@ namespace AudioMark.Core.Measurements
                 return new TimeSpan(0, 0, 0, 0, remaining);
             }
         }
-        public event StopConditionMetEventHandler OnMet;
+        public event EventHandler OnMet;
+        public event EventHandler<Exception> OnError;
 
         public TimeoutStopCondition(int timeoutMilliseconds)
         {
             _timeout = timeoutMilliseconds;
         }
-
+                
         public void Check()
         {
             if (Remaining.HasValue && Remaining.Value.TotalMilliseconds == 0)
             {
-                OnMet?.Invoke(this);
+                OnMet?.Invoke(this, null);
             }
         }
 

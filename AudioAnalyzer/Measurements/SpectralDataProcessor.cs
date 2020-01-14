@@ -10,36 +10,40 @@ using System.Threading.Tasks;
 
 namespace AudioMark.Core.Measurements
 {
-    public class SpectralDataProcessor
+    /* TODO: Implement error handling */
+    public class SpectralDataProcessor : IDataSink<SpectralData>
     {
-        public delegate void ItemProcessedEventHandler(double[] item);
-
         internal class ProcessingItem
         {
             public double[] Data { get; set; }
             public SemaphoreSlim Semaphore { get; } = new SemaphoreSlim(1, 1);
         }
 
-        public ItemProcessedEventHandler OnItemProcessed { get; set; }
+        public bool Silent { get; set; }
+        public SpectralData Data { get; set; }
+
+        public event EventHandler<SpectralData> OnItemProcessed;
 
         private readonly int MaxTasks = Math.Max(1, Environment.ProcessorCount - 1);
 
         public int WindowSize { get; private set; }
         public double OverlapFactor { get; private set; }
+        public int MaxFrequency { get; set; }
 
         private int CorrectedWindowSize => WindowSize % 2 == 0 ? WindowSize + 2 : WindowSize + 1;
+        
+        private RingBuffer _buffer = null;
 
-        private RingBuffer buffer = null;
+        private double[] _accumulator = null;
+        private int _accumulatorCounter = 0;
 
-        private double[] accumulator = null;
-        private int accumulatorCounter = 0;
+        private List<ProcessingItem> _processingItems;
 
-        private List<ProcessingItem> processingItems;
-
-        public SpectralDataProcessor(int windowSize, double overlapFactor)
+        public SpectralDataProcessor(int windowSize, double overlapFactor, int maxFrequency)
         {
             WindowSize = windowSize;
             OverlapFactor = overlapFactor;
+            MaxFrequency = maxFrequency;
 
             Reset();
         }
@@ -47,38 +51,40 @@ namespace AudioMark.Core.Measurements
         /* TODO: Implement properly */
         public void Reset()
         {
-            buffer = new RingBuffer((int)Math.Ceiling(1.0 / OverlapFactor) + 1,
+            _buffer = new RingBuffer((int)Math.Ceiling(1.0 / OverlapFactor) + 1,
                          (int)Math.Ceiling(CorrectedWindowSize * OverlapFactor));
 
-            accumulator = new double[(int)Math.Ceiling(CorrectedWindowSize * OverlapFactor)];
-            accumulatorCounter = 0;
+            _accumulator = new double[(int)Math.Ceiling(CorrectedWindowSize * OverlapFactor)];
+            _accumulatorCounter = 0;
 
-            processingItems = new List<ProcessingItem>();
+            _processingItems = new List<ProcessingItem>();
+
+            Data = new SpectralData(WindowSize, MaxFrequency);
         }
 
         public void Add(double value)
         {
-            accumulator[accumulatorCounter] = value;
-            accumulatorCounter++;
+            _accumulator[_accumulatorCounter] = value;
+            _accumulatorCounter++;
 
-            if (accumulatorCounter == accumulator.Length)
+            if (_accumulatorCounter == _accumulator.Length)
             {
-                buffer.Write((data) =>
+                _buffer.Write((data) =>
                 {
-                    accumulator.CopyTo(data, 0);
-                    return accumulator.Length;
+                    _accumulator.CopyTo(data, 0);
+                    return _accumulator.Length;
                 });
 
-                if (buffer.Count == buffer.Length)
+                if (_buffer.Count == _buffer.Length)
                 {
-                    buffer.Read((data, length) => { });
+                    _buffer.Read((data, length) => { });
                 }
 
-                if (buffer.Count == buffer.Length - 1)
+                if (_buffer.Count == _buffer.Length - 1)
                 {
                     ProcessingItem currentItem = null;
 
-                    foreach (var item in processingItems)
+                    foreach (var item in _processingItems)
                     {
                         if (item.Semaphore.CurrentCount > 0)
                         {
@@ -89,23 +95,23 @@ namespace AudioMark.Core.Measurements
 
                     if (currentItem == null)
                     {
-                        if (processingItems.Count < MaxTasks)
+                        if (_processingItems.Count < MaxTasks)
                         {
                             currentItem = new ProcessingItem() { Data = new double[CorrectedWindowSize] };
-                            processingItems.Add(currentItem);
+                            _processingItems.Add(currentItem);
                         }
                         else
                         {
-                            currentItem = processingItems[0];
+                            currentItem = _processingItems[0];
                         }
                     }
 
                     currentItem.Semaphore.Wait();
 
                     var j = 0;
-                    for (var i = 0; i < buffer.Length - 1; i++)
+                    for (var i = 0; i < _buffer.Length - 1; i++)
                     {
-                        buffer.Peek(i, (data, length) =>
+                        _buffer.Peek(i, (data, length) =>
                         {
                             for (var k = 0; k < length; k++)
                             {
@@ -135,7 +141,12 @@ namespace AudioMark.Core.Measurements
                             processingItem.Data[0] = 0.0;
                             processingItem.Data[1] = 0.0;
 
-                            OnItemProcessed?.Invoke(processingItem.Data);
+                            Data.Set(processingItem.Data);
+
+                            if (!Silent)
+                            {
+                                OnItemProcessed?.Invoke(this, Data);
+                            }
                         }
                         finally
                         {
@@ -143,7 +154,7 @@ namespace AudioMark.Core.Measurements
                         }
                     }, currentItem);
                 }
-                accumulatorCounter = 0;
+                _accumulatorCounter = 0;
             }
         }
     }

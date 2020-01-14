@@ -104,8 +104,11 @@ namespace AudioMark.Core.AudioData
 
         public void Stop()
         {
-            running = false;
+            running = false;            
             StopDevices();
+
+            InputWaitHandle.Set();
+            OutputWaitHandle.Set();
         }
 
         protected abstract void StartDevices();
@@ -123,8 +126,7 @@ namespace AudioMark.Core.AudioData
             {
                 AppSettings.Current.Device.OutputDevice = GetDefaultOutputDevice();
                 AppSettings.Current.Save();
-            }
-
+            }                
             
             /* TODO: Implement actual validation (e.g. missing device) */
         }

@@ -191,6 +191,26 @@ namespace AudioMark.Views.GraphView
             _pointer = null;
             _cursorRenderer.Pointer = _pointer;
             _cursorRenderer.Render();
-        }        
+        }
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+
+            foreach (var renderer in _renderers)
+            {
+                renderer.Start();
+            }
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            foreach (var renderer in _renderers)
+            {
+                renderer.Stop();
+            }
+
+            base.OnDetachedFromVisualTree(e);
+        }
     }
 }

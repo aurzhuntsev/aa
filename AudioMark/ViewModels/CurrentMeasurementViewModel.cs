@@ -63,9 +63,9 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _progressWidth, value);
         }
 
-        private MeasurementBase _measurement;
+        private IMeasurement _measurement;
         private DispatcherTimer _timer;
-        public void StartMonitoring(MeasurementBase measurement)
+        public void StartMonitoring(IMeasurement measurement)
         {
 
             if (measurement != null)
@@ -110,26 +110,23 @@ namespace AudioMark.ViewModels
 
             Title = _measurement.Title;
 
-            var currentStepNumber = _measurement.Activities.IndexOf(_measurement.CurrentActivity) + 1;
-            var totalSteps = _measurement.Activities.Count;
-            if (_measurement.CurrentActivity != null)
+            var currentStepNumber = _measurement.CurrentActivityIndex;
+            var totalSteps = _measurement.ActivitiesCount;
+            StepTitle = _measurement.CurrentActivityDescription;
+
+            StepNumber = $"[{currentStepNumber}/{totalSteps}]";
+
+            var remaining = _measurement.Remaining;
+            if (remaining.HasValue)
             {
-                StepTitle = _measurement.CurrentActivity.Description;
-                StepNumber = $"[{currentStepNumber}/{totalSteps}]";
-
-                var remaining = _measurement.CurrentActivity.Remaining;
-                if (remaining.HasValue)
-                {
-                    Remaining = _measurement.CurrentActivity.Remaining.Value.ToString(@"hh\:mm\:ss");
-                }
-                else
-                {
-                    Remaining = "???";
-                }
-
-                Elapsed = _measurement.CurrentActivity.Elapsed.ToString(@"hh\:mm\:ss");
+                Remaining = _measurement.Remaining.Value.ToString(@"hh\:mm\:ss");
+            }
+            else
+            {
+                Remaining = "???";
             }
 
+            Elapsed = _measurement.Elapsed.ToString(@"hh\:mm\:ss");
         }
     }
 }

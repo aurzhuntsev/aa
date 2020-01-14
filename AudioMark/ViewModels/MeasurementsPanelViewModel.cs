@@ -2,7 +2,9 @@
 using AudioMark.Core.Measurements;
 using AudioMark.ViewModels.Measurements;
 using AudioMark.Views;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -47,13 +49,13 @@ namespace AudioMark.ViewModels
                     _content = (MeasurementViewModelBase)Activator.CreateInstance(type);
                     _content.Measurement = MeasurementsFactory.Create(Items[SelectedIndex]);
 
-                    _content.Measurement.OnComplete += (m) => { Running = false; };
+                    _content.Measurement.OnComplete += (m, e) => { Running = false; };
                     _content.Measurement.OnDataUpdate += (m, e) =>
                     {
                         var data = e as SpectralData;
                         if (data != null)
                         {
-                            _dataUpdate(data); 
+                            _dataUpdate(data);
                         }
                     };
                 }
@@ -63,12 +65,11 @@ namespace AudioMark.ViewModels
         }
 
         private List<Tuple<Type, Type>> _meausrementViewModelAssociations = new List<Tuple<Type, Type>>();
-        private void RegisterMeasurementViewModelAssociation<M, VM>() where M : MeasurementBase where VM : MeasurementViewModelBase =>
+        private void RegisterMeasurementViewModelAssociation<M, VM>() where M : IMeasurement where VM : MeasurementViewModelBase =>
             _meausrementViewModelAssociations.Add(new Tuple<Type, Type>(typeof(M), typeof(VM)));
 
         private void RegisterMeasurementViewModelAssociations()
         {
-            RegisterMeasurementViewModelAssociation<NoiseMeasurement, NoiseMeasurementViewModel>();
             RegisterMeasurementViewModelAssociation<ThdMeasurement, ThdMeasurementViewModel>();
         }
 
@@ -76,7 +77,7 @@ namespace AudioMark.ViewModels
         {
             _dataUpdate = dataUpdate;
 
-            Items = new ObservableCollection<string>(MeasurementsFactory.List().Select(item => item.Name));            
+            Items = new ObservableCollection<string>(MeasurementsFactory.List().Select(item => item.Name));
 
             RegisterMeasurementViewModelAssociations();
 
@@ -84,16 +85,35 @@ namespace AudioMark.ViewModels
             {
                 this.RaisePropertyChanged("Content");
             });
+
         }
 
         public async void Run(Button sender)
         {
             if (!Running)
-            {
+            {                
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    desktop.Exit += OnExit;
+                }
+
                 Running = true;
                 await Content.Measurement.Run();
             }
             else
+            {
+                Content.Measurement.Stop();
+
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    desktop.Exit -= OnExit;
+                }
+            }
+        }
+
+        private void OnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
+        {
+            if (Content != null && Content.Measurement != null && Content.Measurement.Running)
             {
                 Content.Measurement.Stop();
             }

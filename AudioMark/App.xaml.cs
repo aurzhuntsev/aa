@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using AudioMark.ViewModels;
 using AudioMark.Views;
+using System;
 
 namespace AudioMark
 {
@@ -10,7 +11,7 @@ namespace AudioMark
     {
         public override void Initialize()
         {
-            AvaloniaXamlLoader.Load(this);
+            AvaloniaXamlLoader.Load(this);            
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -19,11 +20,11 @@ namespace AudioMark
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
-                };
+                    DataContext = new MainWindowViewModel(),                    
+                };             
             }
 
             base.OnFrameworkInitializationCompleted();
-        }
+        }        
     }
 }

@@ -62,6 +62,11 @@ namespace AudioMark.Views.GraphView
             _target = target;
 
             /* TODO: Better to implement this task explicitly */
+        }
+
+        public void Start()
+        {
+            _running = true;
             Task.Run(() =>
             {
                 DateTime lastUpdated = DateTime.Now;
@@ -72,7 +77,7 @@ namespace AudioMark.Views.GraphView
                         _renderWaitHandle.WaitOne(MaxRenderThreadSleepTime);
                     }
                     else
-                    {
+                    {                        
                         _renderWaitHandle.WaitOne();
                     }
                     _renderWaitHandle.Reset();
@@ -91,6 +96,12 @@ namespace AudioMark.Views.GraphView
                     }
                 }
             });
+        }
+
+        public void Stop()
+        {
+            _running = false;
+            _renderWaitHandle.Set();            
         }
 
         public void Render()
@@ -112,7 +123,7 @@ namespace AudioMark.Views.GraphView
                                                     bitmap.Height),
                                                     SkiaPlatform.DefaultDpi,
                                                     bitmap.RowBytes);
-                            
+
                             Dispatcher.UIThread.Post(() =>
                             {
                                 _target.Source = _bitmap;

@@ -99,10 +99,11 @@ namespace PortAudioWrapper
         }
 
         public void Stop()
-        {
-            Imports.Pa_StopStream(handle);
+        {            
             _running = false;
             _callbackThread.Join();
+
+            Imports.Pa_StopStream(handle);
         }
 
         private void CallbackHandler(object obj)
@@ -160,11 +161,6 @@ namespace PortAudioWrapper
 
         private unsafe int NativeCallbackHandler(IntPtr input, IntPtr output, uint frameCount, IntPtr timeInfo, uint statusFlags, IntPtr userData)
         {
-            if (!_running)
-            {
-                return (int)PaStreamCallbackResult.PaComplete;
-            }
-
             _callbackError = statusFlags;
             if (!_callbackProcessed)
             {

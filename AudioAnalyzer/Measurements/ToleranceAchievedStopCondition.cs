@@ -30,12 +30,14 @@ namespace AudioMark.Core.Measurements
         private DateTime _lastUpdated;
 
         private TimeSpan? _remaining = null;
+
+        public event EventHandler OnMet;
+        public event EventHandler<Exception> OnError;
+
         public TimeSpan? Remaining
         {
             get => _remaining;
         }
-
-        public event StopConditionMetEventHandler OnMet;        
 
         public ToleranceAchievedStopCondition(SpectralData data, double tolerance, double confidence)
         {
@@ -43,11 +45,7 @@ namespace AudioMark.Core.Measurements
             Tolerance = tolerance;
             Confidence = confidence;
 
-            _records = new List<Record>[data.Size];
-            for (var i = 0; i < _records.Length; i++)
-            {
-                _records[i] = new List<Record>(3);
-            }
+            Set();
         }
 
         private double EstimateRemainingTime(List<Record> r, double target)
@@ -73,73 +71,85 @@ namespace AudioMark.Core.Measurements
             {
                 return s / v2;
             }
-            
-            var d = v2 * v2 - 2.0 * a * s;            
+
+            var d = v2 * v2 - 2.0 * a * s;
             if (d >= 0)
             {
                 var sqrtd = Math.Sqrt(d);
                 var ia = -1.0 / a;
-                return Math.Max(ia * (-v2 + sqrtd), ia * (-v2 - sqrtd));                
+                return Math.Max(ia * (-v2 + sqrtd), ia * (-v2 - sqrtd));
             }
 
             return double.NaN;
         }
 
         public void Check()
-        {           
-            if (Data.Count < 2)
+        {
+            try
             {
-                return;
-            }
-
-            var k = StudentT.InvCDF(0.0, 1.0, Data.Count - 1, 0.5 * (Confidence + 1.0)) / Math.Sqrt(Data.Count);
-            var time = DateTime.Now.Ticks;
-
-            var hasMissingCondition = false;
-            var maxRemaining = long.MinValue;
-            for (var i = 0; i < Data.Size; i++)
-            {
-                var confidenceInterval = k * Data.Statistics[i].StandardDeviation;
-                var toleranceInterval = Data.Statistics[i].Mean * Tolerance;
-
-                if (toleranceInterval <= confidenceInterval)
+                if (Data.Count < 2)
                 {
-                    hasMissingCondition = true;
+                    return;
+                }
 
-                    var recordsList = _records[i];
-                    if (recordsList.Count == 3)
-                    {
-                        recordsList.RemoveAt(0);
-                    }
-                    recordsList.Add(new Record(confidenceInterval, time));
+                var k = StudentT.InvCDF(0.0, 1.0, Data.Count - 1, 0.5 * (Confidence + 1.0)) / Math.Sqrt(Data.Count);
+                var time = DateTime.Now.Ticks;
 
-                    if (recordsList.Count == 3)
+                var hasMissingCondition = false;
+                var maxRemaining = long.MinValue;
+                for (var i = 0; i < Data.Size; i++)
+                {
+                    var confidenceInterval = k * Data.Statistics[i].StandardDeviation;
+                    var toleranceInterval = Data.Statistics[i].Mean * Tolerance;
+
+                    if (toleranceInterval <= confidenceInterval)
                     {
-                        var timeRemaining = EstimateRemainingTime(recordsList, toleranceInterval);
-                        if (!double.IsNaN(timeRemaining) && !double.IsInfinity(timeRemaining) && maxRemaining < timeRemaining)
+                        hasMissingCondition = true;
+
+                        var recordsList = _records[i];
+                        if (recordsList.Count == 3)
                         {
-                            maxRemaining = (long)timeRemaining;
+                            recordsList.RemoveAt(0);
+                        }
+                        recordsList.Add(new Record(confidenceInterval, time));
+
+                        if (recordsList.Count == 3)
+                        {
+                            var timeRemaining = EstimateRemainingTime(recordsList, toleranceInterval);
+                            if (!double.IsNaN(timeRemaining) && !double.IsInfinity(timeRemaining) && maxRemaining < timeRemaining)
+                            {
+                                maxRemaining = (long)timeRemaining;
+                            }
                         }
                     }
                 }
-            }
 
-            if (!hasMissingCondition)
-            {
-                OnMet?.Invoke(this);
-            }
-
-            if (maxRemaining != long.MinValue)
-            {
-                if (_remaining == null || _remaining.Value.Ticks > maxRemaining)
+                if (!hasMissingCondition)
                 {
-                    _remaining = new TimeSpan(maxRemaining);
+                    OnMet?.Invoke(this, null);
                 }
+
+                if (maxRemaining != long.MinValue)
+                {
+                    if (_remaining == null || _remaining.Value.Ticks > maxRemaining)
+                    {
+                        _remaining = new TimeSpan(maxRemaining);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                OnError?.Invoke(this, e);
             }
         }
 
         public void Set()
         {
+            _records = new List<Record>[Data.Size];
+            for (var i = 0; i < _records.Length; i++)
+            {
+                _records[i] = new List<Record>(3);
+            }
         }
     }
 }

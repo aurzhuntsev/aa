@@ -16,7 +16,7 @@ namespace AudioMark.Core.Measurements
 
         private static List<MeasurementListItem> measurements = new List<MeasurementListItem>();
 
-        public static void Register<T>() where T: MeasurementBase
+        public static void Register<T, TResult>() where T: MeasurementBase<TResult>
         {
             var type = typeof(T);
             var name = type.GetStringAttributeValue<MeasurementAttribute>();
@@ -35,7 +35,7 @@ namespace AudioMark.Core.Measurements
 
         public static IEnumerable<MeasurementListItem> List() => measurements;
 
-        public static MeasurementBase Create(string name)
+        public static IMeasurement Create(string name)
         {
             var item = measurements.FirstOrDefault(m => m.Name == name);
             if (item == null)
@@ -43,13 +43,12 @@ namespace AudioMark.Core.Measurements
                 throw new KeyNotFoundException(name);
             }
 
-            return (MeasurementBase)Activator.CreateInstance(item.Type);
+            return (IMeasurement)Activator.CreateInstance(item.Type);
         }
 
         static MeasurementsFactory()
-        {
-            Register<NoiseMeasurement>();
-            Register<ThdMeasurement>();
+        {         
+            Register<ThdMeasurement, SpectralData>();
         }
     }
 }

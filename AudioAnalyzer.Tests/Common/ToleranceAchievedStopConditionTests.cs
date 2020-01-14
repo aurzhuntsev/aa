@@ -61,7 +61,7 @@ namespace AudioAnalyzer.Tests.Common
             var data = new SpectralData(1, 1);
             var target = new ToleranceAchievedStopCondition(data, 0.05, 0.95);
             bool met = false;
-            target.OnMet += (s) =>
+            target.OnMet += (s, e) =>
             {
                 met = true;
             };

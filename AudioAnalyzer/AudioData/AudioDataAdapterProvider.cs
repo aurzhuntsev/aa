@@ -6,7 +6,7 @@ namespace AudioMark.Core.AudioData
 {
     public static class AudioDataAdapterProvider
     {
-        public static IAudioDataAdapter Get()
+        public static IAudioDataAdapter Create()
         {
             var result = new PortAudioDataAdapter();
             
