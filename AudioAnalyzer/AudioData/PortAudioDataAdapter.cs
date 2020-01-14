@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace AudioMark.Core.AudioData
 {
-    public class PortAudioDataAdapter : BaseAudioDataAdapter
+    public class PortAudioDataAdapter : BaseAudioDataAdapter /* TODO: Make disposable */
     {
         private class PaDevice
         {
@@ -115,8 +115,10 @@ namespace AudioMark.Core.AudioData
                 SuggestedLatency = 0.256
             };
 
-            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002 | 0x00000004,
-                DataCallback);
+            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002 | 0x00000004);
+            stream.OnRead += OnRead;
+            stream.OnWrite += OnWrite;
+
         }
 
         private static IEnumerable<DeviceInfo> EnumerateDevices(bool enumerateInputDevices)
@@ -201,61 +203,67 @@ namespace AudioMark.Core.AudioData
             stream.Stop();
         }
         
-        private PaStreamCallbackResult DataCallback(PortAudioDoubleBuffer inputBuffer, PortAudioDoubleBuffer outputBuffer, PaStreamCallbackTimeInfo timeInfo, uint streamFlags)
+        private void OnRead(object sender, PortAudioStreamEventArgs e)
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-
             if (!Running)
             {
-                return PaStreamCallbackResult.PaComplete;
+                return;
             }
 
-            if (streamFlags != 0)
-            {
-                DiscardInput = true;
-                DiscardOutput = true;
-            }
-            
             int read = 0;
-            while (read < inputBuffer.Length)
+            while (read < e.ActualLength)
             {
                 if (!InputBuffer.WriteNoWait((buffer) =>
                 {
                     for (var i = 0; i < buffer.Length; i++)
                     {
-                        buffer[i] = inputBuffer[read];                        
-                        read++;                        
+                        buffer[i] = e.Buffer[read];
+                        read++;
                     }
                     return buffer.Length;
                 }))
                 {
                     DiscardInput = true;
                     InputWaitHandle.Set();
-                    break;                    
-                };                
+                    break;
+                };
             }
-            InputWaitHandle.Set();
 
+            if (e.Errors != 0)
+            {
+                DiscardInput = true;
+            }
+
+            InputWaitHandle.Set();
+        }
+
+        private void OnWrite(object sender, PortAudioStreamEventArgs e)
+        {
             int wrote = 0;
-            while (wrote < outputBuffer.Length)
+            while (wrote < e.ActualLength)
             {
                 if (!OutputBuffer.ReadNoWait((buffer, length) =>
                 {
                     for (var i = 0; i < length; i++)
                     {
-                        outputBuffer[wrote] = buffer[i];
+                        e.Buffer[wrote] = buffer[i];
                         wrote++;
                     }
                 }))
                 {
                     DiscardOutput = true;
                     OutputWaitHandle.Set();
-                    break;                   
+                    break;
                 }
             }
+
+            if (e.Errors != 0)
+            {
+                DiscardInput = true;
+            }
+
             OutputWaitHandle.Set();
-            
-            return PaStreamCallbackResult.PaContinue;
+
         }
     }
 }

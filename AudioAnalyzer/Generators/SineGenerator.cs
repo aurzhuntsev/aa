@@ -43,21 +43,21 @@ namespace AudioMark.Core.Generators
         {
             double result = 0.0;
             
-            if (precalculated)
-            {
-                result = table[counter];
+            //if (precalculated)
+            //{
+            //    result = table[counter];
 
-                counter++;
-                if (counter == table.Length)
-                {
-                    counter = 0;
-                }
-            }
-            else
-            {
+            //    counter++;
+            //    if (counter == table.Length)
+            //    {
+            //        counter = 0;
+            //    }
+            //}
+            //else
+            //{
                 result = Amplitude * Math.Sin(currentValue + Phase);
                 currentValue += increment;
-            }
+            //}
 
             return result;
         }

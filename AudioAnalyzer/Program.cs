@@ -61,47 +61,7 @@ namespace AudioMark.Core
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
 
             int runs = 0;
-            using (var stream = new PortAudioStream(istreamParameters, ostreamParameters, 96000, 0, 0,
-                (i, o, time, status) =>
-                {
-                    
-                    for (var c = 0; c < o.Length; c += 2)
-                    {
-                        var v = table[x];
-                        o[c] = v;
-                        o[c + 1] = v;
-
-                        x++;
-                        if (x == 96000)
-                        {
-                            x = 0;
-                        }
-                    }
-
-                    if (runs > 10)
-                    {
-                        for (var c = 0; c < i.Length; c += 2)
-                        {                            
-                            //rec.Add(i[c+1]);
-                        }
-                    }
-
-                    runs++;
-                    
-                    if (rec.Count >= 96000)
-                    {
-                        var arr = rec.ToArray();
-                        MathNet.Numerics.IntegralTransforms.Fourier.ForwardReal(arr, arr.Length - 2, MathNet.Numerics.IntegralTransforms.FourierOptions.Default);
-
-                        return PaStreamCallbackResult.PaAbort;
-                    };
-
-                    return PaStreamCallbackResult.PaContinue;
-                }))
-            {
-                stream.Start();
-            }
-
+            
 
 
             Console.ReadKey();

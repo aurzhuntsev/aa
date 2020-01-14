@@ -13,7 +13,6 @@ namespace AudioMark.Core.Measurements
     public class GeneratorActivity : ActivityBase
     {
         private IAudioDataAdapter _adapter;
-
         public Dictionary<int, IGenerator> Generators { get; }
 
         public delegate void ReadEvent(double[] buffer, bool discard);

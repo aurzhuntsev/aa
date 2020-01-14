@@ -59,8 +59,6 @@ namespace AudioMark.Core.Measurements
          * A single data read event
          * Changing activities should not stop generation/acquisition to avoid buffer population latency 
          */
-
-
         protected override void Initialize()
         {
             Activities.Add(CreateSetupActivity());
@@ -187,7 +185,7 @@ namespace AudioMark.Core.Measurements
             dataActivity.OnRead += (buffer, discard) =>
             {
                 /* TODO: Shoud actually discard one (?) buffer */
-                if (discardCount < AppSettings.Current.Device.SampleRate / 2)
+                if (discardCount < AppSettings.Current.Device.SampleRate)
                 {
                     discardCount++;
                     return;
