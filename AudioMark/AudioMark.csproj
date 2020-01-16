@@ -26,6 +26,8 @@
     <AvaloniaResource Remove="Views\Measurements\Common\InputOutputLevelView.xaml" />
     <AvaloniaResource Remove="Views\Measurements\NoiseMeasurementView.xaml" />
     <AvaloniaResource Remove="Views\Measurements\ThdMeasurementView.xaml" />
+    <AvaloniaResource Remove="Views\Reports\ThdReportView.xaml" />
+    <AvaloniaResource Remove="Views\SessionPanelView.xaml" />
     <Folder Include="Views\Common\" />
     <None Remove="Controls\PropertySection.xaml" />
     <None Remove="Styles\BaseTheme.xaml" />
@@ -37,12 +39,15 @@
     <None Remove="Views\Measurements\Common\InputOutputLevelView.xaml" />
     <None Remove="Views\Measurements\NoiseMeasurementView.xaml" />
     <None Remove="Views\Measurements\ThdMeasurementView.xaml" />
+    <None Remove="Views\Reports\ThdReportView.xaml" />
+    <None Remove="Views\SessionPanelView.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.0" />
     <PackageReference Include="Avalonia.Angle.Windows.Natives" Version="2.1.0.2019013001" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.0" />
+    <PackageReference Include="TextCopy" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\PropertySection.xaml">
@@ -55,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Styles\BaseTheme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SessionPanelView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -89,11 +97,19 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\Reports\ThdReportView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AudioAnalyzer\AudioMark.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\PropertySection.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SessionPanelView.xaml.cs">
+      <DependentUpon>SessionPanelView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace AudioAnalyzer.Tests.Common
+namespace AudioAnalyzer.Tests.Measurements
 {
     public class ToleranceAchievedStopConditionTests
     {
@@ -33,8 +33,7 @@ namespace AudioAnalyzer.Tests.Common
             recordsList.Add(new ToleranceAchievedStopCondition.Record(2, 1));
             recordsList.Add(new ToleranceAchievedStopCondition.Record(4, 2)); // a = 1
 
-            result = methodInfo.Invoke(target, new object[] { recordsList, 7.0 });
-
+            result = Utility.InvokePrivateMethod("EstimateRemainingTime", target, new object[] { recordsList, 7.0 });                
             /* TODO: I have a strong feeling this is wrong oO */
             Assert.AreEqual(Math.Round((double)result, 2), 1.16);
         }

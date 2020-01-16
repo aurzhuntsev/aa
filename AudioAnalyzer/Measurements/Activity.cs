@@ -90,6 +90,8 @@ namespace AudioMark.Core.Measurements
             }
         }
 
+        public IDataSink<TSink> GetSink(int channel) => DataSinks[channel - 1];
+            
         public void SetStopConditions()
         {
             foreach (var stopCondition in _stopConditions)

@@ -23,16 +23,18 @@ namespace AudioMark.Views.GraphView
 {
     public class GraphView : UserControl
     {
-        private Rect _viewBounds;
-        public Rect ViewBounds
-        {
-            get => _viewBounds;
-            set
-            {
-                _viewBounds = value;
-                OnViewContextChanged();
-            }
-        }
+        //private Rect _viewBounds;
+        //public Rect ViewBounds
+        //{
+        //    get => _viewBounds;
+        //    set
+        //    {
+        //        _viewBounds = value;
+        //        OnViewContextChanged();
+        //    }
+        //}
+
+            public Rect ViewBounds { get; set; }
 
         public static readonly DirectProperty<GraphView, bool> DynamicRenderProperty =
             AvaloniaProperty.RegisterDirect<GraphView, bool>(nameof(DynamicRender), x => x.DynamicRender, (x, v) => x.DynamicRender = v);
@@ -56,12 +58,7 @@ namespace AudioMark.Views.GraphView
             set
             {
                 SetAndRaise(DataProperty, ref _data, value);
-                Bins = BuildBins();
-
-                foreach (var renderer in _renderers)
-                {
-                    renderer.Bins = Bins;
-                }
+                BuildBins();
             }
         }
 
@@ -109,14 +106,16 @@ namespace AudioMark.Views.GraphView
             if (ViewBounds != null && ViewBounds.Width > 0 && ViewBounds.Height > 0)
             {
                 _viewContext.Update(ViewBounds, MaxFrequency, SpectrumBins);
+                BuildBins();
+
                 foreach (var renderer in _renderers)
                 {
                     renderer.Update(_viewContext);
-                }
+                }                
             }
         }
 
-        private List<Bin> BuildBins()
+        private void BuildBins()
         {
             var result = new List<Bin>();
             if (Data != null)
@@ -135,7 +134,8 @@ namespace AudioMark.Views.GraphView
 
                     var meanValue = double.MinValue;
                     var meanValueBin = 0;
-                    for (var i = startingBin; i < startingBin + bins; i++)
+                    var labels = new List<string>();
+                    for (var i = startingBin; i < startingBin + bins && i < Data.Size; i++)
                     {
                         var value = Data.DefaultValueSelector(Data.Statistics[i]);
                         if (meanValue < value)
@@ -143,6 +143,11 @@ namespace AudioMark.Views.GraphView
                             meanValue = value;
                             meanValueBin = i;
                         }
+
+                        if (!string.IsNullOrEmpty(Data.Statistics[i].Label))
+                        {
+                            labels.Add(Data.Statistics[i].Label);
+                        }                   
                     }
 
                     var bin = new Bin()
@@ -152,7 +157,8 @@ namespace AudioMark.Views.GraphView
                         From = startingBin,
                         To = startingBin + bins,
                         Value = meanValue,
-                        SpectrumBin = meanValueBin
+                        SpectrumBin = meanValueBin,
+                        Labels = labels
                     };
 
                     result.Add(bin);
@@ -162,9 +168,12 @@ namespace AudioMark.Views.GraphView
 
                     currentOffset = binWidth;
                 }
-            }
 
-            return result;
+                foreach (var renderer in _renderers)
+                {
+                    renderer.Bins = result;
+                }
+            }
         }
 
         public static readonly AvaloniaProperty<int> LeftLeftProperty = AvaloniaProperty.Register<GraphView, int>(nameof(LeftLeft));
@@ -211,6 +220,16 @@ namespace AudioMark.Views.GraphView
             }
 
             base.OnDetachedFromVisualTree(e);
+        }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if (e.Property.Name == "Bounds")
+            {
+                ViewBounds = (Rect)e.NewValue;
+                OnViewContextChanged();
+            }
         }
     }
 }

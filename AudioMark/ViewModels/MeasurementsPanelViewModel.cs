@@ -16,6 +16,7 @@ namespace AudioMark.ViewModels
 {
     public class MeasurementsPanelViewModel : ViewModelBase
     {
+        /* TODO: See how it will work content that needs scrolling */
         public ObservableCollection<string> Items { get; }
 
         private int _selectedIndex;
@@ -58,8 +59,17 @@ namespace AudioMark.ViewModels
                             _dataUpdate(data);
                         }
                     };
-                }
 
+                    _content.Measurement.OnAnalysisComplete += (m, e) =>
+                    {
+                        var data = e as ThdAnalysisResult;
+                        if (data != null)
+                        {
+                            _dataUpdate(data.Data);
+                        }
+                    };
+
+                }
                 return _content;
             }
         }
@@ -91,7 +101,7 @@ namespace AudioMark.ViewModels
         public async void Run(Button sender)
         {
             if (!Running)
-            {                
+            {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
                     desktop.Exit += OnExit;

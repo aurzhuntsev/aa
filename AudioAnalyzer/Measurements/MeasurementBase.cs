@@ -9,26 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace AudioMark.Core.Measurements
-{    
-    public interface IMeasurement
-    {
-        string Title { get; }
-
-        int CurrentActivityIndex { get; }
-        string CurrentActivityDescription { get; }
-        int ActivitiesCount { get; }
-        TimeSpan? Remaining { get; }
-        TimeSpan Elapsed { get; }
-        bool Running { get; }
-
-        event EventHandler<object> OnDataUpdate;
-        event EventHandler OnComplete;
-        event EventHandler<Exception> OnError;
-
-        Task Run();
-        void Stop();
-    }
-
+{
+    /* TODO: Refactor a bit */
     public abstract class MeasurementBase<TResult> : IMeasurement
     {
         private readonly int DataSamplesToDiscard = AppSettings.Current.Device.SampleRate;
@@ -46,7 +28,7 @@ namespace AudioMark.Core.Measurements
         }
 
         public Activity<TResult> CurrentActivity { get; protected set; }
-        
+
         protected volatile bool _running;
         public bool Running
         {
@@ -86,7 +68,9 @@ namespace AudioMark.Core.Measurements
             get => DateTime.Now.Subtract(_currentActivityStartedAt).Duration();
         }
 
-        public string Title { get; protected set; }
+        public string Name { get; set; }
+
+        public IAnalysisResult AnalysisResult { get; protected set; }
 
         private int _dataDiscardCounter = 0;
         private DateTime _lastStopConditionsChecked;
@@ -97,6 +81,7 @@ namespace AudioMark.Core.Measurements
         public event EventHandler<object> OnDataUpdate;
         public event EventHandler OnComplete;
         public event EventHandler<Exception> OnError;
+        public event EventHandler<IAnalysisResult> OnAnalysisComplete;
 
         public MeasurementBase()
         {
@@ -116,13 +101,15 @@ namespace AudioMark.Core.Measurements
             _adapter.Start();
             await Task.Run(() =>
             {
-                foreach (var activity in _activities)
+                var index = 0;
+                for (index = 0; index < _activities.Count; index++)
                 {
                     if (!_running)
                     {
                         break;
                     }
 
+                    var activity = _activities[index];
                     _dataDiscardCounter = 0;
 
                     for (var i = 0; i < Generators.Length; i++)
@@ -158,7 +145,12 @@ namespace AudioMark.Core.Measurements
                     _activityWaitHandle.Reset();
                 }
 
-                OnComplete?.Invoke(this, null);
+                if (index == _activities.Count)
+                {
+                    AnalysisResult = Analyze();
+                    OnAnalysisComplete?.Invoke(this, AnalysisResult);
+                }
+                Stop();
             });
         }
 
@@ -195,6 +187,7 @@ namespace AudioMark.Core.Measurements
         }
 
         protected abstract void Initialize();
+        protected abstract IAnalysisResult Analyze();
 
         protected void InvokeDataUpdate(TResult data)
         {

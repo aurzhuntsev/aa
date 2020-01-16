@@ -12,17 +12,16 @@ namespace AudioMark.Controls
             DirectProperty<PropertySection, object>.Register<PropertySection, object>("Properties");
         public object Properties
         {
-            get
-            {
-                var value = GetValue(PropertiesProperty);
-                if (value == null)
-                {
-                    return new TextBlock() { Text = "No items to display.", TextAlignment = Avalonia.Media.TextAlignment.Center };
-                }
-
-                return value;
-            }
+            get => GetValue(PropertiesProperty);
             set { SetValue(PropertiesProperty, value); }
+        }
+
+        public static readonly StyledProperty<object> TitleControlsProperty =
+            DirectProperty<PropertySection, object>.Register<PropertySection, object>("TitleControls");
+        public object TitleControls
+        {
+            get => GetValue(TitleControlsProperty);
+            set { SetValue(TitleControlsProperty, value); }
         }
 
         public static readonly StyledProperty<string> TitleProperty =
@@ -39,9 +38,7 @@ namespace AudioMark.Controls
         {
             get { return GetValue(ExpandedProperty); }
             set { SetValue(ExpandedProperty, value); }
-        }
-
-        public object OriginalDataContext { get; set; }
+        }        
 
         public void OnSectionTitlePointerPressed(object sender, PointerPressedEventArgs e)
         {            

@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.Reports.ThdReportView">
+  <Grid Grid.Column="0" HorizontalAlignment="Stretch">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*" />
+      <ColumnDefinition Width="4*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
+
+    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+      <TextBlock Grid.Column="0" Grid.Row="0">THD</TextBlock>
+      <TextBlock Classes="Subscript">f</TextBlock>
+      <TextBlock Classes="Ml">:</TextBlock>
+    </StackPanel>
+    <TextBox Classes="Ro" Grid.Row="0" Grid.Column="1" Text="{Binding ThdF}" />
+
+    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+      <TextBlock Grid.Column="0" Grid.Row="0">THD</TextBlock>
+      <TextBlock Classes="Subscript">r</TextBlock>
+      <TextBlock Classes="Ml">:</TextBlock>
+    </StackPanel>
+    <TextBox Classes="Ro" Grid.Row="1" Grid.Column="1" Text="{Binding ThdF}" />
+
+    <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+      <StackPanel Orientation="Vertical">
+        <Border BorderBrush="{DynamicResource ForegroundBrush}" BorderThickness="0 0 0 1">
+          <TextBlock TextAlignment="Center">∑Even</TextBlock>
+        </Border>
+        <TextBlock TextAlignment="Center">∑Odd</TextBlock>
+      </StackPanel>
+      <TextBlock Classes="Ml" VerticalAlignment="Center">:</TextBlock>
+    </StackPanel>
+
+    <TextBox Classes="Ro" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Text="{Binding EvenToOdd}" />
+  </Grid>
+</UserControl>

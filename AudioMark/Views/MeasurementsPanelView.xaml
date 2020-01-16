@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="450"
              x:Class="AudioMark.Views.MeasurementsPanelView"> 
-  <Canvas HorizontalAlignment="Stretch" Background="{DynamicResource Level2BackgroundBrush}">
+  <Panel HorizontalAlignment="Stretch" Background="{DynamicResource Level2BackgroundBrush}">
     <StackPanel Orientation="Vertical" Width="350">
       <ComboBox Classes="Inline" Name="measurements" Items="{Binding Items}"
                 HorizontalAlignment="Stretch" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
@@ -27,5 +27,5 @@
         <ContentControl Content="{Binding Content}" />
       </ScrollViewer>
     </StackPanel>
-  </Canvas>
+  </Panel>
 </UserControl>

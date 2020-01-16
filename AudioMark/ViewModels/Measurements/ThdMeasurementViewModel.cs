@@ -8,13 +8,14 @@ using System.Text;
 
 namespace AudioMark.ViewModels.Measurements
 {
+    [DefaultViewModel(typeof(ThdMeasurement))]
     public class ThdMeasurementViewModel : MeasurementViewModelBase
     {
-        private ThdMeasurement Model
+        public ThdMeasurement Model
         {
             get => (ThdMeasurement)Measurement;
         }
-
+        
         #region Test signal options
         public double TestSignalFrequency
         {
@@ -120,5 +121,15 @@ namespace AudioMark.ViewModels.Measurements
         }
 
         #endregion
+
+        public ThdMeasurementViewModel()
+        {
+
+        }
+
+        public ThdMeasurementViewModel(ThdMeasurement measurement) : base()
+        {
+            Measurement = measurement;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using Avalonia.Threading;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace AudioMark.ViewModels
     {
         public MeasurementsPanelViewModel Measurements { get; }
         public CurrentMeasurementViewModel CurrentMeasurement { get; }
+        public SessionPanelViewModel Session { get; set; }
 
         private bool _measurementsPanelVisible;
         public bool MeasurementsPanelVisible 
@@ -39,9 +41,18 @@ namespace AudioMark.ViewModels
             {
                 Data = data;
                 this.RaisePropertyChanged(nameof(Data));
+
+                if (Measurements.Content.Measurement.AnalysisResult != null)
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        Session.AddMeasurement(Measurements.Content.Measurement);
+                    });
+                }
             });
 
-            CurrentMeasurement = new CurrentMeasurementViewModel();            
+            CurrentMeasurement = new CurrentMeasurementViewModel();
+            Session = new SessionPanelViewModel();
 
             this.WhenAnyValue(_ => _.Measurements.Running)
                 .Subscribe(running =>

@@ -108,6 +108,7 @@ namespace PortAudioWrapper
 
         private void CallbackHandler(object obj)
         {
+
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
             _readEventArgs = new PortAudioStreamEventArgs()

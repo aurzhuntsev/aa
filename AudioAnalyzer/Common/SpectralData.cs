@@ -6,19 +6,21 @@ using System.Text;
 namespace AudioMark.Core.Common
 {
     public class SpectralData
-    {        
+    {
         public class StatisticsItem
-        {            
+        {
             public double LastValue { get; set; }
             public double Sum { get; set; } = 0;
             public double Min { get; set; } = double.MaxValue;
             public double Max { get; set; } = double.MinValue;
             public double Mean { get; set; } = double.NaN;
-            public double StandardDeviation { get; set; } = double.NaN;            
+            public double StandardDeviation { get; set; } = double.NaN;
 
             internal double PreviousValue { get; set; } = double.NaN;
             internal double PreviousMean { get; set; } = double.NaN;
             internal double M2 { get; set; } = 0.0;
+
+            public string Label { get; set; }
         }
 
         public int Size { get; set; }
@@ -37,7 +39,7 @@ namespace AudioMark.Core.Common
         {
             Size = size;
             MaxFrequency = maxFrequency;
-            
+
             Statistics = new StatisticsItem[Size];
             for (var i = 0; i < size; i++)
             {
@@ -77,6 +79,32 @@ namespace AudioMark.Core.Common
                         stat.M2 = stat.M2 + (value - stat.PreviousMean) * (value - stat.Mean);
                         stat.StandardDeviation = Math.Sqrt(stat.M2 / (Count - 1.0));
                     }
+                }
+            }
+        }
+
+        /* TODO: windowHalfSize greater than zero is not tested */
+        public IEnumerable<StatisticsItem> AtFrequency(double frequency, int windowHalfSize = 0)
+        {
+            var index = (int)Math.Round(frequency * (double)Size / MaxFrequency);
+
+            if (windowHalfSize > 0)
+            {
+                var left = Math.Max(0, index - windowHalfSize);
+                foreach (var item in Statistics.Skip(left).Take(windowHalfSize))
+                {
+                    yield return item;
+                }
+            }
+
+            yield return Statistics[index];
+
+            if (windowHalfSize > 0)
+            {
+                var right = Math.Min(Size - 1, index + windowHalfSize);
+                foreach (var item in Statistics.Skip(right).Take(windowHalfSize))
+                {
+                    yield return item;
                 }
             }
         }

@@ -5,6 +5,7 @@ using System.Threading;
 
 namespace AudioMark.Core.Common
 {
+    /* TODO: Implement this just for the case */
     public class WatchdogTimer 
     {
         private Timer _timer;

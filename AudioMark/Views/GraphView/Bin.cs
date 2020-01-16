@@ -15,5 +15,7 @@ namespace AudioMark.Views.GraphView
         public int To { get; set; }
 
         public bool HasCursor { get; set; }
+
+        public List<string> Labels { get; set; }
     }
 }

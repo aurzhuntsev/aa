@@ -108,7 +108,7 @@ namespace AudioMark.ViewModels
         private void UpdateViewModel()
         {
 
-            Title = _measurement.Title;
+            Title = _measurement.Name;
 
             var currentStepNumber = _measurement.CurrentActivityIndex;
             var totalSteps = _measurement.ActivitiesCount;
