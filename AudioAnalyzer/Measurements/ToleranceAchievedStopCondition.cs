@@ -97,12 +97,12 @@ namespace AudioMark.Core.Measurements
 
                 var hasMissingCondition = false;
                 var maxRemaining = long.MinValue;
-                for (var i = 0; i < Data.Size; i++)
+                for (var i = 2; i < Data.Size; i++)
                 {
                     var confidenceInterval = k * Data.Statistics[i].StandardDeviation;
                     var toleranceInterval = Data.Statistics[i].Mean * Tolerance;
 
-                    if (toleranceInterval <= confidenceInterval)
+                    if (toleranceInterval - confidenceInterval < double.Epsilon && toleranceInterval != 0 && confidenceInterval != 0)
                     {
                         hasMissingCondition = true;
 
@@ -131,6 +131,7 @@ namespace AudioMark.Core.Measurements
 
                 if (maxRemaining != long.MinValue)
                 {
+                    /* TODO: Make it more viable; maybe don't show if more than 60 minutes or smth like that */
                     if (_remaining == null || _remaining.Value.Ticks > maxRemaining)
                     {
                         _remaining = new TimeSpan(maxRemaining);
