@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AudioMark.ViewModels.Measurements
+namespace AudioMark.ViewModels.MeasurementSettings
 {
-    [DefaultViewModel(typeof(ThdMeasurement))]
-    public class ThdMeasurementViewModel : MeasurementViewModelBase
+    [DefaultViewModel(typeof(ThdMeasurementSettings))]
+    public class ThdMeasurementSettingsViewModel : MeasurementSettingsViewModelBase
     {
-        public ThdMeasurement Model
+        public ThdMeasurementSettings Model
         {
-            get => (ThdMeasurement)Measurement;
+            get => (ThdMeasurementSettings)Settings;
         }
         
         #region Test signal options
@@ -122,14 +122,14 @@ namespace AudioMark.ViewModels.Measurements
 
         #endregion
 
-        public ThdMeasurementViewModel()
+        public ThdMeasurementSettingsViewModel()
         {
 
         }
 
-        public ThdMeasurementViewModel(ThdMeasurement measurement) : base()
+        public ThdMeasurementSettingsViewModel(ThdMeasurementSettings settings) : base()
         {
-            Measurement = measurement;
+            Settings = settings;
         }
     }
 }

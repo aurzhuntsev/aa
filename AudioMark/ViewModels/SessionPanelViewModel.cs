@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Measurements;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +12,7 @@ namespace AudioMark.ViewModels
         public ObservableCollection<SessionItemViewModel> Items { get; } = new ObservableCollection<SessionItemViewModel>();
 
         public SessionPanelViewModel()
-        {        
+        {
         }
 
         public void AddMeasurement(IMeasurement measurement)

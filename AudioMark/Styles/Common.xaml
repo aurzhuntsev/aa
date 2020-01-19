@@ -1,0 +1,19 @@
+﻿<Styles xmlns="https://github.com/avaloniaui" >
+  <Style Selector="TextBox.Ro">
+    <Setter Property="IsReadOnly" Value="True" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0 0 0 0" />
+  </Style>
+  <Style Selector="TextBlock.Subscript">
+    <Setter Property="FontSize" Value="10" />
+    <Setter Property="Margin" Value="0 5 0 0" />
+  </Style>
+  <Style Selector="TextBlock.Ml">
+    <Setter Property="Margin" Value="2 0 0 0" />
+  </Style>
+  <Style Selector="TextBlock.Mr">
+    <Setter Property="Margin" Value="0 0 2 0" />
+  </Style>
+</Styles>

@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AudioMark.Core.Common;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Skia;
@@ -7,6 +8,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +38,11 @@ namespace AudioMark.Views.GraphView
         }
 
         public IEnumerable<Bin> Bins
+        {
+            get; set;
+        }
+
+        public IEnumerable<SpectralData> Series
         {
             get; set;
         }
@@ -77,7 +84,7 @@ namespace AudioMark.Views.GraphView
                         _renderWaitHandle.WaitOne(MaxRenderThreadSleepTime);
                     }
                     else
-                    {                        
+                    {
                         _renderWaitHandle.WaitOne();
                     }
                     _renderWaitHandle.Reset();
@@ -101,7 +108,7 @@ namespace AudioMark.Views.GraphView
         public void Stop()
         {
             _running = false;
-            _renderWaitHandle.Set();            
+            _renderWaitHandle.Set();
         }
 
         public void Render()
@@ -123,7 +130,6 @@ namespace AudioMark.Views.GraphView
                                                     bitmap.Height),
                                                     SkiaPlatform.DefaultDpi,
                                                     bitmap.RowBytes);
-
                             Dispatcher.UIThread.Post(() =>
                             {
                                 _target.Source = _bitmap;
@@ -161,6 +167,18 @@ namespace AudioMark.Views.GraphView
         }
 
         protected abstract void RenderInternal(SKCanvas canvas);
+
+        protected double GetSeriesValue(SpectralData series, Bin bin)
+        {
+            var sequence = series.Statistics.Skip(bin.From).Take(bin.To - bin.From);
+            if (!sequence.Any())
+            {
+                return double.NaN;
+            }
+
+            return sequence.Select(series.DefaultValueSelector).Max();
+        }
+
 
         protected virtual void Dispose(bool disposing)
         {

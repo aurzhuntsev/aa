@@ -3,25 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:v="clr-namespace:AudioMark.Views"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="450"
              x:Class="AudioMark.Views.SessionPanelView" Name="SessionPanel">
-  <UserControl.Styles>
-    <Style Selector="TextBox.Ro">
-      <Setter Property="IsReadOnly" Value="True" />
-      <Setter Property="Background" Value="Transparent" />
-      <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-      <Setter Property="BorderThickness" Value="0" />
-      <Setter Property="Padding" Value="0 0 0 0" />
-    </Style>
-    <Style Selector="TextBlock.Subscript">
-      <Setter Property="FontSize" Value="10" />
-      <Setter Property="Margin" Value="0 5 0 0" />
-    </Style>
-    <Style Selector="TextBlock.Ml">
-      <Setter Property="Margin" Value="2 0 0 0" />
-    </Style>
-  </UserControl.Styles>
-
   <StackPanel Background="{DynamicResource Level2BackgroundBrush}" Name="Container"
          Height="{Binding #SessionPanel.Bounds.Height}">
     <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"
@@ -29,7 +13,7 @@
       <ItemsControl Items="{Binding Items}" HorizontalAlignment="Stretch">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <cc:PropertySection Title="{Binding Name}">
+            <cc:PropertySection Title="{Binding Name}" Expanded="True">
               <cc:PropertySection.Properties>
 
                 <Grid HorizontalAlignment="Stretch">
@@ -44,8 +28,8 @@
                           VerticalAlignment="Top"
                           Margin="0 4 4 0"
                           Classes="Inline Icon NoText ClipboardIcon" Width="16" Height="16"
-                          ToolTip.Tip="Copy to clipboard" Command="{Binding CopyToClipboard}"/>                          
-                     
+                          ToolTip.Tip="Copy to clipboard" Command="{Binding CopyToClipboard}"/>
+
                 </Grid>
               </cc:PropertySection.Properties>
             </cc:PropertySection>

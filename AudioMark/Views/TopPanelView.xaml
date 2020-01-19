@@ -1,0 +1,23 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.TopPanelView">
+  <Panel Height="24" Background="{DynamicResource Level2BackgroundBrush}">
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="28 4 0 0" Height="24" IsVisible="{Binding HasActiveMeasurement}">
+      <TextBlock FontWeight="Bold" Classes="Mr">Running</TextBlock>
+      <Button Classes="SeriesIcon" Foreground="{Binding SeriesIndex, Converter={StaticResource SeriesColorConverter}}" />
+      <TextBlock FontWeight="Bold" Classes="Ml" Text="{Binding Name}"></TextBlock>
+
+      <TextBlock Text="{Binding CurrentActivity}" Margin="30 0 0 0"/>
+      <TextBlock Text="{Binding RunningTicker}" Classes="Ml" Width="32" TextAlignment="Center"/>
+
+      <TextBlock Text="Remaining estimate:"  Margin="30 0 0 0"></TextBlock>
+      <TextBlock Text="{Binding Remaining}" Classes="Ml" />
+
+      <TextBlock Text="Elapsed:" Margin="30 0 0 0"></TextBlock>
+      <TextBlock Text="{Binding Elapsed}" Classes="Ml" />
+    </StackPanel>
+  </Panel>
+</UserControl>

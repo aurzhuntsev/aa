@@ -2,11 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace AudioMark.Views.Measurements
+namespace AudioMark.Views
 {
-    public class ThdMeasurementView : UserControl
+    public class TopPanelView : UserControl
     {
-        public ThdMeasurementView()
+        public TopPanelView()
         {
             this.InitializeComponent();
         }

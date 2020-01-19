@@ -22,7 +22,7 @@
   </Design.DataContext>
 
   <DockPanel>
-    <v:CurrentMeasurementView DockPanel.Dock="Top" Content="{Binding CurrentMeasurement}" Background="{DynamicResource Level2BackgroundBrush}" />
+    <v:TopPanelView DockPanel.Dock="Top" HorizontalAlignment="Stretch" DataContext="{Binding TopPanel}" />
     <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#aaaaaa">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="24" />
@@ -52,7 +52,7 @@
       </Border>
 
       <Panel Grid.Column="1" Grid.Row="0" Background="{DynamicResource Level1BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <gv:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Data="{Binding Data}" DynamicRender="{Binding DynamicRender, Mode=TwoWay}" />
+        <gv:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Series="{Binding Series}" DynamicRender="{Binding DynamicRender, Mode=TwoWay}" />
         <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Measurements}"
           IsVisible="{Binding MeasurementsPanelVisible}" />
         <v:SessionPanelView VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="351" Content="{Binding Session}" />

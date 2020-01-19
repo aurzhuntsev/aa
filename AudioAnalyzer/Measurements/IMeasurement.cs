@@ -17,14 +17,20 @@ namespace AudioMark.Core.Measurements
         bool Running { get; }
 
         IAnalysisResult AnalysisResult { get; }
+        IMeasurementSettings Settings { get; }
 
         /* TODO: Should not use object here */
         event EventHandler<object> OnDataUpdate;
         event EventHandler<IAnalysisResult> OnAnalysisComplete;
-        event EventHandler OnComplete;
-        event EventHandler<Exception> OnError;                
+        event EventHandler<bool> OnComplete;
+        event EventHandler<Exception> OnError;
 
         Task Run();
         void Stop();
+    }
+
+    public interface IMeasurement<TResult> : IMeasurement
+    {
+        TResult Data { get; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AudioMark.Core.Common;
 using AudioMark.Core.Measurements;
-using AudioMark.ViewModels.Measurements;
+using AudioMark.ViewModels.MeasurementSettings;
 using AudioMark.Views;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,12 +10,29 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 
 namespace AudioMark.ViewModels
 {
     public class MeasurementsPanelViewModel : ViewModelBase
     {
+        public IMeasurement Measurement { get; private set; }
+
+        private Subject<bool> _whenRunningStatusChanged = new Subject<bool>();
+        public IObservable<bool> WhenRunningStatusChanged
+        {
+            get => _whenRunningStatusChanged.AsObservable();
+        }
+
+        private Subject<SpectralData> _whenDataUpdated = new Subject<SpectralData>();
+        public IObservable<SpectralData> WhenDataUpdated
+        {
+            get => _whenDataUpdated.AsObservable();
+        }
+
         /* TODO: See how it will work content that needs scrolling */
         public ObservableCollection<string> Items { get; }
 
@@ -33,69 +50,27 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _running, value);
         }
 
-        private Action<SpectralData> _dataUpdate;
-
-        private MeasurementViewModelBase _content = null;
-        public MeasurementViewModelBase Content
+        private MeasurementSettingsViewModelBase _content = null;
+        public MeasurementSettingsViewModelBase Content
         {
-            get
-            {
-                var type =
-                    _meausrementViewModelAssociations.First(item =>
-                        item.Item1 == MeasurementsFactory.List().First(item =>
-                            item.Name == Items[SelectedIndex]).Type).Item2;
-
-                if (_content == null || _content.GetType() != type)
-                {
-                    _content = (MeasurementViewModelBase)Activator.CreateInstance(type);
-                    _content.Measurement = MeasurementsFactory.Create(Items[SelectedIndex]);
-
-                    _content.Measurement.OnComplete += (m, e) => { Running = false; };
-                    _content.Measurement.OnDataUpdate += (m, e) =>
-                    {
-                        var data = e as SpectralData;
-                        if (data != null)
-                        {
-                            _dataUpdate(data);
-                        }
-                    };
-
-                    _content.Measurement.OnAnalysisComplete += (m, e) =>
-                    {
-                        var data = e as ThdAnalysisResult;
-                        if (data != null)
-                        {
-                            _dataUpdate(data.Data);
-                        }
-                    };
-
-                }
-                return _content;
-            }
+            get => _content;
+            set => this.RaiseAndSetIfChanged(ref _content, value);
         }
-
-        private List<Tuple<Type, Type>> _meausrementViewModelAssociations = new List<Tuple<Type, Type>>();
-        private void RegisterMeasurementViewModelAssociation<M, VM>() where M : IMeasurement where VM : MeasurementViewModelBase =>
-            _meausrementViewModelAssociations.Add(new Tuple<Type, Type>(typeof(M), typeof(VM)));
-
-        private void RegisterMeasurementViewModelAssociations()
+  
+        public MeasurementsPanelViewModel()
         {
-            RegisterMeasurementViewModelAssociation<ThdMeasurement, ThdMeasurementViewModel>();
-        }
-
-        public MeasurementsPanelViewModel(Action<SpectralData> dataUpdate)
-        {
-            _dataUpdate = dataUpdate;
-
             Items = new ObservableCollection<string>(MeasurementsFactory.List().Select(item => item.Name));
-
-            RegisterMeasurementViewModelAssociations();
-
+            
             this.WhenAnyValue(x => x.SelectedIndex).Subscribe(x =>
-            {
-                this.RaisePropertyChanged("Content");
+            {               
+                var settings = MeasurementsFactory.CreateSettings(Items[SelectedIndex]);
+                var viewModel = DefaultForModel(settings);
+                _content = (MeasurementSettingsViewModelBase)viewModel;                
             });
+        }
 
+        private void OnMeasurementDataUpdate(object sender, object e)
+        {         
         }
 
         public async void Run(Button sender)
@@ -107,12 +82,32 @@ namespace AudioMark.ViewModels
                     desktop.Exit += OnExit;
                 }
 
+                Measurement = MeasurementsFactory.Create(Items[SelectedIndex], Content.Settings);                
+                Measurement.OnComplete += (sender, success) =>
+                {
+                    Running = false;
+                    _whenRunningStatusChanged.OnNext(success);
+                };
+
+                Measurement.OnError += (sender, e) =>
+                {
+                    Running = false;
+                    _whenRunningStatusChanged.OnNext(false);
+                };
+
+                Measurement.OnDataUpdate += (sender, data) =>
+                {
+                    _whenDataUpdated.OnNext(data as SpectralData);
+                };
+
                 Running = true;
-                await Content.Measurement.Run();
+                _whenRunningStatusChanged.OnNext(false);
+
+                await Measurement.Run();
             }
             else
             {
-                Content.Measurement.Stop();
+                Measurement.Stop();
 
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
@@ -123,9 +118,9 @@ namespace AudioMark.ViewModels
 
         private void OnExit(object sender, ControlledApplicationLifetimeExitEventArgs e)
         {
-            if (Content != null && Content.Measurement != null && Content.Measurement.Running)
+            if (Measurement != null && Measurement.Running)
             {
-                Content.Measurement.Stop();
+                Measurement.Stop();
             }
         }
     }

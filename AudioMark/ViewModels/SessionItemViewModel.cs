@@ -21,19 +21,7 @@ namespace AudioMark.ViewModels
         {
             get => (ReportViewModelBase)DefaultForModel(Measurement.AnalysisResult);
         }
-
-        public string Result
-        {
-            get
-            {
-                var result = new StringBuilder();
-                result.AppendLine($"THDf:       -123.33dB (0.000005%)");
-                result.AppendLine($"THDr:       -121.44dB (0.0000056%)");
-                result.AppendLine($"Even/odd:   0.1005");
-                return result.ToString();
-            }
-        }
-
+       
         public SessionItemViewModel(IMeasurement measurement)
         {
             Measurement = measurement;

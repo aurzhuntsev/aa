@@ -1,9 +1,11 @@
-﻿using AudioMark.Core.Common;
+﻿using AudioMark.Common;
+using AudioMark.Core.Common;
 using Avalonia;
 using Avalonia.Controls;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AudioMark.Views.GraphView
@@ -15,7 +17,7 @@ namespace AudioMark.Views.GraphView
             Color = new SKColor(255, 45, 0, 255),
             IsAntialias = true
         };
-        
+
         public SpectralDataRenderer(Image target) : base(target) { }
 
         protected override void RenderInternal(SKCanvas canvas)
@@ -24,25 +26,33 @@ namespace AudioMark.Views.GraphView
 
             if (Bins != null)
             {
-                bool isFirstPoint = true;
-                int lx = 0, ly = 0;
-
-                foreach (var bin in Bins)
+                for (var i = 0; i < Series.Count(); i++)
                 {
-                    var x = bin.Left + (int)((bin.Right - bin.Left) * 0.5);
-                    var y = Context.DbToViewY(bin.Value);
+                    var series = Series.Skip(i).First();
+                    bool isFirstPoint = true;
+                    int lx = 0, ly = 0;
 
-                    if (isFirstPoint)
+                    foreach (var bin in Bins)
                     {
-                        isFirstPoint = false;
-                    }
-                    else
-                    {
-                        canvas.DrawLine(lx, ly, x, y, _dataPaint);
-                    }
+                        var x = bin.Left + (int)((bin.Right - bin.Left) * 0.5);
+                        var y = Context.DbToViewY(GetSeriesValue(series, bin));
+                        if (y < 0)
+                        {
+                            continue;
+                        }
 
-                    lx = x;
-                    ly = y;
+                        if (isFirstPoint)
+                        {
+                            isFirstPoint = false;
+                        }
+                        else
+                        {
+                            canvas.DrawLine(lx, ly, x, y, SeriesColorConverter.GetSKPaint(i));
+                        }
+
+                        lx = x;
+                        ly = y;
+                    }
                 }
             }
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace AudioMark.Core.Measurements
 {
     /* TODO: Refactor a bit */
-    public abstract class MeasurementBase<TResult> : IMeasurement
+    public abstract class MeasurementBase<TResult> : IMeasurement<TResult>
     {
         private readonly int DataSamplesToDiscard = AppSettings.Current.Device.SampleRate;
 
@@ -29,11 +29,12 @@ namespace AudioMark.Core.Measurements
 
         public Activity<TResult> CurrentActivity { get; protected set; }
 
+        private bool _allActivitiesCompleted = false;
         protected volatile bool _running;
         public bool Running
         {
             get => _running;
-        }
+        }        
 
         public string CurrentActivityDescription
         {
@@ -57,6 +58,11 @@ namespace AudioMark.Core.Measurements
             get => _activities.Count;
         }
 
+        public int CompletedActivitiesCount
+        {
+            get; private set;
+        }
+
         public TimeSpan? Remaining
         {
             get => CurrentActivity?.Remaining;
@@ -72,6 +78,9 @@ namespace AudioMark.Core.Measurements
 
         public IAnalysisResult AnalysisResult { get; protected set; }
 
+        public abstract TResult Data { get; }
+        public IMeasurementSettings Settings { get; private set; }
+
         private int _dataDiscardCounter = 0;
         private DateTime _lastStopConditionsChecked;
         private readonly object _stopConditionCheckSync = new object();
@@ -79,11 +88,11 @@ namespace AudioMark.Core.Measurements
         private EventWaitHandle _activityWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
 
         public event EventHandler<object> OnDataUpdate;
-        public event EventHandler OnComplete;
+        public event EventHandler<bool> OnComplete;
         public event EventHandler<Exception> OnError;
         public event EventHandler<IAnalysisResult> OnAnalysisComplete;
 
-        public MeasurementBase()
+        public MeasurementBase(IMeasurementSettings settings)
         {
             _adapter = AudioDataAdapterProvider.Create();
             _adapter.OnWrite = OnAdapterWrite;
@@ -91,17 +100,25 @@ namespace AudioMark.Core.Measurements
 
             Generators = new IGenerator[AppSettings.Current.Device.OutputDevice.ChannelsCount];
             DataSinks = new IDataSink<TResult>[AppSettings.Current.Device.InputDevice.ChannelsCount];
+
+            Settings = settings;
         }
 
         public async Task Run()
         {
-            Initialize();
+            _activities.Clear();
+            AnalysisResult = null;
+
+            Initialize();            
 
             _running = true;
             _adapter.Start();
+            
             await Task.Run(() =>
             {
                 var index = 0;
+                var activitiesCompleted = 0;
+                _allActivitiesCompleted = false;
                 for (index = 0; index < _activities.Count; index++)
                 {
                     if (!_running)
@@ -143,14 +160,16 @@ namespace AudioMark.Core.Measurements
 
                     _activityWaitHandle.WaitOne();
                     _activityWaitHandle.Reset();
+
                 }
 
-                if (index == _activities.Count)
-                {
+                if (CompletedActivitiesCount == _activities.Count)
+                {                    
                     AnalysisResult = Analyze();
                     OnAnalysisComplete?.Invoke(this, AnalysisResult);
                 }
-                Stop();
+
+                StopInternal(false);
             });
         }
 
@@ -161,17 +180,26 @@ namespace AudioMark.Core.Measurements
 
         public void Stop()
         {
-            _running = false;
-            _adapter.Stop();
-            _activityWaitHandle.Set();
+            StopInternal(true);
+        }
 
-            OnComplete?.Invoke(this, null);
+        private void StopInternal(bool interrupted)
+        {
+            if (_running)
+            {
+                _running = false;
+                _adapter.Stop();
+                _activityWaitHandle.Set();
+
+                OnComplete?.Invoke(this, !interrupted);
+            }
         }
 
         public void RegisterActivity(Activity<TResult> activity)
         {
             activity.OnComplete += (sender, e) =>
             {
+                CompletedActivitiesCount++;
                 _activityWaitHandle.Set();
             };
 

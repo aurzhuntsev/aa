@@ -39,67 +39,49 @@ namespace AudioMark.Core.Measurements
     [Measurement("Total Harmonic Distortion")]
     public class ThdMeasurement : MeasurementBase<SpectralData>
     {
-        public class SignalOptions
-        {
-            public double Frequency { get; set; } = 1000.0;
-            public InputOutputLevel InputOutputOptions { get; set; } = new InputOutputLevel();
-        }
-
-        public class ThdAnalysisOptions
-        {
-            public int WindowHalfSize { get; set; } = 0;
-
-            public bool LimitMaxHarmonics { get; set; } = true;
-            public int MaxHarmonics { get; set; } = 10;
-
-            public bool LimitMaxFrequency { get; set; } = false;
-            public double MaxFrequency { get; set; } = 20000.0;
-        }
-
-        public SignalOptions TestSignalOptions { get; set; } = new SignalOptions();
+       
+        private Activity<SpectralData> _dataActivity;
         public SineGenerator TestSignalGenerator { get; set; }
-
-        public bool WarmUpEnabled { get; set; } = true;
-        public bool OverrideWarmUpSignalOptions { get; set; } = false;
-        public int WarmUpDurationSeconds { get; set; } = 10;
-        public SignalOptions WarmUpSignalOptions { get; set; } = new SignalOptions();
         public SineGenerator WarmupSignalGenerator { get; set; }
 
-        public ThdAnalysisOptions AnalysisOptions { get; set; } = new ThdAnalysisOptions();
+        public override SpectralData Data => (AnalysisResult as ThdAnalysisResult)?.Data;
 
-        public OverridableSettings<StopConditions> StopConditions { get; set; } = new OverridableSettings<StopConditions>(AppSettings.Current.StopConditions);
-        public OverridableSettings<Fft> Fft { get; set; } = new OverridableSettings<Fft>(AppSettings.Current.Fft);
+        public new ThdMeasurementSettings Settings
+        {
+            get => (ThdMeasurementSettings)base.Settings;
+        }
 
-        private Activity<SpectralData> _dataActivity;
-   
+        public ThdMeasurement(ThdMeasurementSettings settings): base(settings)
+        {            
+            Name = $"THD - {Settings.TestSignalOptions.InputOutputOptions}@{Settings.TestSignalOptions.Frequency}hz";
+        }
+
         protected override void Initialize()
         {
             RegisterActivity(CreateSetupActivity());
 
-            TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, TestSignalOptions.Frequency);
-            if (!OverrideWarmUpSignalOptions)
+            TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.TestSignalOptions.Frequency);
+            if (!Settings.OverrideWarmUpSignalOptions)
             {
                 WarmupSignalGenerator = TestSignalGenerator;
             }
             else
             {
-                WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, WarmUpSignalOptions.Frequency);
+                WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.WarmUpSignalOptions.Frequency);
             }
 
-            if (TestSignalOptions.InputOutputOptions.MatchInputLevel)
+            if (Settings.TestSignalOptions.InputOutputOptions.MatchInputLevel)
             {
                 /* TODO: Add input level tune activity */
             }
 
-            if (WarmUpEnabled && WarmUpDurationSeconds > 0)
+            if (Settings.WarmUpEnabled && Settings.WarmUpDurationSeconds > 0)
             {
                 RegisterActivity(CreateWarmUpActivity());
             }
 
             _dataActivity = CreateAcquisitionActivity();
-            RegisterActivity(_dataActivity);
-
-            Name = $"THD - {TestSignalOptions.InputOutputOptions}@{TestSignalOptions.Frequency}hz";            
+            RegisterActivity(_dataActivity);             
         }
 
         private Activity<SpectralData> CreateSetupActivity()
@@ -109,7 +91,7 @@ namespace AudioMark.Core.Measurements
             var setupActivity = new Activity<SpectralData>("Setting up...");
             setupActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, new SilenceGenerator());
 
-            var sink = new SpectralDataProcessor(Fft.Value.WindowSize, Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2)
+            var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2)
             {
                 Silent = true
             };
@@ -124,11 +106,11 @@ namespace AudioMark.Core.Measurements
             var warmUpActivity = new Activity<SpectralData>("Warming up...");
             warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, WarmupSignalGenerator);
 
-            var sink = new SpectralDataProcessor(Fft.Value.WindowSize, Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
+            var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
             sink.Data.DefaultValueSelector = (data) => data.LastValue;
             warmUpActivity.AddSink(AppSettings.Current.Device.PrimaryInputChannel, sink);
 
-            warmUpActivity.RegisterStopCondition(new TimeoutStopCondition(WarmUpDurationSeconds * 1000));
+            warmUpActivity.RegisterStopCondition(new TimeoutStopCondition(Settings.WarmUpDurationSeconds * 1000));
 
             return warmUpActivity;
         }
@@ -139,17 +121,17 @@ namespace AudioMark.Core.Measurements
             var dataActivity = new Activity<SpectralData>("Acquiring data...");
             dataActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, TestSignalGenerator);
 
-            var sink = new SpectralDataProcessor(Fft.Value.WindowSize, Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
+            var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
             sink.Data.DefaultValueSelector = (data) => data.Mean;
             dataActivity.AddSink(AppSettings.Current.Device.PrimaryInputChannel, sink);
 
-            if (StopConditions.Value.TimeoutEnabled)
+            if (Settings.StopConditions.Value.TimeoutEnabled)
             {
-                dataActivity.RegisterStopCondition(new TimeoutStopCondition(StopConditions.Value.Timeout * 1000));
+                dataActivity.RegisterStopCondition(new TimeoutStopCondition(Settings.StopConditions.Value.Timeout * 1000));
             }
-            if (StopConditions.Value.ToleranceMatchingEnabled)
+            if (Settings.StopConditions.Value.ToleranceMatchingEnabled)
             {
-                dataActivity.RegisterStopCondition(new ToleranceAchievedStopCondition(sink.Data, StopConditions.Value.Tolerance, StopConditions.Value.Confidence));
+                dataActivity.RegisterStopCondition(new ToleranceAchievedStopCondition(sink.Data, Settings.StopConditions.Value.Tolerance, Settings.StopConditions.Value.Confidence));
             }
 
             return dataActivity;
@@ -161,12 +143,12 @@ namespace AudioMark.Core.Measurements
             var data = ((SpectralDataProcessor)_dataActivity.GetSink(AppSettings.Current.Device.PrimaryInputChannel)).Data;
             result.Data = data;
 
-            var first = data.AtFrequency(TestSignalOptions.Frequency, AnalysisOptions.WindowHalfSize);
+            var first = data.AtFrequency(Settings.TestSignalOptions.Frequency, Settings.AnalysisOptions.WindowHalfSize);
             var evens = new List<SpectralData.StatisticsItem>();
             var odds = new List<SpectralData.StatisticsItem>();
 
             var harmonic = 2;
-            var freq = 2 * TestSignalOptions.Frequency;
+            var freq = 2 * Settings.TestSignalOptions.Frequency;
 
             while (freq < data.MaxFrequency)
             {
@@ -183,7 +165,7 @@ namespace AudioMark.Core.Measurements
                     label = harmonic + "th";
                 }
 
-                var values = data.AtFrequency(freq, AnalysisOptions.WindowHalfSize).ToList();
+                var values = data.AtFrequency(freq, Settings.AnalysisOptions.WindowHalfSize).ToList();
                 values[(int)Math.Ceiling((double)values.Count() / 2) - 1].Label = $"{label}";
 
                 if (harmonic.IsEven())
@@ -196,19 +178,19 @@ namespace AudioMark.Core.Measurements
                 }
 
                 harmonic++;
-                freq = harmonic * TestSignalOptions.Frequency;
+                freq = harmonic * Settings.TestSignalOptions.Frequency;
 
-                if (AnalysisOptions.LimitMaxFrequency)
+                if (Settings.AnalysisOptions.LimitMaxFrequency)
                 {
-                    if (freq > AnalysisOptions.MaxFrequency)
+                    if (freq > Settings.AnalysisOptions.MaxFrequency)
                     {
                         break;
                     }
                 }
 
-                if (AnalysisOptions.LimitMaxHarmonics)
+                if (Settings.AnalysisOptions.LimitMaxHarmonics)
                 {
-                    if (harmonic - 1 > AnalysisOptions.MaxHarmonics)
+                    if (harmonic - 1 > Settings.AnalysisOptions.MaxHarmonics)
                     {
                         break;
                     }

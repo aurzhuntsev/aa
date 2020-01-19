@@ -3,14 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Controls"
-             xmlns:vmc="clr-namespace:AudioMark.Views.Measurements.Common;assembly=AudioMark"
+             xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
              mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="450"
-             x:Class="AudioMark.Views.Measurements.ThdMeasurementView"
-             x:Name="ThdMeasurementView">
-  <UserControl.Styles>
+             x:Class="AudioMark.Views.MeasurementSettings.ThdMeasurementSettingsView"
+             x:Name="ThdMeasurementSettingsView">
 
-
-  </UserControl.Styles>
   <StackPanel Orientation="Vertical">
 
     <cc:PropertySection Title="Test signal" Expanded="true">

@@ -52,37 +52,25 @@ namespace AudioMark.Views.GraphView
         protected override void RenderInternal(SKCanvas canvas)
         {
             canvas.Clear();
-            if (Bins != null)
-            {
-                var labeledBins = Bins.Where(bin => bin.Labels != null && bin.Labels.Any()).ToList();
-                foreach (var bin in labeledBins)
-                {
-                    canvas.DrawRect(bin.Left, 0, bin.Right - bin.Left, (float)Context.Bounds.Height, new SKPaint()
-                    {
-                        Color = new SKColor(255, 0, 0, 30)
-                    });
 
-                    DrawLabelAtBin(canvas, bin, bin.Labels[0]);
-                }
-            }
 
-            if (Bins != null && Pointer.HasValue)
-            {
-                var selectedBin = Bins.FirstOrDefault(bin => Pointer.Value.X >= bin.Left && Pointer.Value.X < bin.Right);
-                if (selectedBin != null && (selectedBin.Labels == null || !selectedBin.Labels.Any()))
-                {
-                    canvas.DrawRect(selectedBin.Left, 0, selectedBin.Right - selectedBin.Left, (float)Context.Bounds.Height, new SKPaint()
-                    {
-                        Color = new SKColor(255, 255, 255, 30)
-                    });
+            //if (Bins != null && Pointer.HasValue)
+            //{
+            //    var selectedBin = Bins.FirstOrDefault(bin => Pointer.Value.X >= bin.Left && Pointer.Value.X < bin.Right);
+            //    if (selectedBin != null)
+            //    {
+            //        canvas.DrawRect(selectedBin.Left, 0, selectedBin.Right - selectedBin.Left, (float)Context.Bounds.Height, new SKPaint()
+            //        {
+            //            Color = new SKColor(255, 255, 255, 30)
+            //        });
 
-                    var db = (20.0 * Math.Log10(1.0 / selectedBin.Value)).ToString("F2");
-                    var freq = (Context.MaxFrequency * selectedBin.SpectrumBin / Context.SpectrumBins).ToString("F2");
-                    var labelText = $"-{db}dB@{freq}Hz";
+            //        var db = (20.0 * Math.Log10(1.0 / selectedBin.Value)).ToString("F2");
+            //        var freq = (Context.MaxFrequency * selectedBin.SpectrumBin / Context.SpectrumBins).ToString("F2");
+            //        var labelText = $"-{db}dB@{freq}Hz";
 
-                    DrawLabelAtBin(canvas, selectedBin, labelText);
-                }
-            }
+            //        DrawLabelAtBin(canvas, selectedBin, labelText);
+            //    }
+            //}
         }
     }
 }

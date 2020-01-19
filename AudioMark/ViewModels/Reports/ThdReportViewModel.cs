@@ -14,17 +14,17 @@ namespace AudioMark.ViewModels.Reports
         /* TODO: Some neat rounding */
         public string ThdF
         {
-            get => $"{Model.ThdFDb}dB ({Model.ThdFPercentage}%)";
+            get => $"{Model.ThdFDb.ToString("F4")}dB ({Model.ThdFPercentage.ToString("F8")}%)";
         }
 
         public string ThdR
         {
-            get => $"{Model.ThdRDb}dB ({Model.ThdRPercentage}%)";
+            get => $"{Model.ThdRDb.ToString("F4")}dB ({Model.ThdRPercentage.ToString("F8")}%)";
         }
 
         public string EvenToOdd
         {
-            get => Model.EvenToOdd.ToString(); 
+            get => Model.EvenToOdd.ToString("F4"); 
         }
 
         public ThdReportViewModel(ThdAnalysisResult model)

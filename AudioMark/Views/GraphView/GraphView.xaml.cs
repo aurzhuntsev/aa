@@ -23,18 +23,16 @@ namespace AudioMark.Views.GraphView
 {
     public class GraphView : UserControl
     {
-        //private Rect _viewBounds;
-        //public Rect ViewBounds
-        //{
-        //    get => _viewBounds;
-        //    set
-        //    {
-        //        _viewBounds = value;
-        //        OnViewContextChanged();
-        //    }
-        //}
-
-            public Rect ViewBounds { get; set; }
+        private Rect _viewBounds;
+        public Rect ViewBounds
+        {
+            get => _viewBounds;
+            set
+            {
+                _viewBounds = value;
+                OnViewContextChanged();
+            }
+        }
 
         public static readonly DirectProperty<GraphView, bool> DynamicRenderProperty =
             AvaloniaProperty.RegisterDirect<GraphView, bool>(nameof(DynamicRender), x => x.DynamicRender, (x, v) => x.DynamicRender = v);
@@ -42,32 +40,40 @@ namespace AudioMark.Views.GraphView
         public bool DynamicRender
         {
             get => _dynamicRender;
-            set 
+            set
             {
                 SetAndRaise(DynamicRenderProperty, ref _dynamicRender, value);
-                _dataRenderer.AutoUpdate = value;
+                _seriesRenderer.AutoUpdate = value;
             }
         }
 
-        public static readonly DirectProperty<GraphView, SpectralData> DataProperty =
-            AvaloniaProperty.RegisterDirect<GraphView, SpectralData>(nameof(Data), x => x.Data, (x, v) => x.Data = v);
-        private SpectralData _data;
-        public SpectralData Data
+        
+        public static readonly DirectProperty<GraphView, List<SpectralData>> SeriesProperty =
+            AvaloniaProperty.RegisterDirect<GraphView, List<SpectralData>>(nameof(Series), x => x.Series, (x, v) => x.Series = v);
+        private List<SpectralData> _series;
+        public List<SpectralData> Series
         {
-            get => _data;
+            get => _series;
             set
             {
-                SetAndRaise(DataProperty, ref _data, value);
+                SetAndRaise(SeriesProperty, ref _series, value);
+
+                foreach (var renderer in _renderers) {
+                    renderer.Series = _series;
+                }
+
                 BuildBins();
+
+                _seriesRenderer.Render();
             }
         }
 
         public IEnumerable<Bin> Bins { get; private set; }
 
         private ViewContext _viewContext = new ViewContext();
-        
+
         private GridRenderer _gridRenderer = null;
-        private SpectralDataRenderer _dataRenderer = null;
+        private SpectralDataRenderer _seriesRenderer = null;
         private CursorRenderer _cursorRenderer = null;
 
         private ImageRendererBase[] _renderers = null;
@@ -76,12 +82,12 @@ namespace AudioMark.Views.GraphView
 
         public int MaxFrequency
         {
-            get => Data == null ? (int)(AppSettings.Current.Device.SampleRate / 2.0) : Data.MaxFrequency;
+            get => !Series.Any() ? (int)(AppSettings.Current.Device.SampleRate / 2.0) : Series.Max(d => d.MaxFrequency);
         }
 
         public int SpectrumBins
         {
-            get => Data == null ? (AppSettings.Current.Fft.WindowSize) : Data.Size;
+            get => !Series.Any() ? (AppSettings.Current.Fft.WindowSize) : Series.Max(d => d.Size);
         }
 
 
@@ -90,10 +96,10 @@ namespace AudioMark.Views.GraphView
             this.InitializeComponent();
 
             _gridRenderer = new GridRenderer(this.FindControl<Image>("BackgroundImage"));
-            _dataRenderer = new SpectralDataRenderer(this.FindControl<Image>("DataImage"));
+            _seriesRenderer = new SpectralDataRenderer(this.FindControl<Image>("DataImage"));
             _cursorRenderer = new CursorRenderer(this.FindControl<Image>("CursorsImage"));
 
-            _renderers = new ImageRendererBase[] { _gridRenderer, _dataRenderer, _cursorRenderer };
+            _renderers = new ImageRendererBase[] { _gridRenderer, _seriesRenderer, _cursorRenderer };
         }
 
         private void InitializeComponent()
@@ -111,54 +117,34 @@ namespace AudioMark.Views.GraphView
                 foreach (var renderer in _renderers)
                 {
                     renderer.Update(_viewContext);
-                }                
+                }
             }
         }
 
         private void BuildBins()
         {
             var result = new List<Bin>();
-            if (Data != null)
+            if (Series != null && Series.Any())
             {
                 int currentOffset = 0;
                 int binWidth = 0;
                 int startingBin = 2;
                 int bins = 0;
-         
-                while (startingBin + bins < Data.Size)
+
+                while (startingBin + bins < SpectrumBins)
                 {
-                    while (currentOffset == (binWidth = _viewContext.FreqToViewX((startingBin + bins) * Data.FrequencyPerBin)))
+                    while (currentOffset == (binWidth = _viewContext.FreqToViewX((startingBin + bins) * (MaxFrequency / SpectrumBins))))
                     {
                         bins++;
                     }
 
-                    var meanValue = double.MinValue;
-                    var meanValueBin = 0;
                     var labels = new List<string>();
-                    for (var i = startingBin; i < startingBin + bins && i < Data.Size; i++)
-                    {
-                        var value = Data.DefaultValueSelector(Data.Statistics[i]);
-                        if (meanValue < value)
-                        {
-                            meanValue = value;
-                            meanValueBin = i;
-                        }
-
-                        if (!string.IsNullOrEmpty(Data.Statistics[i].Label))
-                        {
-                            labels.Add(Data.Statistics[i].Label);
-                        }                   
-                    }
-
                     var bin = new Bin()
                     {
                         Left = currentOffset,
                         Right = binWidth,
                         From = startingBin,
-                        To = startingBin + bins,
-                        Value = meanValue,
-                        SpectrumBin = meanValueBin,
-                        Labels = labels
+                        To = startingBin + bins                        
                     };
 
                     result.Add(bin);
@@ -171,7 +157,7 @@ namespace AudioMark.Views.GraphView
 
                 foreach (var renderer in _renderers)
                 {
-                    renderer.Bins = result;
+                    renderer.Bins = result;                    
                 }
             }
         }
@@ -196,7 +182,7 @@ namespace AudioMark.Views.GraphView
         }
 
         public void OnPointerLeave(object sender, PointerEventArgs e)
-        {            
+        {
             _pointer = null;
             _cursorRenderer.Pointer = _pointer;
             _cursorRenderer.Render();
@@ -220,16 +206,6 @@ namespace AudioMark.Views.GraphView
             }
 
             base.OnDetachedFromVisualTree(e);
-        }
-
-        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
-            if (e.Property.Name == "Bounds")
-            {
-                ViewBounds = (Rect)e.NewValue;
-                OnViewContextChanged();
-            }
         }
     }
 }
