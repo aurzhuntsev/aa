@@ -21,20 +21,25 @@
     <AvaloniaResource Remove="Styles\Common.xaml" />
     <AvaloniaResource Remove="Styles\Icons.xaml" />
     <AvaloniaResource Remove="Styles\Inline.xaml" />
+    <AvaloniaResource Remove="Views\Common\Confirm.xaml" />
+    <AvaloniaResource Remove="Views\Common\Input.xaml" />
     <AvaloniaResource Remove="Views\GraphView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementsPanelView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
     <AvaloniaResource Remove="Views\Reports\ThdReportView.xaml" />
     <AvaloniaResource Remove="Views\SessionPanelView.xaml" />
     <AvaloniaResource Remove="Views\TopPanelView.xaml" />
-    <Folder Include="Views\Common\" />
     <None Remove="Controls\PropertySection.xaml" />
     <None Remove="Styles\BaseTheme.xaml" />
     <None Remove="Styles\Common.xaml" />
     <None Remove="Styles\Icons.xaml" />
     <None Remove="Styles\Inline.xaml" />
+    <None Remove="Views\Common\Confirm.xaml" />
+    <None Remove="Views\Common\Input.xaml" />
     <None Remove="Views\GraphView.xaml" />
+    <None Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <None Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementsPanelView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
@@ -63,6 +68,9 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Styles\BaseTheme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Common\Input.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SessionPanelView.xaml">
@@ -100,11 +108,24 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\Common\Confirm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\Common\LevelMeter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AudioAnalyzer\AudioMark.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\PropertySection.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Common\Input.xaml.cs">
+      <DependentUpon>Input.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml.cs">
       <DependentUpon>ThdMeasurementSettingsView.xaml</DependentUpon>

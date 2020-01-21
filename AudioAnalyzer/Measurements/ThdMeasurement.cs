@@ -14,11 +14,6 @@ using System.Linq;
 
 namespace AudioMark.Core.Measurements
 {
-    public enum SignalLevelMode
-    {
-        dBTP = 0, dBFS = 1
-    }
-
     public class InputOutputLevel
     {
         public double OutputLevel { get; set; } = 3.0;
@@ -52,8 +47,13 @@ namespace AudioMark.Core.Measurements
         }
 
         public ThdMeasurement(ThdMeasurementSettings settings): base(settings)
-        {            
-            Name = $"THD - {Settings.TestSignalOptions.InputOutputOptions}@{Settings.TestSignalOptions.Frequency}hz";
+        {
+            /* TODO: Remove try/catch */
+            try
+            {
+                Name = $"THD - {Settings.TestSignalOptions.InputOutputOptions}@{Settings.TestSignalOptions.Frequency}hz";
+            }
+            catch { }
         }
 
         protected override void Initialize()

@@ -13,7 +13,38 @@
       <ItemsControl Items="{Binding Items}" HorizontalAlignment="Stretch">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <cc:PropertySection Title="{Binding Name}" Expanded="True">
+            <cc:PropertySection Expanded="True">
+              <cc:PropertySection.Title>
+                <DockPanel HorizontalAlignment="Stretch">
+                  <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Button Classes="SeriesIcon" Margin="0 0 4 0" Foreground="{Binding SeriesIndex, Converter={StaticResource SeriesColorConverter}}" />
+                    <TextBlock Classes="PropertyTitle" Text="{Binding Name}" />
+                  </StackPanel>
+                  
+                  <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <StackPanel.Styles>
+                      <Style Selector="Button.Icon">
+                        <Setter Property="Margin" Value="0 0 -4 0" />
+                      </Style>
+                    </StackPanel.Styles>  
+                    <Button Classes="NoText Icon EyeIcon" Margin="0 1 2 0" ToolTip.Tip="Toggle visibility" Background="Transparent" IsVisible="{Binding Visible}" Command="{Binding ToggleVisibility}" />
+                    <Button Classes="NoText Icon EyeOffIcon" Margin="0 1 2 0" ToolTip.Tip="Toggle visibility" Background="Transparent" IsVisible="{Binding !Visible}" Command="{Binding ToggleVisibility}"/>
+                    <Button Classes="NoText Icon SaveIcon" ToolTip.Tip="Save" Background="Transparent">
+                      <Button.Styles>
+                        <Style Selector="Button.SaveIcon /template/ Path">
+                          <Setter Property="Fill" Value="{DynamicResource ForegroundBrush}" />
+                        </Style>
+                        <Style Selector="Button.SaveIcon:pointerover /template/ Path">
+                          <Setter Property="Fill" Value="{DynamicResource HighlightForegroundBrush}" />
+                        </Style>
+                      </Button.Styles>
+                    </Button>
+                    <Button Classes="NoText Icon EditIcon" ToolTip.Tip="Edit name" Background="Transparent" Command="{Binding EditName}" />
+                    <Button Classes="NoText Icon RemoveFlaskIcon" ToolTip.Tip="Delete" Background="Transparent" Margin="0 0 2 0" Command="{Binding Remove}" />
+                  </StackPanel>
+                  
+                </DockPanel>
+              </cc:PropertySection.Title>
               <cc:PropertySection.Properties>
 
                 <Grid HorizontalAlignment="Stretch">

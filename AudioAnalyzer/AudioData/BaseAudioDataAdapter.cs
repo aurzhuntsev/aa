@@ -27,8 +27,8 @@ namespace AudioMark.Core.AudioData
         private Thread inputProcessingThread = null;                
         private Thread outputProcessingThread = null;        
 
-        public IAudioDataAdapter.DataReadEventHandler OnRead { get; set; }
-        public IAudioDataAdapter.DataWriteEventHandler OnWrite { get; set; }
+        public DataReadEventHandler OnRead { get; private set; }
+        public DataWriteEventHandler OnWrite { get; private set; }
 
         public abstract IEnumerable<DeviceInfo> EnumerateInputDevices();
         public abstract IEnumerable<DeviceInfo> EnumerateOutputDevices();
@@ -137,6 +137,26 @@ namespace AudioMark.Core.AudioData
             {
                 return OnWrite(this, buffer, false);
             })) { };
+        }
+
+        public void SetReadHandler(DataReadEventHandler readHandler)
+        {
+            if (Running)
+            {
+                throw new InvalidOperationException("Cannot change handler while running");
+            }
+
+            OnRead = readHandler;
+        }
+
+        public void SetWriteHandler(DataWriteEventHandler writeHandler)
+        {
+            if (Running)
+            {
+                throw new InvalidOperationException("Cannot change handler while running");
+            }
+
+            OnWrite = writeHandler;
         }
     }
 }

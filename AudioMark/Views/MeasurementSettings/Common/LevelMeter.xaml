@@ -1,0 +1,39 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40"
+             x:Class="AudioMark.Views.MeasurementSettings.Common.LevelMeter"
+             Name="LevelMeter" Bounds="{Binding ViewBounds, ElementName=LevelMeter, Mode=OneWayToSource}">
+  
+  <Grid ColumnDefinitions="*,48" Margin="2 2 2 2">
+    <StackPanel Orientation="Vertical" Grid.Column="0">
+      <Border Margin="2 2 2 2" BorderThickness="1 0 1 2" BorderBrush="{DynamicResource Level3BackgroundBrush}" Height="21">
+        <StackPanel Orientation="Vertical" Name="container" Bounds="{Binding ContainerBounds, ElementName=LevelMeter, Mode=OneWayToSource}">
+          <Border  Name="tp" Grid.Row="0" Width="120" HorizontalAlignment="Left" Height="10" BorderBrush="{DynamicResource Level3BackgroundBrush}"
+                  BorderThickness="0 0 0 1">
+            <Border.Styles>
+              <Style Selector="Border">
+                <Setter Property="Background" Value="{DynamicResource GreenBrush}" />
+              </Style>
+              <Style Selector="Border.Clipping">
+                <Setter Property="Background" Value="{DynamicResource RedBrush}" />
+              </Style>
+            </Border.Styles>            
+          </Border>
+          <Border Name="fs" Grid.Row="1" Width="100" Background="{DynamicResource BlueBrush}" HorizontalAlignment="Left" Height="9" />
+        </StackPanel>
+      </Border>
+      <Grid ColumnDefinitions="1*,1*,1*" Margin="0 -4 0 0">
+        <TextBlock Grid.Column="0" FontSize="9">-90dB</TextBlock>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontSize="9">-45dB</TextBlock>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Right" FontSize="9">0dB</TextBlock>
+      </Grid>
+    </StackPanel>
+    <StackPanel Orientation="Vertical" Grid.Column="1">
+      <TextBlock Grid.Row="0" Text="{Binding LevelDbTp, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}-{0:F1}dBTP'}" HorizontalAlignment="Right" FontSize="9" />
+      <TextBlock Grid.Row="1" Text="{Binding LevelDbFs, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}-{0:F1}dBFS'}" HorizontalAlignment="Right" FontSize="9" />
+    </StackPanel>
+  </Grid>
+
+</UserControl>

@@ -1,6 +1,7 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:AudioMark"
+             xmlns:ac="clr-namespace:Avalonia.Data.Converters"
              xmlns:common="clr-namespace:AudioMark.Common;assembly=AudioMark"
              x:Class="AudioMark.App">
   <Application.DataTemplates>
@@ -15,7 +16,8 @@
     <StyleInclude Source="resm:AudioMark.Styles.Icons.xaml?assembly=AudioMark"/>
     <StyleInclude Source="resm:AudioMark.Styles.Inline.xaml?assembly=AudioMark"/>
   </Application.Styles>
-  <Application.Resources>
+  <Application.Resources>    
     <common:SeriesColorConverter x:Key="SeriesColorConverter" />
+    <common:StringFormatConverter x:Key="StringFormatConverter" />
   </Application.Resources>
 </Application>

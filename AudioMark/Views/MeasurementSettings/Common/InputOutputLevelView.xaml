@@ -2,43 +2,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="80"
+             xmlns:cc="clr-namespace:AudioMark.Views.MeasurementSettings.Common"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="120"
              x:Class="AudioMark.Views.MeasurementSettings.Common.InputOutputLevelView">
-  <Grid HorizontalAlignment="Stretch">
+  <StackPanel Orientation="Vertical">
+    <Grid HorizontalAlignment="Stretch">
 
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="3*" />
-      <ColumnDefinition Width="2*" />
-      <ColumnDefinition Width="16" />
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition />
-      <RowDefinition/>
-      <RowDefinition Height="24"/>
-    </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="16" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition/>
+        <RowDefinition Height="24"/>
+      </Grid.RowDefinitions>
 
-    <TextBlock  Classes="Inline" Grid.Column="0" Grid.Row="0">Output level:</TextBlock>
-    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-      <TextBlock Classes="Inline" Margin="-9 0 0 0">−</TextBlock>
-      <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
-               Text="{Binding OutputLevel}" IsEnabled="{Binding !MatchInputLevel}"/>
-      <TextBlock Classes="Inline">dBTP</TextBlock>
-    </StackPanel>
+      <TextBlock  Classes="Inline" Grid.Column="0" Grid.Row="0">Output level:</TextBlock>
+      <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+        <TextBlock Classes="Inline" Margin="-9 0 0 0">−</TextBlock>
+        <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                 Text="{Binding OutputLevel}" />
+        <TextBlock Classes="Inline">dBTP</TextBlock>
+      </StackPanel>
 
-    <CheckBox  Classes="Inline"  Grid.Column="0" Grid.Row="1" IsChecked="{Binding MatchInputLevel}">Match input level:</CheckBox>
-    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-      <TextBlock Classes="Inline" Margin="-9 0 0 0">−</TextBlock>
-      <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" Text="{Binding InputLevel}" IsEnabled="{Binding MatchInputLevel}" />
-      <ComboBox Classes="Inline" SelectedIndex="{Binding InputLevelMode}" IsEnabled="{Binding MatchInputLevel}">
-        <ComboBoxItem>dBTP</ComboBoxItem>
-        <ComboBoxItem>dBFS</ComboBoxItem>
-      </ComboBox>
-    </StackPanel>
+      <!--
+      <TextBlock  Classes="Inline"  Grid.Column="0" Grid.Row="1">Tune to input level:</TextBlock>
+      <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+        <TextBlock Classes="Inline" Margin="-9 0 0 0">−</TextBlock>
+        <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52" Text="{Binding InputLevel}" />
+        <ComboBox Classes="Inline" SelectedIndex="{Binding InputLevelMode}">
+          <ComboBoxItem>dBTP</ComboBoxItem>
+          <ComboBoxItem>dBFS</ComboBoxItem>
+        </ComboBox>
+      </StackPanel>
+      -->
+      <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+        <Button Classes="Inline Icon PlayIcon" HorizontalAlignment="Left"
+              Width="52" IsVisible="{Binding !IsTunerActive}" Command="{Binding Test}">Test</Button>
+        <Button Classes="Inline Icon StopIcon" HorizontalAlignment="Left"
+                Width="52" IsVisible="{Binding IsTunerActive}" Command="{Binding Stop}">Stop</Button>
 
-    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
-      <Button Classes="Inline Icon WrenchIcon" Margin="0 0 2 0" Width="46" IsEnabled="{Binding MatchInputLevel}">Tune</Button>
-      <Button Classes="Inline Icon PlayIcon" Width="47" IsEnabled="{Binding MatchInputLevel}">Test</Button>
-    </StackPanel>
+        <!--
+        <Button  Classes="Inline Icon WrenchIcon"
+                Width="52" HorizontalAlignment="Left">Tune</Button>
+                
+        -->
+      </StackPanel>
+    </Grid>
 
-  </Grid>
+    <Panel IsVisible="{Binding IsTunerActive}">
+      <cc:LevelMeter LevelDbTp="{Binding LevelDbTp}" LevelDbFs="{Binding LevelDbFs}" />
+    </Panel>
+
+  </StackPanel>
 </UserControl>

@@ -94,9 +94,7 @@ namespace AudioMark.Core.Measurements
 
         public MeasurementBase(IMeasurementSettings settings)
         {
-            _adapter = AudioDataAdapterProvider.Create();
-            _adapter.OnWrite = OnAdapterWrite;
-            _adapter.OnRead = OnAdapterRead;
+            _adapter = AudioDataAdapterProvider.Get();
 
             Generators = new IGenerator[AppSettings.Current.Device.OutputDevice.ChannelsCount];
             DataSinks = new IDataSink<TResult>[AppSettings.Current.Device.InputDevice.ChannelsCount];
@@ -112,12 +110,15 @@ namespace AudioMark.Core.Measurements
             Initialize();            
 
             _running = true;
+
+            _adapter.SetWriteHandler(OnAdapterWrite);
+            _adapter.SetReadHandler(OnAdapterRead);
             _adapter.Start();
             
             await Task.Run(() =>
             {
                 var index = 0;
-                var activitiesCompleted = 0;
+
                 _allActivitiesCompleted = false;
                 for (index = 0; index < _activities.Count; index++)
                 {

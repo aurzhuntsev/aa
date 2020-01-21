@@ -9,31 +9,23 @@ namespace AudioMark.Controls
     public class PropertySection : UserControl
     {
         public static readonly StyledProperty<object> PropertiesProperty =
-            DirectProperty<PropertySection, object>.Register<PropertySection, object>("Properties");
+            DirectProperty<PropertySection, object>.Register<PropertySection, object>(nameof(Properties));
         public object Properties
         {
             get => GetValue(PropertiesProperty);
             set { SetValue(PropertiesProperty, value); }
         }
 
-        public static readonly StyledProperty<object> TitleControlsProperty =
-            DirectProperty<PropertySection, object>.Register<PropertySection, object>("TitleControls");
-        public object TitleControls
-        {
-            get => GetValue(TitleControlsProperty);
-            set { SetValue(TitleControlsProperty, value); }
-        }
-
-        public static readonly StyledProperty<string> TitleProperty =
-            DirectProperty<PropertySection, string>.Register<PropertySection, string>("Title");
-        public string Title
+        public static readonly StyledProperty<object> TitleProperty =
+            DirectProperty<PropertySection, object>.Register<PropertySection, object>(nameof(Title));
+        public object Title
         {
             get { return GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
         }
 
         public static readonly StyledProperty<bool> ExpandedProperty =
-            DirectProperty<PropertySection, bool>.Register<PropertySection, bool>("Expanded");
+            DirectProperty<PropertySection, bool>.Register<PropertySection, bool>(nameof(Expanded));
         public bool Expanded
         {
             get { return GetValue(ExpandedProperty); }

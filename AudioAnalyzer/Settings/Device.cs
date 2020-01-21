@@ -21,5 +21,6 @@ namespace AudioMark.Core.Settings
 
         public int SecondaryInputChannel { get; set; }
         public int SecondaryOutputChannel { get; set; }
+        public double ClippingLevel { get; set; }
     }
 }

@@ -61,7 +61,7 @@ namespace AudioMark.ViewModels
                         _storedMeasurements.Add(Measurements.Measurement);
                         Dispatcher.UIThread.Post(() =>
                         {
-                            Session.AddMeasurement(Measurements.Measurement);
+                            Session.AddMeasurement(Measurements.Measurement, _storedMeasurements.Count - 1);
                         });
                     }
                     

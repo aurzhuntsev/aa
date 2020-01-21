@@ -16,7 +16,7 @@ namespace AudioMark.Core.AudioData
             return result;
         });
 
-        public static IAudioDataAdapter Create()
+        public static IAudioDataAdapter Get()
         {
             return _adapter.Value;
         }

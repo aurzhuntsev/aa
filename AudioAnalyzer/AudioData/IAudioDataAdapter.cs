@@ -5,14 +5,18 @@ using static AudioMark.Core.Settings.Device;
 
 namespace AudioMark.Core.AudioData
 {
+    public delegate void DataReadEventHandler(IAudioDataAdapter sender, double[] data, int length, bool discard);
+    public delegate int DataWriteEventHandler(IAudioDataAdapter sender, double[] data, bool discard);
+
     public interface IAudioDataAdapter
     {
         bool Running { get; }
+               
+        DataReadEventHandler OnRead { get; }
+        DataWriteEventHandler OnWrite { get; }
 
-        delegate void DataReadEventHandler(IAudioDataAdapter sender, double[] data, int length, bool discard);
-        delegate int DataWriteEventHandler(IAudioDataAdapter sender, double[] data, bool discard);
-        DataReadEventHandler OnRead { get; set; }
-        DataWriteEventHandler OnWrite { get; set; }
+        void SetReadHandler(DataReadEventHandler readHandler);
+        void SetWriteHandler(DataWriteEventHandler writeHandler);
 
         IEnumerable<DeviceInfo> EnumerateInputDevices();
         IEnumerable<DeviceInfo> EnumerateOutputDevices();

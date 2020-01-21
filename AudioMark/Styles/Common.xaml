@@ -16,4 +16,13 @@
   <Style Selector="TextBlock.Mr">
     <Setter Property="Margin" Value="0 0 2 0" />
   </Style>
+
+  <Style Selector="TextBlock.PropertyTitle">
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+    <Setter Property="FontWeight" Value="Bold" />
+  </Style>
+  <Style Selector="TextBlock.PropertyTitle:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+
 </Styles>

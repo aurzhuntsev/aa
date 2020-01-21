@@ -84,8 +84,7 @@ namespace AudioMark.ViewModels
                     _runningTickerIndex++;
                     if (_runningTickerIndex == _tickerChars.Length)
                     {
-                        _runningTickerIndex = 0;
-                        SeriesIndex++;
+                        _runningTickerIndex = 0;                        
                         RaisePropertiesChanged();
                     }
                 });

@@ -10,7 +10,10 @@
 
   <StackPanel Orientation="Vertical">
 
-    <cc:PropertySection Title="Test signal" Expanded="true">
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Test signal</TextBlock>
+      </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
         <StackPanel Orientation="Vertical">
           <Grid HorizontalAlignment="Stretch">
@@ -35,7 +38,10 @@
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 
-    <cc:PropertySection Title="Warm-up signal" Expanded="true">
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Warm-up signal</TextBlock>
+      </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
         <StackPanel Orientation="Vertical">
           <Grid HorizontalAlignment="Stretch">
@@ -86,7 +92,10 @@
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 
-    <cc:PropertySection Title="Analysis" Expanded="true">
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Analysis</TextBlock>
+      </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
         <StackPanel Orientation="Vertical">
           <Grid HorizontalAlignment="Stretch">
@@ -124,7 +133,10 @@
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 
-    <cc:PropertySection Title="Stop conditions" Expanded="true">
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
+      </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
         <StackPanel Orientation="Vertical">
           <CheckBox Classes="Inline" IsChecked="{Binding OverrideStopConditionsSettings}">Override global settings</CheckBox>
@@ -169,11 +181,6 @@
           </Grid>
 
         </StackPanel>
-      </cc:PropertySection.Properties>
-    </cc:PropertySection>
-
-    <cc:PropertySection Title="FFT">
-      <cc:PropertySection.Properties>
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 
