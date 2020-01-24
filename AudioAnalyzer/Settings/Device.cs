@@ -12,7 +12,8 @@ namespace AudioMark.Core.Settings
 
         public DeviceInfo InputDevice { get; set; }
         public DeviceInfo OutputDevice { get; set; }
-        
+
+        public string Api { get;set; }        
         public int SampleRate { get; set; }
         public int BufferSize { get; set; }
     

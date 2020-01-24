@@ -46,7 +46,7 @@
 
           </StackPanel.Styles>
           <Button Classes="Inline Icon NoText FlaskIcon" Height="32" Command="{Binding ToggleMeasurements}" />
-          <Button Classes="Inline Icon NoText SettingsIcon" Height="32" Margin="0 5 0 0">
+          <Button Classes="Inline Icon NoText SettingsIcon" Height="32" Command="{Binding ToggleSettings}"  Margin="0 5 0 0">
           </Button>
         </StackPanel>
       </Border>
@@ -55,10 +55,12 @@
         <gv:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Series="{Binding Series}" DynamicRender="{Binding DynamicRender, Mode=TwoWay}" />
         <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Measurements}"
           IsVisible="{Binding MeasurementsPanelVisible}" />
+        <v:SettingsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Settings}"
+          IsVisible="{Binding SettingsPanelVisible}" />
         <v:SessionPanelView VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="351" Content="{Binding Session}" />
       </Panel>
 
-      <Border Grid.Column="2" Grid.Row="0" BorderThickness="2 0 0 0"  BorderBrush="{DynamicResource Level3BackgroundBrush}" Background="{DynamicResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">        
+      <Border Grid.Column="2" Grid.Row="0" BorderThickness="2 0 0 0"  BorderBrush="{DynamicResource Level3BackgroundBrush}" Background="{DynamicResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       </Border>
     </Grid>
 

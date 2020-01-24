@@ -160,6 +160,16 @@ namespace AudioMark.Core.Common
             return true;
         }
 
+        public void Clear()
+        {
+            lock (sync)
+            {
+                head = 0;
+                tail = 0;
+                count = 0;
+            }
+        }
+
         private void IncrementHead()
         {
             head++;

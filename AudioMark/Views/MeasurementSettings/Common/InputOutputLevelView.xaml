@@ -3,6 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Views.MeasurementSettings.Common"
+             xmlns:vc="clr-namespace:AudioMark.Views.Common"
+             xmlns:ctl="clr-namespace:AudioMark.Controls"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="120"
              x:Class="AudioMark.Views.MeasurementSettings.Common.InputOutputLevelView">
   <StackPanel Orientation="Vertical">
@@ -20,10 +22,8 @@
       </Grid.RowDefinitions>
 
       <TextBlock  Classes="Inline" Grid.Column="0" Grid.Row="0">Output level:</TextBlock>
-      <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-        <TextBlock Classes="Inline" Margin="-9 0 0 0">−</TextBlock>
-        <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
-                 Text="{Binding OutputLevel}" />
+      <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">        
+        <ctl:NumberBox Width="64" IsInverted="False" Value="{Binding OutputLevel}" MinValue="-90" MaxValue="0"  />
         <TextBlock Classes="Inline">dBTP</TextBlock>
       </StackPanel>
 
@@ -38,6 +38,7 @@
         </ComboBox>
       </StackPanel>
       -->
+
       <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
         <Button Classes="Inline Icon PlayIcon" HorizontalAlignment="Left"
               Width="52" IsVisible="{Binding !IsTunerActive}" Command="{Binding Test}">Test</Button>
@@ -53,7 +54,7 @@
     </Grid>
 
     <Panel IsVisible="{Binding IsTunerActive}">
-      <cc:LevelMeter LevelDbTp="{Binding LevelDbTp}" LevelDbFs="{Binding LevelDbFs}" />
+      <vc:LevelMeter LevelDbTp="{Binding LevelDbTp}" LevelDbFs="{Binding LevelDbFs}" />
     </Panel>
 
   </StackPanel>

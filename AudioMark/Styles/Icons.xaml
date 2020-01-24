@@ -111,6 +111,22 @@
     <Setter Property="Fill" Value="{DynamicResource HighlightForegroundBrush}" />
   </Style>
 
+  <Style Selector="Button.UpIcon /template/ Path">
+    <Setter Property="Data" Value="M7 15l5-5l5 5H7z" />
+    <Setter Property="Fill" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="Button.UpIcon:pointerover /template/ Path">
+    <Setter Property="Fill" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+  <Style Selector="Button.DownIcon /template/ Path">
+    <Setter Property="Data" Value="M7 10l5 5l5-5H7z" />
+    <Setter Property="Fill" Value="{DynamicResource ForegroundBrush}" />
+  </Style>
+  <Style Selector="Button.DownIcon:pointerover /template/ Path">
+    <Setter Property="Fill" Value="{DynamicResource HighlightForegroundBrush}" />
+  </Style>
+
+
 
   <Style Selector="Button.FlaskIcon /template/ Path">
     <Setter Property="Data" Value="M 3.0006919 20 A 3 3 0 0 1 0.48469192 15.365 L 6.0006919 5.8109998 v -1.811 a 1 1 0 0 1 -1 -1 v -1 a 2 2 0 0 1 2 -1.99999997979213 h 4.0000001 a 2 2 0 0 1 2 1.99999997979213 v 1 a 1 1 0 0 1 -1 1 v 1.811 l 5.516 9.5540002 a 3 3 0 0 1 -2.516 4.635 z m -1 -3 a 1 1 0 0 0 1 1 H 15.000692 a 1 1 0 0 0 0.819 -1.575 l -2.286 -3.958 -2.533 2.533 -5.0690001 -5.0690001 -3.75 6.4950001 A 0.996 0.996 0 0 0 2.0006919 17 Z M 10.000692 7.9999999 a 1 1 0 1 0 0 2 1 1 0 0 0 0 -2 z" />

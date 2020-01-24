@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 
@@ -25,6 +26,7 @@ namespace AudioMark.Common
 
         public static readonly Interaction<string, bool> Confirm = new Interaction<string, bool>();
         public static readonly Interaction<InputOptions, InputResult> Input = new Interaction<InputOptions, InputResult>();
+        public static readonly Interaction<Exception, Unit> Error = new Interaction<Exception, Unit>();
 
         static Interactions()
         {
@@ -40,9 +42,16 @@ namespace AudioMark.Common
 
                 Input.RegisterHandler(async interaction =>
                 {
-                    var confirm = new Input() { Text = interaction.Input.Text, Value = interaction.Input.Value };
-                    var result = await confirm.ShowDialog<string>(mainWindow);
+                    var input = new Input() { Text = interaction.Input.Text, Value = interaction.Input.Value };
+                    var result = await input.ShowDialog<string>(mainWindow);
                     interaction.SetOutput(new InputResult() { Value = result, Canceled = result == null });
+                });
+
+                Error.RegisterHandler(async interaction =>
+                {
+                    var error = new Error(interaction.Input);
+                    var result = await error.ShowDialog<Unit>(mainWindow);
+                    interaction.SetOutput(Unit.Default);
                 });
             }
         }

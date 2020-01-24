@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="40"
-             x:Class="AudioMark.Views.MeasurementSettings.Common.LevelMeter"
+             x:Class="AudioMark.Views.Common.LevelMeter"
              Name="LevelMeter" Bounds="{Binding ViewBounds, ElementName=LevelMeter, Mode=OneWayToSource}">
   
   <Grid ColumnDefinitions="*,48" Margin="2 2 2 2">

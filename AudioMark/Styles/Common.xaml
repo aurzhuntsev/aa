@@ -16,6 +16,9 @@
   <Style Selector="TextBlock.Mr">
     <Setter Property="Margin" Value="0 0 2 0" />
   </Style>
+  <Style Selector="TextBlock.Mt">
+    <Setter Property="Margin" Value="0 2 0 0" />
+  </Style>
 
   <Style Selector="TextBlock.PropertyTitle">
     <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />

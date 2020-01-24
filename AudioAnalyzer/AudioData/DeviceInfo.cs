@@ -11,11 +11,13 @@ namespace AudioMark.Core.AudioData
 
     public class DeviceInfo
     {
-        public string Name { get; set; }
+        public string ApiName { get; set; }
+        public string Name { get; set; }        
+        public SampleFormat SampleFormat { get; set; }        
+        public int LatencyMilliseconds { get; set; }
+        public int SampleRate { get; set; }
+
         public int Index { get; set; }
         public int ChannelsCount { get; set; }
-        public SampleFormat SampleFormat { get; set; }
-        public double SampleRate { get;  set; }
-        public string ApiName { get; set; }
     }
 }

@@ -14,12 +14,15 @@ namespace AudioMark.Core.AudioData
                
         DataReadEventHandler OnRead { get; }
         DataWriteEventHandler OnWrite { get; }
+        EventHandler<Exception> OnError { get; }
 
         void SetReadHandler(DataReadEventHandler readHandler);
         void SetWriteHandler(DataWriteEventHandler writeHandler);
+        void SetErrorHandler(EventHandler<Exception> errorHandler);
 
+        IEnumerable<string> EnumerateSystemApis();
         IEnumerable<DeviceInfo> EnumerateInputDevices();
-        IEnumerable<DeviceInfo> EnumerateOutputDevices();
+        IEnumerable<DeviceInfo> EnumerateOutputDevices();        
 
         DeviceInfo GetDefaultInputDevice();
         DeviceInfo GetDefaultOutputDevice();

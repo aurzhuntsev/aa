@@ -90,35 +90,13 @@ namespace AudioMark.Core.AudioData
 
         public PortAudioDataAdapter() : base()
         {
-         
+
         }
 
         public override void Initialize()
         {
             base.Initialize();
             PortAudio.Initialize();
-
-            /* TODO: Restore device settings */
-            var inputStreamParameters = new PaStreamParameters()
-            {
-                ChannelCount = AppSettings.Current.Device.InputDevice.ChannelsCount,
-                Device = GetDefaultInputDevice().Index,//AppSettings.Current.Device.InputDevice.Index,
-                SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.InputDevice.SampleFormat),
-                SuggestedLatency = 0.256
-            };
-
-            var outputStreamParameters = new PaStreamParameters()
-            {
-                ChannelCount = AppSettings.Current.Device.OutputDevice.ChannelsCount,
-                Device = GetDefaultOutputDevice().Index, //AppSettings.Current.Device.OutputDevice.Index,
-                SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.OutputDevice.SampleFormat),
-                SuggestedLatency = 0.256
-            };
-
-            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002 | 0x00000004);
-            stream.OnRead += OnRead;
-            stream.OnWrite += OnWrite;
-
         }
 
         private static IEnumerable<DeviceInfo> EnumerateDevices(bool enumerateInputDevices)
@@ -170,7 +148,10 @@ namespace AudioMark.Core.AudioData
                                 ChannelsCount = channelCount - 1,
 
                                 SampleFormat = sampleFormat.SampleFormat,
-                                SampleRate = sampleRate
+                                SampleRate = (int)sampleRate,
+
+                                LatencyMilliseconds = (int)(1000.0 * (enumerateInputDevices ? device.Info.DefaultHighInputLatency
+                                                                                            : device.Info.DefaultHighOutputLatency))
                             });
                         }
                     }
@@ -185,25 +166,58 @@ namespace AudioMark.Core.AudioData
 
         public override DeviceInfo GetDefaultInputDevice() => inputDevices.Value.Where(device => device.Index == PortAudio.Instance.GetDefaultInputDeviceIndex())
                 .OrderBy(device => device.SampleFormat)
-                .ThenBy(device => device.SampleRate)
                 .FirstOrDefault();
 
         public override DeviceInfo GetDefaultOutputDevice() => outputDevices.Value.Where(device => device.Index == PortAudio.Instance.GetDefaultOutputDeviceIndex())
                 .OrderBy(device => device.SampleFormat)
-                .ThenBy(device => device.SampleRate)
                 .FirstOrDefault();
 
         protected override void StartDevices()
         {
+            if (stream != null)
+            {
+                if (stream.IsActive())
+                {
+                    stream.Abort();
+                }
+
+                stream.Dispose();
+            }
+
+            /* TODO: Restore device settings */
+            var inputStreamParameters = new PaStreamParameters()
+            {
+                ChannelCount = AppSettings.Current.Device.InputDevice.ChannelsCount,
+                Device = AppSettings.Current.Device.InputDevice.Index,
+                SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.InputDevice.SampleFormat),
+                SuggestedLatency = AppSettings.Current.Device.InputDevice.LatencyMilliseconds / 1000.0                
+            };
+
+            var outputStreamParameters = new PaStreamParameters()
+            {
+                ChannelCount = AppSettings.Current.Device.OutputDevice.ChannelsCount,
+                Device = AppSettings.Current.Device.OutputDevice.Index,
+                SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.OutputDevice.SampleFormat),
+                SuggestedLatency = AppSettings.Current.Device.OutputDevice.LatencyMilliseconds / 1000.0
+            };
+
+            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002);
+            stream.OnRead += OnRead;
+            stream.OnWrite += OnWrite;
+            stream.OnError += OnError;
+            
             stream.Start();
         }
 
         protected override void StopDevices()
         {
-            stream.Stop();
+            if (stream != null)
+            {
+                stream.Stop();
+            }
         }
-        
-        private void OnRead(object sender, PortAudioStreamEventArgs e)
+
+        private new void OnRead(object sender, PortAudioStreamEventArgs e)
         {
             if (!Running)
             {
@@ -237,7 +251,7 @@ namespace AudioMark.Core.AudioData
             InputWaitHandle.Set();
         }
 
-        private void OnWrite(object sender, PortAudioStreamEventArgs e)
+        private new void OnWrite(object sender, PortAudioStreamEventArgs e)
         {
             int wrote = 0;
             while (wrote < e.ActualLength)
@@ -263,7 +277,16 @@ namespace AudioMark.Core.AudioData
             }
 
             OutputWaitHandle.Set();
+        }
 
+        private new void OnError(object sender, Exception e)
+        {
+            base.OnError?.Invoke(sender, e);
+        }
+
+        public override IEnumerable<string> EnumerateSystemApis()
+        {
+            return hostApiCache.Value.Select(api => api.Info.Name).ToList();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace AudioMark.Core.Measurements
 {
     public class InputOutputLevel
     {
-        public double OutputLevel { get; set; } = 3.0;
+        public double OutputLevel { get; set; } = -AppSettings.Current.Device.ClippingLevel;
         public bool MatchInputLevel { get; set; } = true;
         public double InputLevel { get; set; } = 3.0;
         public SignalLevelMode InputLevelMode { get; set; } = SignalLevelMode.dBFS;
@@ -60,14 +60,14 @@ namespace AudioMark.Core.Measurements
         {
             RegisterActivity(CreateSetupActivity());
 
-            TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.TestSignalOptions.Frequency);
+            TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.TestSignalOptions.Frequency, Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp());
             if (!Settings.OverrideWarmUpSignalOptions)
             {
                 WarmupSignalGenerator = TestSignalGenerator;
             }
             else
             {
-                WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.WarmUpSignalOptions.Frequency);
+                WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.WarmUpSignalOptions.Frequency, Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp());
             }
 
             if (Settings.TestSignalOptions.InputOutputOptions.MatchInputLevel)

@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="portaudio\portaudio.dll">
+    <None Update="portaudio\libportaudio">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

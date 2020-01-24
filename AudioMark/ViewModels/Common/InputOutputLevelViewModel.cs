@@ -18,7 +18,11 @@ namespace AudioMark.ViewModels.Common
         public double OutputLevel
         {
             get => Model.OutputLevel;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.OutputLevel, value);
+            set
+            {
+                this.RaiseAndSetIfPropertyChanged(() => Model.OutputLevel, value);
+                _tuner.OutputLevel = value;
+            }
         }
 
         public double InputLevel
@@ -57,11 +61,11 @@ namespace AudioMark.ViewModels.Common
         public InputOutputLevelViewModel(InputOutputLevel model)
         {
             Model = model;
+            _tuner = new Tuner();
         }
 
         public void Test()
-        {
-            _tuner = new Tuner() { SignalLevelMode = SignalLevelMode.dBFS };
+        {            
             _tuner.OnReading += (s, r) =>
             {
                 Dispatcher.UIThread.Post(() =>
@@ -71,6 +75,7 @@ namespace AudioMark.ViewModels.Common
                 });
             };
 
+            _tuner.OutputLevel = OutputLevel;
             IsTunerActive = true;
             _tuner.Test();
         }

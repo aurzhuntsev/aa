@@ -1,4 +1,5 @@
-﻿using AudioMark.Core.AudioData;
+﻿
+using AudioMark.Core.AudioData;
 using AudioMark.Core.Common;
 using AudioMark.Core.Generators;
 using AudioMark.Core.Settings;
@@ -30,20 +31,31 @@ namespace AudioMark.Core.Measurements
         }
 
         private IAudioDataAdapter _adapter;
-        private IGenerator _generator;
+        private SineGenerator _generator;
         private int _counter = 0;
 
+        private double _outputLevel;
+        public double OutputLevel
+        {
+            get => _outputLevel;
+            set
+            {
+                _outputLevel = value;             
+            }
+        }
 
-        public double InputLevel { get; set; }
-        public double OutputLevel { get; set; }
-        public SignalLevelMode SignalLevelMode { get; set; }
+        public int InputChannel { get; set; } = AppSettings.Current.Device.PrimaryInputChannel;
+        public int OutputChannel { get; set; } = AppSettings.Current.Device.PrimaryOutputChannel;
 
         public Tuner()
         {
-            _adapter = AudioDataAdapterProvider.Get();
-            _generator = new SineGenerator(AppSettings.Current.Device.SampleRate, TunerFrequency);
+            _adapter = AudioDataAdapterProvider.Get();         
+        }
 
+        public void Test()
+        {
             /* TODO: Change to support different channels */
+            _generator = new SineGenerator(AppSettings.Current.Device.SampleRate, TunerFrequency, Math.Pow(10.0, _outputLevel / 20.0));
 
             double maxValue = double.MinValue;
             double power = 0.0;
@@ -52,7 +64,7 @@ namespace AudioMark.Core.Measurements
 
             _adapter.SetReadHandler((sender, buffer, length, discard) =>
             {
-                var value = Math.Abs(buffer[AppSettings.Current.Device.PrimaryInputChannel - 1]);
+                var value = Math.Abs(buffer[InputChannel - 1]);
                 if (value > maxValue)
                 {
                     maxValue = value;
@@ -81,14 +93,16 @@ namespace AudioMark.Core.Measurements
 
             _adapter.SetWriteHandler((sender, buffer, discard) =>
             {
-                buffer[AppSettings.Current.Device.PrimaryOutputChannel - 1] = _generator.Next();
+                buffer[OutputChannel - 1] = _generator.Next();
                 return buffer.Length;
             });
 
-        }
+            _adapter.SetErrorHandler((sender, e) =>
+            {
+                Stop();
+                OnError?.Invoke(sender, e);
+            });
 
-        public void Test()
-        {
             Running = true;
             _adapter.Start();
         }

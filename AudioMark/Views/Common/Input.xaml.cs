@@ -9,14 +9,14 @@ namespace AudioMark.Views.Common
 {
     public class Input : Window
     {
-        public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<Confirm, string>(nameof(Text));
+        public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<Input, string>(nameof(Text));
         public string Text
         {
             get => GetValue(TextProperty);
             set => SetValue(TextProperty, value);
         }
 
-        public static readonly StyledProperty<string> ValueProperty = AvaloniaProperty.Register<Confirm, string>(nameof(Value));
+        public static readonly StyledProperty<string> ValueProperty = AvaloniaProperty.Register<Input, string>(nameof(Value));
         public string Value
         {
             get => GetValue(ValueProperty);

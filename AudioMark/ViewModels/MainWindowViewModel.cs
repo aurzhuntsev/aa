@@ -14,12 +14,20 @@ namespace AudioMark.ViewModels
         public MeasurementsPanelViewModel Measurements { get; }
         public SessionPanelViewModel Session { get; set; }
         public TopPanelViewModel TopPanel { get; set; }
+        public SettingsPanelViewModel Settings { get; set; }
 
         private bool _measurementsPanelVisible;
         public bool MeasurementsPanelVisible
         {
             get => _measurementsPanelVisible;
             set => this.RaiseAndSetIfChanged(ref _measurementsPanelVisible, value);
+        }
+
+        private bool _settingsPanelVisible;
+        public bool SettingsPanelVisible
+        {
+            get => _settingsPanelVisible;
+            set => this.RaiseAndSetIfChanged(ref _settingsPanelVisible, value);
         }
 
         /* TODO: Make it better? */
@@ -43,6 +51,8 @@ namespace AudioMark.ViewModels
         public MainWindowViewModel()
         {
             TopPanel = new TopPanelViewModel();
+            Settings = new SettingsPanelViewModel();
+
             Measurements = new MeasurementsPanelViewModel();
             Measurements.WhenRunningStatusChanged.Subscribe(success =>
             {
@@ -64,7 +74,7 @@ namespace AudioMark.ViewModels
                             Session.AddMeasurement(Measurements.Measurement, _storedMeasurements.Count - 1);
                         });
                     }
-                    
+
                     UpdateGraphView(null);
                 }
             });
@@ -72,8 +82,8 @@ namespace AudioMark.ViewModels
             Measurements.WhenDataUpdated.Subscribe(data =>
             {
                 /* TODO: Optimize */
-                UpdateGraphView(data);                
-                
+                UpdateGraphView(data);
+
                 this.RaisePropertyChanged(nameof(Series));
             });
 
@@ -93,6 +103,27 @@ namespace AudioMark.ViewModels
             this.RaisePropertyChanged(nameof(Series));
         }
 
-        public void ToggleMeasurements() => MeasurementsPanelVisible = !MeasurementsPanelVisible;
+        private void HideAllPanels()
+        {
+            MeasurementsPanelVisible = false;
+            SettingsPanelVisible = false;
+        }
+
+
+        public void ToggleMeasurements()
+        {
+            var initialValue = MeasurementsPanelVisible;
+
+            HideAllPanels();
+            MeasurementsPanelVisible = !initialValue;
+        }
+
+        public void ToggleSettings()
+        {
+            var initialValue = SettingsPanelVisible;
+
+            HideAllPanels();
+            SettingsPanelVisible = !initialValue;
+        }
     }
 }

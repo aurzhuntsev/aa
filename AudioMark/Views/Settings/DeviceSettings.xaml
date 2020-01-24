@@ -1,0 +1,35 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:AudioMark.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.Settings.DeviceSettings">
+  <UserControl.Styles>
+    <Style Selector="TextBlock.Ml">
+      <Setter Property="Margin" Value="4 0 0 0" />
+    </Style>
+  </UserControl.Styles>
+  <Grid ColumnDefinitions="1*,2*" RowDefinitions="*,*,*" HorizontalAlignment="Stretch">    
+    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+      <TextBlock Classes="Inline" Text="{Binding DeviceTitle}"/>
+      <TextBlock Classes="Inline Ml">device:</TextBlock>
+    </StackPanel>
+    <ComboBox Grid.Column="1" Grid.Row="0"  Classes="Inline" SelectedItem="{Binding Device}" Items="{Binding DevicesList}" />
+
+    <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal"  VerticalAlignment="Center">
+      <TextBlock Classes="Inline" Text="{Binding DeviceTitle}"/>
+      <TextBlock Classes="Inline Ml">format:</TextBlock>
+    </StackPanel>
+    <ComboBox Grid.Column="1" Grid.Row="1"  Classes="Inline" SelectedItem="{Binding Format}" Items="{Binding FormatsList}" Width="80" HorizontalAlignment="Left"/>
+
+    <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+      <TextBlock Classes="Inline" Text="{Binding DeviceTitle}"/>
+      <TextBlock Classes="Inline Ml">latency:</TextBlock>
+    </StackPanel>
+    <StackPanel  Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+      <c:NumberBox Width="82" HorizontalAlignment="Left" MinValue="{Binding MinLatency}" Value="{Binding Latency}" />
+      <TextBlock Classes="Inline">milliseconds</TextBlock>
+    </StackPanel>
+  </Grid>
+</UserControl>

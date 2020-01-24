@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="20"
+             x:Class="AudioMark.Controls.NumberBox" Name="NumberBox">
+  <Grid ColumnDefinitions="*,8">
+    
+    <TextBox Grid.Column="0" Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" 
+                 Text="{Binding Value, ElementName=NumberBox}" PointerWheelChanged="OnPointerWheelChanged"   />
+    
+    <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0 0 2 0">
+      <Button Classes="NoText Icon UpIcon" Width="8" Height="8" Background="Transparent" Command="{Binding Up, ElementName=NumberBox}">
+        <Button.Styles>
+          <Style Selector="Button.Icon /template/ Border#iconBorder">
+            <Setter Property="Height" Value="7"/>
+            <Setter Property="Width" Value="7"/>
+          </Style>
+        </Button.Styles>
+      </Button>
+    
+      <Button Classes="NoText Icon DownIcon" Width="8" Height="8" Background="Transparent" Command="{Binding Down, ElementName=NumberBox}">
+        <Button.Styles>
+          <Style Selector="Button.Icon /template/ Border#iconBorder">
+            <Setter Property="Height" Value="7"/>
+            <Setter Property="Width" Value="7"/>
+          </Style>
+        </Button.Styles>
+      </Button>
+    </StackPanel>
+    
+  </Grid>
+</UserControl>

@@ -16,12 +16,14 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Remove="Controls\NumberBox.xaml" />
     <AvaloniaResource Remove="Controls\PropertySection.xaml" />
     <AvaloniaResource Remove="Styles\BaseTheme.xaml" />
     <AvaloniaResource Remove="Styles\Common.xaml" />
     <AvaloniaResource Remove="Styles\Icons.xaml" />
     <AvaloniaResource Remove="Styles\Inline.xaml" />
     <AvaloniaResource Remove="Views\Common\Confirm.xaml" />
+    <AvaloniaResource Remove="Views\Common\Error.xaml" />
     <AvaloniaResource Remove="Views\Common\Input.xaml" />
     <AvaloniaResource Remove="Views\GraphView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
@@ -30,13 +32,17 @@
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
     <AvaloniaResource Remove="Views\Reports\ThdReportView.xaml" />
     <AvaloniaResource Remove="Views\SessionPanelView.xaml" />
+    <AvaloniaResource Remove="Views\SettingsPanelView.xaml" />
+    <AvaloniaResource Remove="Views\Settings\DeviceSettings.xaml" />
     <AvaloniaResource Remove="Views\TopPanelView.xaml" />
+    <None Remove="Controls\NumberBox.xaml" />
     <None Remove="Controls\PropertySection.xaml" />
     <None Remove="Styles\BaseTheme.xaml" />
     <None Remove="Styles\Common.xaml" />
     <None Remove="Styles\Icons.xaml" />
     <None Remove="Styles\Inline.xaml" />
     <None Remove="Views\Common\Confirm.xaml" />
+    <None Remove="Views\Common\Error.xaml" />
     <None Remove="Views\Common\Input.xaml" />
     <None Remove="Views\GraphView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
@@ -45,13 +51,16 @@
     <None Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
     <None Remove="Views\Reports\ThdReportView.xaml" />
     <None Remove="Views\SessionPanelView.xaml" />
+    <None Remove="Views\SettingsPanelView.xaml" />
+    <None Remove="Views\Settings\DeviceSettings.xaml" />
     <None Remove="Views\TopPanelView.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.0" />
+    <PackageReference Include="Avalonia" Version="0.9.2" />
     <PackageReference Include="Avalonia.Angle.Windows.Natives" Version="2.1.0.2019013001" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.0" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.2" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.2" />
+    <PackageReference Include="ReactiveUI.Validation" Version="1.4.7" />
     <PackageReference Include="TextCopy" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +79,13 @@
     <EmbeddedResource Include="Styles\BaseTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Common\Error.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Common\Input.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SettingsPanelView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SessionPanelView.xaml">
@@ -113,7 +128,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MeasurementSettings\Common\LevelMeter.xaml">
+    <EmbeddedResource Include="Views\Common\LevelMeter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\NumberBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Settings\DeviceSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -124,11 +149,17 @@
     <Compile Update="Controls\PropertySection.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <Compile Update="Views\Common\Error.xaml.cs">
+      <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Common\Input.xaml.cs">
       <DependentUpon>Input.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml.cs">
       <DependentUpon>ThdMeasurementSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SettingsPanelView.xaml.cs">
+      <DependentUpon>SettingsPanelView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\TopPanelView.xaml.cs">
       <DependentUpon>TopPanelView.xaml</DependentUpon>

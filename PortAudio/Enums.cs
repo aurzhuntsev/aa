@@ -63,11 +63,24 @@ namespace PortAudioWrapper
         PaAudioScienceHPI = 14
     }
 
-    public enum PaSampleFormat
+    public enum PaSampleFormat : ulong
     {
         PaFloat32 = 0x00000001,
         PaInt32 = 0x00000002,
         PaInt24 = 0x00000004,
         PaInt16 = 0x00000008
+    }
+
+    [Flags]
+    public enum PaStreamCallbackFlags : uint
+    {
+        paInputUnderflow = 0x00000001,
+        paInputOverflow = 0x00000002,
+        paOutputUnderflow = 0x00000004,
+        paOutputOverflow = 0x00000008,
+        paPrimingOutput = 0x00000010,
+
+        paCallbackNotProcessed = 0x00000020,
+        paCallbackException = 0x00000040
     }
 }

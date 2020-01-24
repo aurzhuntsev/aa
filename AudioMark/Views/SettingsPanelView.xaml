@@ -1,0 +1,63 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="clr-namespace:AudioMark.Controls"
+             xmlns:vs="clr-namespace:AudioMark.Views.Settings"
+             xmlns:vc="clr-namespace:AudioMark.Views.Common"
+             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="450"
+             x:Class="AudioMark.Views.SettingsPanelView">
+  <Panel HorizontalAlignment="Stretch" Background="{DynamicResource Level2BackgroundBrush}">
+    <c:PropertySection Expanded="True">
+      <c:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Device</TextBlock>
+      </c:PropertySection.Title>
+      <c:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <Grid ColumnDefinitions="1*,2*" HorizontalAlignment="Stretch">            
+            <TextBlock Grid.Column="0" Grid.Row="0" Classes="Inline Mt">Sound API:</TextBlock>
+            <ComboBox Grid.Column="1" Grid.Row="0" Classes="Inline Mt" SelectedItem="{Binding Api}" Items="{Binding ApisList}" />
+          </Grid>
+            
+          <vs:DeviceSettings DataContext="{Binding InputDeviceSettings}" Margin="0 8 0 0" />
+          <vs:DeviceSettings DataContext="{Binding OutputDeviceSettings}" Margin="0 8 0 0"/>
+
+          <Grid ColumnDefinitions="1*,2*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*" HorizontalAlignment="Stretch">
+            <TextBlock Grid.Column="0" Grid.Row="7" Classes="Inline" Margin="0 8 0 0">Sample rate:</TextBlock>
+            <StackPanel  Grid.Column="1" Grid.Row="7" Orientation="Horizontal" Margin="0 8 0 0">
+              <ComboBox Classes="Inline" SelectedItem="{Binding SampleRate}" Items="{Binding SampleRatesList}" IsVisible="{Binding HasSupportedSampleRates}" Width="80"/>
+              <TextBlock Classes="Inline Ml" IsVisible="{Binding HasSupportedSampleRates}">Hz</TextBlock>
+              <TextBlock Classes="Inline" FontWeight="Bold" IsVisible="{Binding !HasSupportedSampleRates}">There are no supported sample rates!</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <TextBlock Classes="Inline" Margin="0 8 0 0">Primary channels:</TextBlock>
+          <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+            <TextBlock Grid.Column="0" Grid.Row="0" Classes="Inline">Input channel:</TextBlock>
+            <StackPanel  Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+              <ComboBox Classes="Inline" SelectedIndex="{Binding InputChannel}" Items="{Binding InputChannelsList}" Width="80"/>
+              <TextBlock Classes="Inline" Text="&lt;--" Margin="5 0 -10 0" />
+            </StackPanel>
+
+            <TextBlock Grid.Column="1" Grid.Row="0" Classes="Inline">Output channel:</TextBlock>
+            <StackPanel  Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+              <ComboBox Classes="Inline" SelectedIndex="{Binding OutputChannel}" Items="{Binding OutputChannelsList}" Width="80"/>
+            </StackPanel>
+
+            <Button Grid.Column="2" Grid.Row="1" Classes="Inline Icon PlayIcon" HorizontalAlignment="Left"
+              Width="52" IsVisible="{Binding !IsTestActive}" Command="{Binding Test}" IsEnabled="{Binding HasSupportedSampleRates}">Test</Button>
+            <Button Grid.Column="2" Grid.Row="1" Classes="Inline Icon StopIcon" HorizontalAlignment="Left"
+                    Width="52" IsVisible="{Binding IsTestActive}" Command="{Binding Stop}">Stop</Button>
+
+          </Grid>
+
+          <Panel IsVisible="{Binding IsTestActive}">
+            <vc:LevelMeter LevelDbTp="{Binding LevelDbTp}" LevelDbFs="{Binding LevelDbFs}" />
+          </Panel>
+
+        </StackPanel>
+
+      </c:PropertySection.Properties>
+    </c:PropertySection>
+  </Panel>
+</UserControl>

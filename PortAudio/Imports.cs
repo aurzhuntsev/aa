@@ -7,7 +7,7 @@ namespace PortAudioWrapper
 {
     public static class Imports
     {
-        public const string ImportName = "portaudio/portaudio";
+        public const string ImportName = "portaudio/libportaudio";
 
         [DllImport(ImportName, CallingConvention = CallingConvention.Cdecl)]
         public static extern int Pa_Initialize();
@@ -23,6 +23,9 @@ namespace PortAudioWrapper
 
         [DllImport(ImportName, CallingConvention = CallingConvention.Cdecl)]
         public static extern int Pa_StopStream(IntPtr stream);
+
+        [DllImport(ImportName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Pa_AbortStream(IntPtr stream);
 
         //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int PaStreamCallback(IntPtr input, IntPtr output, uint frameCount, IntPtr timeInfo, uint statusFlags, IntPtr userData);
@@ -55,5 +58,12 @@ namespace PortAudioWrapper
 
         [DllImport(ImportName, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr Pa_GetHostApiInfo(int hostApi);
+
+        [DllImport(ImportName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Pa_IsStreamActive(IntPtr stream);
+
+        [DllImport(ImportName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Pa_GetSampleSize(PaSampleFormat format);
+
     }
 }

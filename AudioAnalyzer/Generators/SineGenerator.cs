@@ -9,7 +9,7 @@ namespace AudioMark.Core.Generators
         public double SampleRate { get; private set; }
 
         public double Frequency { get; private set; }
-        public double Amplitude { get; private set; }
+        public double Amplitude { get; set; }
         public double Phase { get; private set; }
 
         private bool precalculated = false;
