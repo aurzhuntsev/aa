@@ -9,6 +9,7 @@ namespace AudioMark.Core.AudioData
         Float32, Int24, Int16
     }
 
+    [Serializable]
     public class DeviceInfo
     {
         public string ApiName { get; set; }

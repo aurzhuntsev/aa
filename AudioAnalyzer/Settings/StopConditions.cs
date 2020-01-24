@@ -4,6 +4,7 @@ using System.Text;
 
 namespace AudioMark.Core.Settings
 {
+    [Serializable]
     public class StopConditions
     {
         public int CheckIntervalMilliseconds { get; set; }

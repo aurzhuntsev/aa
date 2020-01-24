@@ -4,6 +4,8 @@ using AudioMark.Core.Generators;
 using AudioMark.Core.Settings;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,13 +30,12 @@ namespace AudioMark.Core.Measurements
         }
 
         public Activity<TResult> CurrentActivity { get; protected set; }
-
-        private bool _allActivitiesCompleted = false;
+        
         protected volatile bool _running;
         public bool Running
         {
             get => _running;
-        }        
+        }
 
         public string CurrentActivityDescription
         {
@@ -102,24 +103,29 @@ namespace AudioMark.Core.Measurements
             Settings = settings;
         }
 
+        internal MeasurementBase(IMeasurementSettings settings, IAnalysisResult result)
+        {
+            Settings = settings;
+            AnalysisResult = result;
+        }
+      
         public async Task Run()
         {
             _activities.Clear();
             AnalysisResult = null;
 
-            Initialize();            
+            Initialize();
 
             _running = true;
 
             _adapter.SetWriteHandler(OnAdapterWrite);
             _adapter.SetReadHandler(OnAdapterRead);
             _adapter.Start();
-            
+
             await Task.Run(() =>
             {
                 var index = 0;
-
-                _allActivitiesCompleted = false;
+                
                 for (index = 0; index < _activities.Count; index++)
                 {
                     if (!_running)
@@ -165,7 +171,7 @@ namespace AudioMark.Core.Measurements
                 }
 
                 if (CompletedActivitiesCount == _activities.Count)
-                {                    
+                {
                     AnalysisResult = Analyze();
                     OnAnalysisComplete?.Invoke(this, AnalysisResult);
                 }
@@ -276,6 +282,23 @@ namespace AudioMark.Core.Measurements
                         DataSinks[channel].Add(buffer[channel]);
                     }
                 }
+            }
+        }
+
+        public void SaveToFile(string fileName)
+        {
+            var formatter = new BinaryFormatter();            
+            using (var streamWriter = new StreamWriter(fileName, false))
+            {
+                var container = new MeasurementSerializationContainer()
+                {
+                    TypeName = GetType().Name,
+                    Name = Name,
+                    Settings = Settings,
+                    Result = AnalysisResult
+                };
+
+                formatter.Serialize(streamWriter.BaseStream, container);                
             }
         }
     }

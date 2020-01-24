@@ -5,6 +5,7 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements
 {
+    [Serializable]
     public class ThdAnalysisResult: IAnalysisResult
     {
         public SpectralData Data { get; set; }

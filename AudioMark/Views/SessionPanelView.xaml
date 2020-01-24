@@ -8,6 +8,9 @@
              x:Class="AudioMark.Views.SessionPanelView" Name="SessionPanel">
   <StackPanel Background="{DynamicResource Level2BackgroundBrush}" Name="Container"
          Height="{Binding #SessionPanel.Bounds.Height}">
+    <StackPanel Orientation="Horizontal">
+      <Button Classes="Inline Icon PlusIcon" Command="{Binding LoadMeasurement}" ToolTip.Tip="Load measurement"></Button>
+    </StackPanel>
     <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"
                   Height="{Binding #Container.Bounds.Height}">
       <ItemsControl Items="{Binding Items}" HorizontalAlignment="Stretch">
@@ -29,7 +32,7 @@
                     </StackPanel.Styles>  
                     <Button Classes="NoText Icon EyeIcon" Margin="0 1 2 0" ToolTip.Tip="Toggle visibility" Background="Transparent" IsVisible="{Binding Visible}" Command="{Binding ToggleVisibility}" />
                     <Button Classes="NoText Icon EyeOffIcon" Margin="0 1 2 0" ToolTip.Tip="Toggle visibility" Background="Transparent" IsVisible="{Binding !Visible}" Command="{Binding ToggleVisibility}"/>
-                    <Button Classes="NoText Icon SaveIcon" ToolTip.Tip="Save" Background="Transparent">
+                    <Button Classes="NoText Icon SaveIcon" ToolTip.Tip="Save" Background="Transparent" Command="{Binding Save}">
                       <Button.Styles>
                         <Style Selector="Button.SaveIcon /template/ Path">
                           <Setter Property="Fill" Value="{DynamicResource ForegroundBrush}" />

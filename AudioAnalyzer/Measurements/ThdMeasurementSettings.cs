@@ -6,14 +6,17 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements
 {
+    [Serializable]
     public class ThdMeasurementSettings : IMeasurementSettings
     {
+        [Serializable]
         public class SignalOptions
         {
             public double Frequency { get; set; } = 1000.0;
             public InputOutputLevel InputOutputOptions { get; set; } = new InputOutputLevel();
         }
 
+        [Serializable]
         public class ThdAnalysisOptions
         {
             public int WindowHalfSize { get; set; } = 0;

@@ -27,6 +27,8 @@ namespace AudioMark.Core.Measurements
 
         Task Run();
         void Stop();
+
+        void SaveToFile(string fileName);
     }
 
     public interface IMeasurement<TResult> : IMeasurement

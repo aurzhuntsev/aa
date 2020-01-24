@@ -14,6 +14,7 @@ using System.Linq;
 
 namespace AudioMark.Core.Measurements
 {
+    [Serializable]
     public class InputOutputLevel
     {
         public double OutputLevel { get; set; } = -AppSettings.Current.Device.ClippingLevel;
@@ -55,6 +56,9 @@ namespace AudioMark.Core.Measurements
             }
             catch { }
         }
+
+        public ThdMeasurement(ThdMeasurementSettings settings, ThdAnalysisResult result) : base(settings, result) { }
+        
 
         protected override void Initialize()
         {

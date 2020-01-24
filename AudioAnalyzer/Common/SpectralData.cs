@@ -5,8 +5,10 @@ using System.Text;
 
 namespace AudioMark.Core.Common
 {
+    [Serializable]
     public class SpectralData
     {
+        [Serializable]
         public class StatisticsItem
         {
             public double LastValue { get; set; }
@@ -29,6 +31,7 @@ namespace AudioMark.Core.Common
 
         public int Count { get; set; } = 0;
 
+        [field: NonSerialized]
         public Func<StatisticsItem, double> DefaultValueSelector { get; set; } = (x) => x.Mean;
 
         public StatisticsItem[] Statistics { get; private set; }

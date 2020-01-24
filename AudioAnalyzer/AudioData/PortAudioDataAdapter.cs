@@ -164,13 +164,29 @@ namespace AudioMark.Core.AudioData
         public override IEnumerable<DeviceInfo> EnumerateInputDevices() => inputDevices.Value;
         public override IEnumerable<DeviceInfo> EnumerateOutputDevices() => outputDevices.Value;
 
-        public override DeviceInfo GetDefaultInputDevice() => inputDevices.Value.Where(device => device.Index == PortAudio.Instance.GetDefaultInputDeviceIndex())
-                .OrderBy(device => device.SampleFormat)
-                .FirstOrDefault();
+        private (DeviceInfo input, DeviceInfo output) GetDefaultDevices()
+        {
+            var defaultInpudDeviceIndex = PortAudio.Instance.GetDefaultInputDeviceIndex();
+            var defaultOutputDeviceIndex = PortAudio.Instance.GetDefaultOutputDeviceIndex();
 
-        public override DeviceInfo GetDefaultOutputDevice() => outputDevices.Value.Where(device => device.Index == PortAudio.Instance.GetDefaultOutputDeviceIndex())
-                .OrderBy(device => device.SampleFormat)
-                .FirstOrDefault();
+            var inputs = inputDevices.Value.Where(d => d.Index == defaultInpudDeviceIndex);
+            var outputs = outputDevices.Value.Where(d => d.Index == defaultOutputDeviceIndex);
+            var sampleRates = AppSettings.Current.Device.DefaultSampleRates.Where(sr =>
+                inputs.Any(i => i.SampleRate == sr) &&
+                outputs.Any(o => o.SampleRate == sr)).ToList();
+
+            inputs = inputs.Where(i => sampleRates.Any(sr => sr == i.SampleRate));
+            outputs = outputs.Where(o => sampleRates.Any(sr => sr == o.SampleRate));
+
+            var input = inputs.OrderBy(i => i.SampleFormat).FirstOrDefault();
+            var output = outputs.OrderBy(o => o.SampleFormat).FirstOrDefault();
+
+            return (input, output);
+        }
+
+
+        public override DeviceInfo GetDefaultInputDevice() => GetDefaultDevices().input;
+        public override DeviceInfo GetDefaultOutputDevice() => GetDefaultDevices().output;
 
         protected override void StartDevices()
         {
@@ -190,7 +206,7 @@ namespace AudioMark.Core.AudioData
                 ChannelCount = AppSettings.Current.Device.InputDevice.ChannelsCount,
                 Device = AppSettings.Current.Device.InputDevice.Index,
                 SampleFormat = ToPortAudioSampleFormat(AppSettings.Current.Device.InputDevice.SampleFormat),
-                SuggestedLatency = AppSettings.Current.Device.InputDevice.LatencyMilliseconds / 1000.0                
+                SuggestedLatency = AppSettings.Current.Device.InputDevice.LatencyMilliseconds / 1000.0
             };
 
             var outputStreamParameters = new PaStreamParameters()
@@ -205,7 +221,7 @@ namespace AudioMark.Core.AudioData
             stream.OnRead += OnRead;
             stream.OnWrite += OnWrite;
             stream.OnError += OnError;
-            
+
             stream.Start();
         }
 
@@ -287,6 +303,27 @@ namespace AudioMark.Core.AudioData
         public override IEnumerable<string> EnumerateSystemApis()
         {
             return hostApiCache.Value.Select(api => api.Info.Name).ToList();
+        }
+
+        public override bool ValidateInputDevice(DeviceInfo device)
+        {
+            return inputDevices.Value.Any(i =>
+                i.ApiName == device.ApiName &&
+                i.ChannelsCount == device.ChannelsCount &&
+                i.Name == device.Name &&
+                i.SampleFormat == device.SampleFormat &&
+                i.SampleRate == device.SampleRate);
+
+        }
+
+        public override bool ValidateOutputDevice(DeviceInfo device)
+        {
+            return outputDevices.Value.Any(i =>
+                i.ApiName == device.ApiName &&
+                i.ChannelsCount == device.ChannelsCount &&
+                i.Name == device.Name &&
+                i.SampleFormat == device.SampleFormat &&
+                i.SampleRate == device.SampleRate);
         }
     }
 }

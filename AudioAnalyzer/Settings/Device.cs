@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace AudioMark.Core.Settings
 {    
+    [Serializable]
     public class Device
     {  
         public double[] DefaultSampleRates { get; set; }

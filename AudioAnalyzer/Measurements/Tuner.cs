@@ -44,9 +44,6 @@ namespace AudioMark.Core.Measurements
             }
         }
 
-        public int InputChannel { get; set; } = AppSettings.Current.Device.PrimaryInputChannel;
-        public int OutputChannel { get; set; } = AppSettings.Current.Device.PrimaryOutputChannel;
-
         public Tuner()
         {
             _adapter = AudioDataAdapterProvider.Get();         
@@ -64,7 +61,7 @@ namespace AudioMark.Core.Measurements
 
             _adapter.SetReadHandler((sender, buffer, length, discard) =>
             {
-                var value = Math.Abs(buffer[InputChannel - 1]);
+                var value = Math.Abs(buffer[AppSettings.Current.Device.PrimaryInputChannel - 1]);
                 if (value > maxValue)
                 {
                     maxValue = value;
@@ -93,7 +90,7 @@ namespace AudioMark.Core.Measurements
 
             _adapter.SetWriteHandler((sender, buffer, discard) =>
             {
-                buffer[OutputChannel - 1] = _generator.Next();
+                buffer[AppSettings.Current.Device.PrimaryOutputChannel - 1] = _generator.Next();
                 return buffer.Length;
             });
 

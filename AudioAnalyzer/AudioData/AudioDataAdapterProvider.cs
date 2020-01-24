@@ -6,19 +6,23 @@ namespace AudioMark.Core.AudioData
 {
     public static class AudioDataAdapterProvider
     {
-        private static Lazy<PortAudioDataAdapter> _adapter = new Lazy<PortAudioDataAdapter>(() =>
+        private static PortAudioDataAdapter _adapter;
+        public static void Initialize()
         {
-            var result = new PortAudioDataAdapter();
+            _adapter = new PortAudioDataAdapter();
 
-            result.ValidateDeviceSettings();
-            result.Initialize();
-
-            return result;
-        });
+            _adapter.ValidateDeviceSettings();
+            _adapter.Initialize();           
+        }
 
         public static IAudioDataAdapter Get()
         {
-            return _adapter.Value;
+            if (_adapter == null)
+            {
+                throw new Exception("Adapter not initalized.");
+            }
+
+            return _adapter;
         }
     }
 }

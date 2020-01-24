@@ -278,6 +278,19 @@ namespace AudioMark.ViewModels
             }
         }
 
+        public void Save()
+        {
+            AppSettings.Current.Save();
+        }
+
+        public void Reset()
+        {
+            AppSettings.Current.Reset();
+
+            Api = AppSettings.Current.Device.Api;
+            this.RaisePropertyChanged(nameof(Api));
+        }
+
         public void Stop()
         {
             IsTestActive = false;

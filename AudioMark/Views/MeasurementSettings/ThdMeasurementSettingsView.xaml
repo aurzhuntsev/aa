@@ -112,23 +112,7 @@
             </StackPanel>
           </Grid>
 
-          <Grid HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="3*" />
-              <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="16" />
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-              <RowDefinition />
-              <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0">Apply correction profile:</CheckBox>
-
-            <TextBlock Grid.Column="0" Grid.Row="1" Classes="Inline">(no profile loaded)</TextBlock>
-            <Button Grid.Column="1" Grid.Row="1" Classes="Inline" Width="45" HorizontalAlignment="Left">Load</Button>
-          </Grid>
+          <vmc:CorrectionProfileView DataContext="{Binding CorrectionProfile}"/>
         </StackPanel>
       </cc:PropertySection.Properties>
     </cc:PropertySection>

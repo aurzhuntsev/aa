@@ -133,13 +133,14 @@ namespace AudioMark.Core.AudioData
        
         public void ValidateDeviceSettings()
         {
-            if (AppSettings.Current.Device.InputDevice == null)
+            if (AppSettings.Current.Device.InputDevice == null || !ValidateInputDevice(AppSettings.Current.Device.InputDevice))
             {
                 AppSettings.Current.Device.InputDevice = GetDefaultInputDevice();
                 AppSettings.Current.Save();
-            }
+            }            
 
-            if (AppSettings.Current.Device.OutputDevice == null)
+
+            if (AppSettings.Current.Device.OutputDevice == null || !ValidateOutputDevice(AppSettings.Current.Device.OutputDevice))
             {
                 AppSettings.Current.Device.OutputDevice = GetDefaultOutputDevice();
                 AppSettings.Current.Save();
@@ -185,5 +186,8 @@ namespace AudioMark.Core.AudioData
 
             OnError = errorHandler;
         }
+        
+        public abstract bool ValidateInputDevice(DeviceInfo device);
+        public abstract bool ValidateOutputDevice(DeviceInfo device);
     }
 }

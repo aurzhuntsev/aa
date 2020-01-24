@@ -13,6 +13,8 @@ namespace AudioMark
     {
         public override void Initialize()
         {
+            AudioDataAdapterProvider.Initialize();
+
             AvaloniaXamlLoader.Load(this);            
         }
 
@@ -26,7 +28,7 @@ namespace AudioMark
                 };
 
                 desktop.Exit += OnExit;
-            }
+            }            
 
             base.OnFrameworkInitializationCompleted();
         }
@@ -37,7 +39,7 @@ namespace AudioMark
             if (audioAdapter.Running)
             {
                 audioAdapter.Stop();
-            }
+            }            
 
             AppSettings.Current.Save();
         }

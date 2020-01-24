@@ -5,12 +5,13 @@ using System.Text.Json;
 
 namespace AudioMark.Core.Settings
 {
-    public class OverridableSettings<T> where T: new()
+    [Serializable]
+    public class OverridableSettings<T> where T : new()
     {
         public bool Overriden { get; set; }
 
         private T _globalSettings;
-        private Lazy<T> _overridenValue;
+        private T _overridenValue;
 
         public T Value
         {
@@ -18,7 +19,11 @@ namespace AudioMark.Core.Settings
             {
                 if (Overriden)
                 {
-                    return _overridenValue.Value;
+                    if (_overridenValue == null)
+                    {
+                        _overridenValue = CloneGlobalSettings();
+                    }
+                    return _overridenValue;
                 }
 
                 return CloneGlobalSettings();
@@ -28,9 +33,8 @@ namespace AudioMark.Core.Settings
         public OverridableSettings(T globalSettings)
         {
             _globalSettings = globalSettings;
-             _overridenValue = new Lazy<T>(CloneGlobalSettings);
-        }               
-        
+        }
+
         private T CloneGlobalSettings()
         {
             /* TODO: Implement something better at some point */

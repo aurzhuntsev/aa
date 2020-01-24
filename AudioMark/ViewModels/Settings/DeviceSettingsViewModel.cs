@@ -88,6 +88,8 @@ namespace AudioMark.ViewModels.Settings
 
             DevicesList = new ObservableCollection<string>(devices.Select(device => device.Name).Distinct());
             DevicesList.SetOrFirst(v => Device = v, _deviceSetting.Name);
+
+            Latency = _deviceSetting.LatencyMilliseconds;
         }
 
         /* TODO: bad design */

@@ -1,6 +1,7 @@
 ﻿using AudioMark.Common;
 using AudioMark.Core.Measurements;
 using AudioMark.ViewModels.Common;
+using AudioMark.ViewModels.MeasurementSettings.Common;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -119,6 +120,8 @@ namespace AudioMark.ViewModels.MeasurementSettings
                 this.RaisePropertyChanged(nameof(StopOnConfidence));
             }
         }
+
+        public CorrectionProfileViewModel CorrectionProfile { get; } = new CorrectionProfileViewModel();
 
         #endregion
 

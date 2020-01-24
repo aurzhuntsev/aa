@@ -4,9 +4,12 @@ using AudioMark.ViewModels.Reports;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AudioMark.ViewModels
 {
@@ -56,7 +59,7 @@ namespace AudioMark.ViewModels
         {
             get => (ReportViewModelBase)DefaultForModel(Measurement.AnalysisResult);
         }
-       
+
         public SessionItemViewModel(IMeasurement measurement)
         {
             Measurement = measurement;
@@ -67,7 +70,7 @@ namespace AudioMark.ViewModels
             TextCopy.Clipboard.SetText(Report.GetText());
         }
 
-        public void ToggleVisibility()    
+        public void ToggleVisibility()
         {
             Visible = !Visible;
             _whenVisibilityChanged.OnNext(this);
@@ -76,6 +79,39 @@ namespace AudioMark.ViewModels
         public void Remove()
         {
             _whenRemoved.OnNext(this);
+        }
+
+        public async Task<Unit> Save()
+        {
+            try
+            {
+                var saveFileFilters = new[] {
+                new Interactions.SaveFileOptions.Filter() {
+                    Name = "Measurement",
+                    Extensions = new List<string>() { FileExtensions.Measurement}
+                }
+            };
+
+                var fileName = await Interactions.SaveFile.Handle(new Interactions.SaveFileOptions()
+                {
+                    Filters = saveFileFilters.ToList(),
+                    DefaultExtension = FileExtensions.Measurement,
+                    Directory = ".",
+                    InitialFileName = Name + "." + FileExtensions.Measurement,
+                    Title = "Save measurement..."
+                }); ;
+
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    Measurement.SaveToFile(fileName);
+                }
+            }
+            catch (Exception e)
+            {
+                await Interactions.Error.Handle(e);
+            }
+
+            return Unit.Default;
         }
 
         public async void EditName()

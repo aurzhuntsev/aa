@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using AudioMark.Core.Common;
-
+/* TODO: Customize scroll looknfeel */
 namespace AudioMark.Core.Measurements
 {
     public class MeasurementsFactory
@@ -63,6 +65,25 @@ namespace AudioMark.Core.Measurements
             }
 
             return (IMeasurementSettings)Activator.CreateInstance(item.SettingsType);
+        }
+
+        public static IMeasurement Load(string fileName)
+        {
+            var formatter = new BinaryFormatter();
+            using (var streamReader = new StreamReader(fileName))
+            {
+                var container = (MeasurementSerializationContainer)formatter.Deserialize(streamReader.BaseStream);
+                var item = measurements.FirstOrDefault(m => m.Type.Name == container.TypeName);
+                if (item == null)
+                {
+                    throw new KeyNotFoundException(container.TypeName);
+                }
+
+                var result = (IMeasurement)Activator.CreateInstance(item.Type, new  object[] { container.Settings, container.Result });
+                result.Name = container.Name;
+
+                return result;
+            }
         }
 
         static MeasurementsFactory()
