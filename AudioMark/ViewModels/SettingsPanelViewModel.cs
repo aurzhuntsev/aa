@@ -33,6 +33,8 @@ namespace AudioMark.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _api, value);
+                AppSettings.Current.Device.Api = value;
+
 
                 InputDeviceSettings = new DeviceSettingsViewModel("Input", _inputDevices.Where(device => device.ApiName == _api), AppSettings.Current.Device.InputDevice);
                 InputDeviceSettings.WhenChanged.Subscribe(_ => UpdateSampleRatesList());
@@ -50,8 +52,7 @@ namespace AudioMark.ViewModels
                     OutputDeviceSettings.SetSampleRate(int.Parse(SampleRate));
                 }
 
-                UpdateSampleRatesList();
-                UpdateSettings();
+                UpdateSampleRatesList();                
             }
         }
 
@@ -65,7 +66,7 @@ namespace AudioMark.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _inputChannel, value);
-                _tuner.InputChannel = value + 1;
+                AppSettings.Current.Device.PrimaryInputChannel = value + 1;
             }
         }
 
@@ -77,7 +78,7 @@ namespace AudioMark.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _outputChannel, value);
-                _tuner.OutputChannel = value + 1;
+                AppSettings.Current.Device.PrimaryOutputChannel = value + 1;
             }
         }
 
@@ -185,6 +186,8 @@ namespace AudioMark.ViewModels
 
             this.RaisePropertyChanged(nameof(SampleRatesList));
             SampleRatesList.SetOrFirst(v => SampleRate = v, AppSettings.Current.Device.SampleRate.ToString());
+
+            UpdateSettings();
         }
 
         private void UpdateSettings()
@@ -194,8 +197,7 @@ namespace AudioMark.ViewModels
                 return;
             }
 
-            InputDeviceSettings.SetSampleRate(int.Parse(SampleRate));
-            OutputDeviceSettings.SetSampleRate(int.Parse(SampleRate));
+                       
             var inputDevice = _inputDevices
                 .Where(d => d.ApiName == Api && d.Name == InputDeviceSettings.Device && d.SampleFormat.ToString() == InputDeviceSettings.Format)
                 .FirstOrDefault();
@@ -206,6 +208,8 @@ namespace AudioMark.ViewModels
             AppSettings.Current.Device.InputDevice.Name = inputDevice.Name;
             AppSettings.Current.Device.InputDevice.LatencyMilliseconds = InputDeviceSettings.Latency;
             AppSettings.Current.Device.InputDevice.SampleRate = int.Parse(SampleRate);
+
+            InputDeviceSettings.SetSampleRate(int.Parse(SampleRate));
 
             InputChannelsList = new ObservableCollection<string>();
             for (var i = 0; i < inputDevice.ChannelsCount; i++)
@@ -233,6 +237,8 @@ namespace AudioMark.ViewModels
             AppSettings.Current.Device.OutputDevice.Name = outputDevice.Name;
             AppSettings.Current.Device.OutputDevice.LatencyMilliseconds = OutputDeviceSettings.Latency;
             AppSettings.Current.Device.OutputDevice.SampleRate = int.Parse(SampleRate);
+
+            OutputDeviceSettings.SetSampleRate(int.Parse(SampleRate));
 
             OutputChannelsList = new ObservableCollection<string>();
             for (var i = 0; i < outputDevice.ChannelsCount; i++)

@@ -75,6 +75,7 @@ namespace AudioMark.ViewModels.Settings
             set
             {                
                 this.RaiseAndSetIfChanged(ref _latency, value);
+                _whenChanged.OnNext(this);
             }
         }
 
@@ -89,6 +90,7 @@ namespace AudioMark.ViewModels.Settings
             DevicesList.SetOrFirst(v => Device = v, _deviceSetting.Name);
         }
 
+        /* TODO: bad design */
         public void SetSampleRate(int sampleRate)
         {
             _sampleRate = sampleRate;
@@ -97,7 +99,14 @@ namespace AudioMark.ViewModels.Settings
                 .Where(d => d.Name == Device && d.SampleFormat.ToString() == Format)
                 .FirstOrDefault();
             MinLatency = device.LatencyMilliseconds;
-            Latency = MinLatency;
+            _latency = _deviceSetting.LatencyMilliseconds;
+
+            if (_latency < MinLatency)
+            {
+                _latency = MinLatency;
+            }
+
+            this.RaisePropertyChanged(nameof(Latency));
         }
     }
 }

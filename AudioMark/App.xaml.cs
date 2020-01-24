@@ -5,6 +5,7 @@ using AudioMark.ViewModels;
 using AudioMark.Views;
 using System;
 using AudioMark.Core.AudioData;
+using AudioMark.Core.Settings;
 
 namespace AudioMark
 {
@@ -37,6 +38,8 @@ namespace AudioMark
             {
                 audioAdapter.Stop();
             }
+
+            AppSettings.Current.Save();
         }
     }
 }
