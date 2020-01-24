@@ -15,7 +15,7 @@
         <TextBlock Classes="PropertyTitle">Test signal</TextBlock>
       </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
           <Grid HorizontalAlignment="Stretch">
 
             <Grid.ColumnDefinitions>
@@ -43,7 +43,7 @@
         <TextBlock Classes="PropertyTitle">Warm-up signal</TextBlock>
       </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
           <Grid HorizontalAlignment="Stretch">
 
             <Grid.ColumnDefinitions>
@@ -122,7 +122,7 @@
         <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
       </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
           <CheckBox Classes="Inline" IsChecked="{Binding OverrideStopConditionsSettings}">Override global settings</CheckBox>
 
           <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">

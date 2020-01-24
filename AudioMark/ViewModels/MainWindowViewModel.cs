@@ -1,5 +1,6 @@
 ﻿using AudioMark.Core.Common;
 using AudioMark.Core.Measurements;
+using AudioMark.Views.GraphView;
 using Avalonia.Threading;
 using ReactiveUI;
 using System;
@@ -21,7 +22,7 @@ namespace AudioMark.ViewModels
         {
             get => _measurementsPanelVisible;
             set => this.RaiseAndSetIfChanged(ref _measurementsPanelVisible, value);
-        }
+        }        
 
         private bool _settingsPanelVisible;
         public bool SettingsPanelVisible
@@ -30,13 +31,18 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _settingsPanelVisible, value);
         }
 
-        /* TODO: Make it better? */
-        private int _sucessfulSeriesCount = 0;
-        private List<SpectralData> _series = new List<SpectralData>();
-        public List<SpectralData> Series
+        private List<Series> _series = new List<Series>();
+        public List<Series> Series
         {
             get => _series;
             set => this.RaiseAndSetIfChanged(ref _series, value);
+        }
+
+        private Series _activeSeries = null;
+        public Series ActiveSeries
+        {
+            get => _activeSeries;
+            set => this.RaiseAndSetIfChanged(ref _activeSeries, value);
         }
 
         private bool _dynamicRender;
@@ -69,38 +75,101 @@ namespace AudioMark.ViewModels
                     if (success)
                     {
                         _storedMeasurements.Add(Measurements.Measurement);
+                        Series.Add(new Views.GraphView.Series()
+                        {
+                            Data = ((IMeasurement<SpectralData>)Measurements.Measurement).Data,
+                            ColorIndex = _storedMeasurements.Count - 1,
+                            Visible = true
+                        });                        
                         Dispatcher.UIThread.Post(() =>
                         {
                             Session.AddMeasurement(Measurements.Measurement, _storedMeasurements.Count - 1);
                         });
                     }
 
+                    ActiveSeries = null;
                     UpdateGraphView(null);
                 }
             });
 
             Measurements.WhenDataUpdated.Subscribe(data =>
             {
-                /* TODO: Optimize */
                 UpdateGraphView(data);
-
                 this.RaisePropertyChanged(nameof(Series));
             });
 
             Session = new SessionPanelViewModel();
+            Session.WhenSessionItemAdded.Subscribe((item) =>
+            {
+                Series.Add(new Series()
+                {
+                    Data = ((IMeasurement<SpectralData>)item.Measurement).Data,
+                    ColorIndex = _storedMeasurements.Count,
+                    Visible = true
+                });
+
+                _storedMeasurements.Add(item.Measurement);
+                UpdateGraphView(null);
+            });
+
+            Session.WhenSessionItemRemoved.Subscribe((item) =>
+            {
+                if (item.Selected)
+                {
+                    Measurements.SetCompletedMeasurement(null);
+                }
+
+                _storedMeasurements.Remove(item.Measurement);
+                Series.Remove(Series.FirstOrDefault(s => s.ColorIndex == item.SeriesIndex));
+                UpdateGraphView(null);
+            });
+
+            Session.WhenSessionItemVisibilityChanged.Subscribe((item) =>
+            {
+                var series = Series.FirstOrDefault(s => s.ColorIndex == item.SeriesIndex);
+                if (series != null)
+                {
+                    series.Visible = item.Visible;
+                    UpdateGraphView(null);
+                }
+            });
+
+            Session.WhenSessionItemSelectionChanged.Subscribe((item) =>
+            {
+                if (item.Selected)
+                {
+                    Measurements.SetCompletedMeasurement(item.Measurement);
+
+                    HideAllPanels();
+                    MeasurementsPanelVisible = true;
+                }
+                else
+                {
+                    Measurements.SetCompletedMeasurement(null);
+                }
+            });
         }
 
         private void UpdateGraphView(SpectralData data)
         {
             var storedDatas = _storedMeasurements.Cast<IMeasurement<SpectralData>>().Select(m => m.Data);
-            Series.RemoveAll(s => !storedDatas.Contains(s));
+            Series.RemoveAll(s => !storedDatas.Contains(s.Data));
 
             if (data != null)
             {
-                Series.Add(data);
+                ActiveSeries =
+                     new Series()
+                     {
+                         Data = data,
+                         ColorIndex = storedDatas.Count(),
+                         Visible = true
+                     };
+                this.RaisePropertyChanged(nameof(ActiveSeries));
             }
-
-            this.RaisePropertyChanged(nameof(Series));
+            else
+            {
+                this.RaisePropertyChanged(nameof(Series));
+            }
         }
 
         private void HideAllPanels()

@@ -27,11 +27,11 @@
       <RowDefinition Height="18"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <Panel  PointerPressed="OnSectionTitlePointerPressed" Cursor="Hand"  Grid.Column="0" Grid.Row="0">
-      <Path Classes="Expander" PointerPressed="OnSectionTitlePointerPressed" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded, ElementName=PropertySection}"/>
-      <Path Classes="Expander" PointerPressed="OnSectionTitlePointerPressed" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded, ElementName=PropertySection}"/>
+    <Panel Cursor="Hand" PointerPressed="OnSectionTitlePointerPressed" Grid.Column="0" Grid.Row="0">
+      <Path Classes="Expander" Data="M7 10l5 5l5-5z" IsVisible="{Binding Expanded, ElementName=PropertySection}"/>
+      <Path Classes="Expander" Data="M10 17l5-5l-5-5v10z" IsVisible="{Binding !Expanded, ElementName=PropertySection}"/>
     </Panel>
-    <Panel Grid.Column="1" Grid.Row="0"  PointerPressed="OnSectionTitlePointerPressed"
+    <Panel Grid.Column="1" Grid.Row="0" PointerPressed="OnSectionTitlePointerPressed"
            Cursor="Hand" HorizontalAlignment="Stretch">
       <Border  Padding="2 0 0 0">
         <ContentControl Content="{Binding Title, ElementName=PropertySection}" Margin="2 0 0 0"/>

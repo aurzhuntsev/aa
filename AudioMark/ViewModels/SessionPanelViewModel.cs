@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,12 +20,35 @@ namespace AudioMark.ViewModels
     {
         public ObservableCollection<SessionItemViewModel> Items { get; } = new ObservableCollection<SessionItemViewModel>();
 
-        public SessionPanelViewModel()
+        private Subject<SessionItemViewModel> _whenSessionItemVisibilityChanged = new Subject<SessionItemViewModel>();
+        public IObservable<SessionItemViewModel> WhenSessionItemVisibilityChanged
         {
-            AddMeasurement(new ThdMeasurement(null) { Name = "Text test test" }, 0);
+            get => _whenSessionItemVisibilityChanged.AsObservable();
         }
 
-        public void AddMeasurement(IMeasurement measurement, int index)
+        private Subject<SessionItemViewModel> _whenSessionItemAdded = new Subject<SessionItemViewModel>();
+        public IObservable<SessionItemViewModel> WhenSessionItemAdded
+        {
+            get => _whenSessionItemAdded.AsObservable();
+        }
+
+        private Subject<SessionItemViewModel> _whenSessionItemRemoved = new Subject<SessionItemViewModel>();
+        public IObservable<SessionItemViewModel> WhenSessionItemRemoved
+        {
+            get => _whenSessionItemRemoved.AsObservable();
+        }
+
+        private Subject<SessionItemViewModel> _whenSessionItemSelectionChanged = new Subject<SessionItemViewModel>();
+        public IObservable<SessionItemViewModel> WhenSessionItemSelectionChanged
+        {
+            get => _whenSessionItemSelectionChanged.AsObservable();
+        }
+
+        public SessionPanelViewModel()
+        {         
+        }
+
+        public SessionItemViewModel AddMeasurement(IMeasurement measurement, int index)
         {
             var itemViewModel = new SessionItemViewModel(measurement) { SeriesIndex = index };
             itemViewModel.WhenRemoved.Subscribe(async item =>
@@ -33,15 +57,33 @@ namespace AudioMark.ViewModels
                 if (result)
                 {
                     Items.Remove(item);
+                    _whenSessionItemRemoved.OnNext(item);
                 }
             });
 
             itemViewModel.WhenVisibilityChanged.Subscribe((item) =>
             {
+                _whenSessionItemVisibilityChanged.OnNext(item);
+            });
 
+            itemViewModel.WhenSelectionChanged.Subscribe((item) =>
+            {
+                foreach (var otherItem in Items)
+                {
+                    if (otherItem == item)
+                    {
+                        continue;
+                    }
+
+                    otherItem.Selected = false;
+                }
+
+                _whenSessionItemSelectionChanged.OnNext(item);
             });
 
             Items.Insert(0, itemViewModel);
+
+            return itemViewModel;
         }
 
         public async Task<Unit> LoadMeasurement()
@@ -67,7 +109,8 @@ namespace AudioMark.ViewModels
                 if (fileNames != null && fileNames.Any())
                 {
                     var measurement = MeasurementsFactory.Load(fileNames[0]);
-                    AddMeasurement(measurement, Items.Count);
+                    var item = AddMeasurement(measurement, Items.Count);
+                    _whenSessionItemAdded.OnNext(item);
                 }
             }
             catch (Exception e)

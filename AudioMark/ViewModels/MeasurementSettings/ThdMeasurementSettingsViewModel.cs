@@ -16,7 +16,14 @@ namespace AudioMark.ViewModels.MeasurementSettings
         {
             get => (ThdMeasurementSettings)Settings;
         }
-        
+
+        private bool _isCompleted;
+        public override bool IsCompleted
+        {
+            get => _isCompleted;
+            set => this.RaiseAndSetIfChanged(ref _isCompleted, value);
+        }
+
         #region Test signal options
         public double TestSignalFrequency
         {

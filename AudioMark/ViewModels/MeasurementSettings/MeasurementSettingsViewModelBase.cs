@@ -6,7 +6,7 @@ using System.Text;
 
 namespace AudioMark.ViewModels.MeasurementSettings
 {
-    public class MeasurementSettingsViewModelBase : ViewModelBase
+    public abstract class MeasurementSettingsViewModelBase : ViewModelBase
     {
         private IMeasurementSettings _settings;
         public IMeasurementSettings Settings
@@ -14,5 +14,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
             get => _settings;
             set => this.RaiseAndSetIfChanged(ref _settings, value);
         }
+
+        public abstract bool IsCompleted { get; set; }
     }
 }

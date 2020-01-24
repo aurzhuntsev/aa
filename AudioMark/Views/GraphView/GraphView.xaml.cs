@@ -47,24 +47,43 @@ namespace AudioMark.Views.GraphView
             }
         }
 
-        
-        public static readonly DirectProperty<GraphView, List<SpectralData>> SeriesProperty =
-            AvaloniaProperty.RegisterDirect<GraphView, List<SpectralData>>(nameof(Series), x => x.Series, (x, v) => x.Series = v);
-        private List<SpectralData> _series;
-        public List<SpectralData> Series
+
+        public static readonly DirectProperty<GraphView, List<Series>> SeriesProperty =
+            AvaloniaProperty.RegisterDirect<GraphView, List<Series>>(nameof(Series), x => x.Series, (x, v) => x.Series = v);
+        private List<Series> _series;
+        public List<Series> Series
         {
             get => _series;
             set
             {
                 SetAndRaise(SeriesProperty, ref _series, value);
+                UpdateRenderers();
+            }
+        }
 
-                foreach (var renderer in _renderers) {
-                    renderer.Series = _series;
+        public static readonly DirectProperty<GraphView, Series> ActiveSeriesProperty =
+           AvaloniaProperty.RegisterDirect<GraphView, Series>(nameof(ActiveSeries), x => x.ActiveSeries, (x, v) => x.ActiveSeries = v);
+        private Series _activeSeries;
+        public Series ActiveSeries
+        {
+            get => _activeSeries;
+            set
+            {
+                SetAndRaise(ActiveSeriesProperty, ref _activeSeries, value);
+                UpdateRenderers();                
+            }
+        }
+
+        private IEnumerable<Series> AllSeries
+        {
+            get
+            {
+                var series = Series ?? Enumerable.Empty<Series>();
+                if (ActiveSeries != null)
+                {
+                    return series.Union(new[] { ActiveSeries });
                 }
-
-                BuildBins();
-
-                _seriesRenderer.Render();
+                return series;
             }
         }
 
@@ -79,17 +98,6 @@ namespace AudioMark.Views.GraphView
         private ImageRendererBase[] _renderers = null;
 
         private Point? _pointer;
-
-        public int MaxFrequency
-        {
-            get => !Series.Any() ? (int)(AppSettings.Current.Device.SampleRate / 2.0) : Series.Max(d => d.MaxFrequency);
-        }
-
-        public int SpectrumBins
-        {
-            get => !Series.Any() ? (AppSettings.Current.Fft.WindowSize) : Series.Max(d => d.Size);
-        }
-
 
         public GraphView()
         {
@@ -111,7 +119,10 @@ namespace AudioMark.Views.GraphView
         {
             if (ViewBounds != null && ViewBounds.Width > 0 && ViewBounds.Height > 0)
             {
-                _viewContext.Update(ViewBounds, MaxFrequency, SpectrumBins);
+                var maxFrequency = !AllSeries.Any() ? (int)(AppSettings.Current.Device.SampleRate / 2.0) : AllSeries.ToList().Max(d => d.Data.MaxFrequency);
+                var spectrumBins = !AllSeries.Any() ? (AppSettings.Current.Fft.WindowSize) : AllSeries.ToList().Max(d => d.Data.Size);
+
+                _viewContext.Update(ViewBounds, maxFrequency, spectrumBins);
                 BuildBins();
 
                 foreach (var renderer in _renderers)
@@ -124,16 +135,17 @@ namespace AudioMark.Views.GraphView
         private void BuildBins()
         {
             var result = new List<Bin>();
-            if (Series != null && Series.Any())
+            if (AllSeries.ToList().Any())
             {
                 int currentOffset = 0;
                 int binWidth = 0;
                 int startingBin = 2;
                 int bins = 0;
+                var k = _viewContext.MaxFrequency / _viewContext.SpectrumBins;
 
-                while (startingBin + bins < SpectrumBins)
+                while (startingBin + bins < _viewContext.SpectrumBins)
                 {
-                    while (currentOffset == (binWidth = _viewContext.FreqToViewX((startingBin + bins) * (MaxFrequency / SpectrumBins))))
+                    while (currentOffset == (binWidth = _viewContext.FreqToViewX((startingBin + bins) * k)))
                     {
                         bins++;
                     }
@@ -144,7 +156,7 @@ namespace AudioMark.Views.GraphView
                         Left = currentOffset,
                         Right = binWidth,
                         From = startingBin,
-                        To = startingBin + bins                        
+                        To = startingBin + bins
                     };
 
                     result.Add(bin);
@@ -157,9 +169,20 @@ namespace AudioMark.Views.GraphView
 
                 foreach (var renderer in _renderers)
                 {
-                    renderer.Bins = result;                    
+                    renderer.Bins = result;
                 }
             }
+        }
+
+        private void UpdateRenderers()
+        {
+            foreach (var renderer in _renderers)
+            {
+                renderer.Series = AllSeries.ToList();
+            }
+
+            BuildBins();
+            _seriesRenderer.Render();
         }
 
         public static readonly AvaloniaProperty<int> LeftLeftProperty = AvaloniaProperty.Register<GraphView, int>(nameof(LeftLeft));

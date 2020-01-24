@@ -52,7 +52,7 @@
       </Border>
 
       <Panel Grid.Column="1" Grid.Row="0" Background="{DynamicResource Level1BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <gv:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Series="{Binding Series}" DynamicRender="{Binding DynamicRender, Mode=TwoWay}" />
+        <gv:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Series="{Binding Series}" ActiveSeries="{Binding ActiveSeries}" DynamicRender="{Binding DynamicRender, Mode=TwoWay}" />
         <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Measurements}"
           IsVisible="{Binding MeasurementsPanelVisible}" />
         <v:SettingsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Settings}"

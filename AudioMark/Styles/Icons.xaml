@@ -86,7 +86,11 @@
     <Setter Property="Data" Value="M20 14h-6v6h-4v-6H4v-4h6V4h4v6h6v4z" />
     <Setter Property="Fill" Value="{DynamicResource GreenBrush}" />
   </Style>
-  
+  <Style Selector="Button.CancelIcon /template/ Path">
+    <Setter Property="Data" Value="M12 2a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2m0 2a8 8 0 0 0-8 8c0 1.85.63 3.55 1.68 4.91L16.91 5.68A8.005 8.005 0 0 0 12 4m0 16a8 8 0 0 0 8-8c0-1.85-.63-3.55-1.68-4.91L7.09 18.32A8.005 8.005 0 0 0 12 20z" />
+    <Setter Property="Fill" Value="{DynamicResource RedBrush}" />
+  </Style>  
+
   <Style Selector="Button.EyeIcon /template/ Path">
     <Setter Property="Data" Value="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5z" />
     <Setter Property="Fill" Value="{DynamicResource ForegroundBrush}" />

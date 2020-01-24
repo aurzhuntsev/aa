@@ -42,7 +42,7 @@ namespace AudioMark.Views.GraphView
             get; set;
         }
 
-        public IEnumerable<SpectralData> Series
+        public IEnumerable<Series> Series
         {
             get; set;
         }
@@ -176,7 +176,7 @@ namespace AudioMark.Views.GraphView
                 return double.NaN;
             }
 
-            return sequence.Select(series.DefaultValueSelector).Max();
+            return sequence.Select(series.GetDefaultValueSelector()).Max();
         }
 
 

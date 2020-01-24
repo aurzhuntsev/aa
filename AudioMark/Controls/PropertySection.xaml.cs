@@ -33,8 +33,11 @@ namespace AudioMark.Controls
         }        
 
         public void OnSectionTitlePointerPressed(object sender, PointerPressedEventArgs e)
-        {            
-            Expanded = !Expanded;
+        {
+            if (!e.Handled)
+            {
+                Expanded = !Expanded;
+            }
         }
 
         public PropertySection()

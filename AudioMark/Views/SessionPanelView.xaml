@@ -21,15 +21,31 @@
                 <DockPanel HorizontalAlignment="Stretch">
                   <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                     <Button Classes="SeriesIcon" Margin="0 0 4 0" Foreground="{Binding SeriesIndex, Converter={StaticResource SeriesColorConverter}}" />
-                    <TextBlock Classes="PropertyTitle" Text="{Binding Name}" />
+                    <Button Classes="PropertyTitle" Content="{Binding Name}" Command="{Binding SelectItem}" IsDefault="{Binding Selected}">
+                      <Button.Styles>
+                        <Style Selector="Button.PropertyTitle">
+                          <Setter Property="Background" Value="Transparent" />
+                          <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+                          <Setter Property="BorderThickness" Value="0" />
+                          <Setter Property="Padding" Value="0" />                          
+                        </Style>
+                        <Style Selector="Button.PropertyTitle:pointerover">
+                          <Setter Property="Foreground" Value="{DynamicResource HighlightForegroundBrush}" />
+                        </Style>
+                        <!-- TODO: That's a hack, maybe figure out smth better -->
+                        <Style Selector="Button.PropertyTitle[IsDefault=true]">
+                          <Setter Property="FontWeight" Value="Bold" />
+                        </Style>
+                      </Button.Styles>
+                    </Button>
                   </StackPanel>
-                  
+
                   <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal">
                     <StackPanel.Styles>
                       <Style Selector="Button.Icon">
                         <Setter Property="Margin" Value="0 0 -4 0" />
                       </Style>
-                    </StackPanel.Styles>  
+                    </StackPanel.Styles>
                     <Button Classes="NoText Icon EyeIcon" Margin="0 1 2 0" ToolTip.Tip="Toggle visibility" Background="Transparent" IsVisible="{Binding Visible}" Command="{Binding ToggleVisibility}" />
                     <Button Classes="NoText Icon EyeOffIcon" Margin="0 1 2 0" ToolTip.Tip="Toggle visibility" Background="Transparent" IsVisible="{Binding !Visible}" Command="{Binding ToggleVisibility}"/>
                     <Button Classes="NoText Icon SaveIcon" ToolTip.Tip="Save" Background="Transparent" Command="{Binding Save}">
@@ -45,7 +61,7 @@
                     <Button Classes="NoText Icon EditIcon" ToolTip.Tip="Edit name" Background="Transparent" Command="{Binding EditName}" />
                     <Button Classes="NoText Icon RemoveFlaskIcon" ToolTip.Tip="Delete" Background="Transparent" Margin="0 0 2 0" Command="{Binding Remove}" />
                   </StackPanel>
-                  
+
                 </DockPanel>
               </cc:PropertySection.Title>
               <cc:PropertySection.Properties>

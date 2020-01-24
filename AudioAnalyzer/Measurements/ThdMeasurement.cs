@@ -111,7 +111,7 @@ namespace AudioMark.Core.Measurements
             warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, WarmupSignalGenerator);
 
             var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
-            sink.Data.DefaultValueSelector = (data) => data.LastValue;
+            sink.Data.DefaultValue = SpectralData.DefaultValueType.Last;
             warmUpActivity.AddSink(AppSettings.Current.Device.PrimaryInputChannel, sink);
 
             warmUpActivity.RegisterStopCondition(new TimeoutStopCondition(Settings.WarmUpDurationSeconds * 1000));
@@ -126,7 +126,7 @@ namespace AudioMark.Core.Measurements
             dataActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, TestSignalGenerator);
 
             var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
-            sink.Data.DefaultValueSelector = (data) => data.Mean;
+            sink.Data.DefaultValue = SpectralData.DefaultValueType.Mean;
             dataActivity.AddSink(AppSettings.Current.Device.PrimaryInputChannel, sink);
 
             if (Settings.StopConditions.Value.TimeoutEnabled)

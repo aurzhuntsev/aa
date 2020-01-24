@@ -19,7 +19,19 @@ namespace AudioMark.ViewModels
 {
     public class MeasurementsPanelViewModel : ViewModelBase
     {
-        public IMeasurement Measurement { get; private set; }
+        private IMeasurement _measurement;
+        public IMeasurement Measurement
+        {
+            get => _measurement;
+            set => this.RaiseAndSetIfChanged(ref _measurement, value);
+        }
+
+        private bool _isCompleted;
+        public bool IsCompleted
+        {
+            get => _isCompleted;
+            set => this.RaiseAndSetIfChanged(ref _isCompleted, value);
+        }
 
         private Subject<bool> _whenRunningStatusChanged = new Subject<bool>();
         public IObservable<bool> WhenRunningStatusChanged
@@ -56,21 +68,26 @@ namespace AudioMark.ViewModels
             get => _content;
             set => this.RaiseAndSetIfChanged(ref _content, value);
         }
-  
+
         public MeasurementsPanelViewModel()
         {
             Items = new ObservableCollection<string>(MeasurementsFactory.List().Select(item => item.Name));
-            
+
             this.WhenAnyValue(x => x.SelectedIndex).Subscribe(x =>
-            {               
-                var settings = MeasurementsFactory.CreateSettings(Items[SelectedIndex]);
-                var viewModel = DefaultForModel(settings);
-                _content = (MeasurementSettingsViewModelBase)viewModel;                
+            {
+                SetSelectedMeasurement();
             });
         }
 
+        private void SetSelectedMeasurement()
+        {
+            var settings = MeasurementsFactory.CreateSettings(Items[SelectedIndex]);
+            var viewModel = DefaultForModel(settings);
+            _content = (MeasurementSettingsViewModelBase)viewModel;
+        }
+
         private void OnMeasurementDataUpdate(object sender, object e)
-        {         
+        {
         }
 
         public async void Run(Button sender)
@@ -82,7 +99,7 @@ namespace AudioMark.ViewModels
                     desktop.Exit += OnExit;
                 }
 
-                Measurement = MeasurementsFactory.Create(Items[SelectedIndex], Content.Settings);                
+                Measurement = MeasurementsFactory.Create(Items[SelectedIndex], Content.Settings);
                 Measurement.OnComplete += (sender, success) =>
                 {
                     Running = false;
@@ -122,6 +139,29 @@ namespace AudioMark.ViewModels
             {
                 Measurement.Stop();
             }
+        }
+
+        public void SetCompletedMeasurement(IMeasurement measurement)
+        {
+            Measurement = measurement;
+            if (measurement != null)
+            {
+                Content = (MeasurementSettingsViewModelBase)DefaultForModel(measurement.Settings);
+                Content.IsCompleted = true;
+                IsCompleted = true;
+            }
+            else
+            {
+                SetSelectedMeasurement();
+                IsCompleted = false;
+            }
+
+            this.RaisePropertyChanged(nameof(Content));
+        }
+
+        public void CancelSelection()
+        {
+            SetCompletedMeasurement(null);
         }
     }
 }

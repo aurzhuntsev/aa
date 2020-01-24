@@ -25,14 +25,18 @@ namespace AudioMark.Core.Common
             public string Label { get; set; }
         }
 
+        public enum DefaultValueType
+        {
+            Last, Mean
+        }
+
         public int Size { get; set; }
         public int MaxFrequency { get; set; }
         public double FrequencyPerBin => (double)MaxFrequency / Size;
 
         public int Count { get; set; } = 0;
 
-        [field: NonSerialized]
-        public Func<StatisticsItem, double> DefaultValueSelector { get; set; } = (x) => x.Mean;
+        public DefaultValueType DefaultValue { get; set; }
 
         public StatisticsItem[] Statistics { get; private set; }
 
@@ -110,6 +114,20 @@ namespace AudioMark.Core.Common
                     yield return item;
                 }
             }
+        }
+
+        public Func<StatisticsItem, double> GetDefaultValueSelector()
+        {
+            if (DefaultValue == DefaultValueType.Last)
+            {
+                return s => s.LastValue;
+            }
+            else if (DefaultValue == DefaultValueType.Mean)
+            {
+                return s => s.Mean;
+            }
+
+            throw new Exception();
         }
     }
 }

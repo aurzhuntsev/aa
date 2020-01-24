@@ -37,6 +37,13 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _visible, value);
         }
 
+        private bool _selected = false;
+        public bool Selected
+        {
+            get => _selected;
+            set => this.RaiseAndSetIfChanged(ref _selected, value);
+        }
+
         private Subject<SessionItemViewModel> _whenRemoved = new Subject<SessionItemViewModel>();
         public IObservable<SessionItemViewModel> WhenRemoved
         {
@@ -54,6 +61,13 @@ namespace AudioMark.ViewModels
         {
             get => _whenNameEdited.AsObservable();
         }
+
+        private Subject<SessionItemViewModel> _whenSelectionChanged  = new Subject<SessionItemViewModel>();
+        public IObservable<SessionItemViewModel> WhenSelectionChanged
+        {
+            get => _whenSelectionChanged.AsObservable();
+        }
+
 
         public ReportViewModelBase Report
         {
@@ -122,6 +136,12 @@ namespace AudioMark.ViewModels
                 Name = result.Value;
                 _whenNameEdited.OnNext(this);
             }
+        }        
+
+        public void SelectItem()
+        {
+            Selected = !Selected;
+            _whenSelectionChanged.OnNext(this);
         }
     }
 }

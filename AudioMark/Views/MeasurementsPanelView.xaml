@@ -23,6 +23,11 @@
           Stop
         </Button>
       </StackPanel>
+
+      <Grid ColumnDefinitions="300,*" IsVisible="{Binding IsCompleted}">
+        <TextBlock FontWeight="Bold" Grid.Column="0" Text="{Binding Measurement.Name}" />
+        <Button Grid.Column="1" HorizontalAlignment="Right" Classes="Inline NoText Icon CancelIcon" Command="{Binding CancelSelection}" />
+      </Grid>
       <ScrollViewer>
         <ContentControl Content="{Binding Content}" />
       </ScrollViewer>

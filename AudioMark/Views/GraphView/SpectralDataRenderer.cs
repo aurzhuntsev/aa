@@ -26,16 +26,20 @@ namespace AudioMark.Views.GraphView
 
             if (Bins != null)
             {
-                for (var i = 0; i < Series.Count(); i++)
+                foreach (var series in Series)
                 {
-                    var series = Series.Skip(i).First();
+                    if (!series.Visible)
+                    {
+                        continue;
+                    }
+
                     bool isFirstPoint = true;
                     int lx = 0, ly = 0;
 
                     foreach (var bin in Bins)
                     {
                         var x = bin.Left + (int)((bin.Right - bin.Left) * 0.5);
-                        var y = Context.DbToViewY(GetSeriesValue(series, bin));
+                        var y = Context.DbToViewY(GetSeriesValue(series.Data, bin));
                         if (y < 0)
                         {
                             continue;
@@ -47,7 +51,7 @@ namespace AudioMark.Views.GraphView
                         }
                         else
                         {
-                            canvas.DrawLine(lx, ly, x, y, SeriesColorConverter.GetSKPaint(i));
+                            canvas.DrawLine(lx, ly, x, y, SeriesColorConverter.GetSKPaint(series.ColorIndex));
                         }
 
                         lx = x;

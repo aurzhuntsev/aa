@@ -72,6 +72,8 @@ namespace AudioMark.ViewModels
             if (measurement != null)
             {
                 ActiveMeasurement = measurement;
+                SeriesIndex = seriesIndex;
+
                 if (_timer != null && _timer.IsEnabled)
                 {
                     _timer.Stop();
