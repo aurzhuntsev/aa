@@ -98,6 +98,14 @@ namespace AudioMark.ViewModels
                 this.RaisePropertyChanged(nameof(Series));
             });
 
+            Measurements.WhenSelectionCancelled.Subscribe(_ =>
+            {
+                foreach (var item in Session.Items)
+                {
+                    item.Selected = false;
+                }
+            });
+
             Session = new SessionPanelViewModel();
             Session.WhenSessionItemAdded.Subscribe((item) =>
             {

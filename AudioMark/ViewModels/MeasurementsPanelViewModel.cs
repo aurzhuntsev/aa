@@ -45,6 +45,13 @@ namespace AudioMark.ViewModels
             get => _whenDataUpdated.AsObservable();
         }
 
+        private Subject<Unit> _whenSelectionCancelled = new Subject<Unit>();
+        public IObservable<Unit> WhenSelectionCancelled
+        {
+            get => _whenSelectionCancelled.AsObservable();
+        }
+
+
         /* TODO: See how it will work content that needs scrolling */
         public ObservableCollection<string> Items { get; }
 
@@ -162,6 +169,7 @@ namespace AudioMark.ViewModels
         public void CancelSelection()
         {
             SetCompletedMeasurement(null);
+            _whenSelectionCancelled.OnNext(Unit.Default);
         }
     }
 }
