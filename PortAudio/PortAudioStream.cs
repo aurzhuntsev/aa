@@ -147,7 +147,6 @@ namespace PortAudioWrapper
                     _callbackWaitHandle.WaitOne(CallbackThreadWaitTimeoutMilliseconds);
                     _callbackWaitHandle.Reset();
 
-                    /* TODO: Implement different formats support */
                     int actualReadLength = _lastFramesCount * _inputChannelsCount;
 
                     ReadBuffer(_readEventArgs.Buffer, _inputBuffer, actualReadLength);

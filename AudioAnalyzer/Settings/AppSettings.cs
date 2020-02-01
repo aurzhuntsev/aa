@@ -13,6 +13,9 @@ namespace AudioMark.Core.Settings
         public Fft Fft { get; set; }
         public StopConditions StopConditions { get; set; }
 
+        /* TODO: Will work for now, but */
+        public static bool TestMode { get; set; }
+
         public static AppSettings Current
         {
             get
@@ -24,16 +27,26 @@ namespace AudioMark.Core.Settings
         private static Lazy<AppSettings> _current = CreateLazy();
 
         private AppSettings()
-        {            
+        {
+            Device = new Device();
+            Fft = new Fft();
+            StopConditions = new StopConditions();
         }
 
         private static string GetSettingsFilePath() => Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
 
         private static AppSettings Load()
         {
-            using (var streamReader = new StreamReader(GetSettingsFilePath()))
+            if (!TestMode)
             {
-                return JsonSerializer.Deserialize<AppSettings>(streamReader.ReadToEnd());
+                using (var streamReader = new StreamReader(GetSettingsFilePath()))
+                {
+                    return JsonSerializer.Deserialize<AppSettings>(streamReader.ReadToEnd());
+                }
+            }
+            else
+            {
+                return new AppSettings();
             }
         }
 

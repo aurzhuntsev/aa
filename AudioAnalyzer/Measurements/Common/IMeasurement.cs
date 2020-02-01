@@ -1,9 +1,11 @@
-﻿using System;
+﻿using AudioMark.Core.Measurements.Analysis;
+using AudioMark.Core.Measurements.Settings.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AudioMark.Core.Measurements
+namespace AudioMark.Core.Measurements.Common
 {
     public interface IMeasurement
     {
@@ -27,12 +29,11 @@ namespace AudioMark.Core.Measurements
 
         Task Run();
         void Stop();
-
-        void SaveToFile(string fileName);
+        void UpdateAnalysisResult();        
     }
 
     public interface IMeasurement<TResult> : IMeasurement
     {
-        TResult Data { get; }
+        TResult Result { get; }
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AudioMark.Core.Measurements
+namespace AudioMark.Core.Measurements.Common
 {
     /* TODO: Implement error handling */
     public class SpectralDataProcessor : IDataSink<SpectralData>

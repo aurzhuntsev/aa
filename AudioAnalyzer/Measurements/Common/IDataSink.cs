@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AudioMark.Core.Measurements
+namespace AudioMark.Core.Measurements.Common
 {
     public interface IDataSink<TResult>
     {

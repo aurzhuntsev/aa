@@ -178,7 +178,10 @@ namespace AudioMark.Core.Common
                 head = 0;
             }
 
-            count++;            
+            if (count < Length)
+            {
+                count++;
+            }
         }
 
         private void IncrementTail()
@@ -189,7 +192,10 @@ namespace AudioMark.Core.Common
                 tail = 0;
             }
 
-            count--;            
+            if (count > 0)
+            {
+                count--;
+            }
         }
     }
 }

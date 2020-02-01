@@ -14,6 +14,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels
 {
@@ -51,6 +52,12 @@ namespace AudioMark.ViewModels
             get => _whenSelectionCancelled.AsObservable();
         }
 
+        private Subject<Unit> _whenAnalysisOptionsChanged = new Subject<Unit>();
+        public IObservable<Unit> WhenAnalysisOptionsChanged
+        {
+            get => _whenAnalysisOptionsChanged.AsObservable();
+        }
+
 
         /* TODO: See how it will work content that needs scrolling */
         public ObservableCollection<string> Items { get; }
@@ -75,6 +82,7 @@ namespace AudioMark.ViewModels
             get => _content;
             set => this.RaiseAndSetIfChanged(ref _content, value);
         }
+        IDisposable _contentSubscription = null;
 
         public MeasurementsPanelViewModel()
         {
@@ -90,11 +98,39 @@ namespace AudioMark.ViewModels
         {
             var settings = MeasurementsFactory.CreateSettings(Items[SelectedIndex]);
             var viewModel = DefaultForModel(settings);
-            _content = (MeasurementSettingsViewModelBase)viewModel;
+            Content = (MeasurementSettingsViewModelBase)viewModel;
+
+            SubscribeToContentEvents();
         }
 
         private void OnMeasurementDataUpdate(object sender, object e)
         {
+        }
+
+        private void SubscribeToContentEvents()
+        {
+            if (_contentSubscription != null)
+            {
+                _contentSubscription.Dispose();
+            }
+
+            _contentSubscription = _content.WhenAnalysisOptionsChanged.Subscribe((model) =>
+            {
+                if (IsCompleted)
+                {
+                    Measurement.UpdateAnalysisResult();
+                }
+
+                _whenAnalysisOptionsChanged.OnNext(Unit.Default);
+            });
+        }
+
+        public void Reset()
+        {
+            if (!IsCompleted)
+            {
+                SetSelectedMeasurement();
+            }
         }
 
         public async void Run(Button sender)
@@ -153,9 +189,14 @@ namespace AudioMark.ViewModels
             Measurement = measurement;
             if (measurement != null)
             {
-                Content = (MeasurementSettingsViewModelBase)DefaultForModel(measurement.Settings);
-                Content.IsCompleted = true;
+                _content = (MeasurementSettingsViewModelBase)DefaultForModel(measurement.Settings);
+                _content.IsCompleted = true;
                 IsCompleted = true;
+
+                var selectedItemName = MeasurementsFactory.List().Where(item => item.Type == measurement.GetType()).FirstOrDefault().Name;
+                SelectedIndex = Items.IndexOf(selectedItemName);
+
+                SubscribeToContentEvents();
             }
             else
             {

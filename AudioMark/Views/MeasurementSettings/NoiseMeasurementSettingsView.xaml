@@ -1,0 +1,78 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.MeasurementSettings.NoiseMeasurementSettingsView">
+
+  <StackPanel Orientation="Vertical">
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Noise</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
+          <Grid HorizontalAlignment="Stretch" ColumnDefinitions="3*,2*,16" RowDefinitions="*,*,*">
+            <CheckBox Grid.Column="0" Grid.Row="0" Classes="Inline" IsChecked="{Binding GenerateDummySignal}">
+              Generate dummy signal
+            </CheckBox>
+
+            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="1" IsEnabled="{Binding GenerateDummySignal}">Frequency:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="1"  Orientation="Horizontal" IsEnabled="{Binding GenerateDummySignal}">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       Text="{Binding DummySignalFrequency}"/>
+              <TextBlock Classes="Inline" >hz</TextBlock>
+            </StackPanel>
+
+
+            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="2" IsEnabled="{Binding GenerateDummySignal}">Level:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="2"  Orientation="Horizontal" IsEnabled="{Binding GenerateDummySignal}">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       Text="{Binding DummySignalLevel}"/>
+              <TextBlock Classes="Inline" >dBTP</TextBlock>
+            </StackPanel>
+
+          </Grid>
+
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Analysis</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <Grid HorizontalAlignment="Stretch" ColumnDefinitions="3*,2*,16">
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="1" IsChecked="{Binding LimitHighFrequency}">
+              Limit max. frequency
+            </CheckBox>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding LimitHighFrequency}">
+              <TextBox Classes="Inline Mr" Width="54" Text="{Binding HighFrequency}" TextAlignment="Right" />
+              <TextBlock Classes="Inline">Hz</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <vmc:CorrectionProfileView DataContext="{Binding CorrectionProfile}"/>
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <vmc:StopConditionsView DataContext="{Binding StopConditions}" />
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+
+  </StackPanel>
+
+</UserControl>

@@ -22,7 +22,11 @@ namespace AudioMark.Views.GraphView
         public bool AutoUpdate
         {
             get => _autoUpdate;
-            set => _autoUpdate = value;
+            set
+            {
+                _autoUpdate = value;
+                _renderWaitHandle.Set();
+            }
         }
 
         private Image _target;
@@ -50,7 +54,7 @@ namespace AudioMark.Views.GraphView
         public double MaxFramesPerSecond
         {
             get; set;
-        } = 25;
+        } = 30;
 
         private int MaxRenderThreadSleepTime => (int)(1000.0 / MaxFramesPerSecond);
 
@@ -170,7 +174,8 @@ namespace AudioMark.Views.GraphView
 
         protected double GetSeriesValue(SpectralData series, Bin bin)
         {
-            var sequence = series.Statistics.Skip(bin.From).Take(bin.To - bin.From);
+            var indices = Enumerable.Range(bin.From, bin.To - bin.From);
+            var sequence = indices.Select(i => series.Statistics[i]);
             if (!sequence.Any())
             {
                 return double.NaN;
@@ -178,7 +183,6 @@ namespace AudioMark.Views.GraphView
 
             return sequence.Select(series.GetDefaultValueSelector()).Max();
         }
-
 
         protected virtual void Dispose(bool disposing)
         {

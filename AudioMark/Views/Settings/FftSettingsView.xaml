@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.Settings.FftSettingsView">
+  <Grid ColumnDefinitions="2*,2*,16" RowDefinitions="*,*,*">
+    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="0">Window size:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+      <ComboBox Classes="Inline" Width="52" Items="{Binding WindowSizesList}" SelectedItem="{Binding WindowSize}" />
+    </StackPanel>
+
+    <TextBlock Classes="Inline Mb" Grid.Column="0" Grid.Row="1">Frequency resolution:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+      <TextBlock Classes="Inline Mr" Text="{Binding FrequencyResolution}"></TextBlock>
+      <TextBlock Classes="Inline">Hz per bin</TextBlock>
+    </StackPanel>
+
+    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="2">Window overlap:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+      <TextBox Classes="Inline Mr" Width="52" Text="{Binding WindowOverlapFactorPercentage}" />
+      <TextBlock Classes="Inline">%</TextBlock>
+    </StackPanel>
+
+  </Grid>
+</UserControl>

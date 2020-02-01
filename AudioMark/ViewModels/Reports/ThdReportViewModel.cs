@@ -1,5 +1,7 @@
 ﻿using AudioMark.Common;
 using AudioMark.Core.Measurements;
+using AudioMark.Core.Measurements.Analysis;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,6 +37,13 @@ namespace AudioMark.ViewModels.Reports
         public override string GetText()
         {
             return Model.ToString();
+        }
+
+        public override void Update()
+        {
+            this.RaisePropertyChanged(nameof(ThdF));
+            this.RaisePropertyChanged(nameof(ThdR));
+            this.RaisePropertyChanged(nameof(EvenToOdd));            
         }
     }
 }

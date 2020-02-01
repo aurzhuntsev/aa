@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels
 {
@@ -31,6 +32,13 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _settingsPanelVisible, value);
         }
 
+        private bool _sessionPanelVisible;
+        public bool SessionPanelVisible
+        {
+            get => _sessionPanelVisible;
+            set => this.RaiseAndSetIfChanged(ref _sessionPanelVisible, value);
+        }
+
         private List<Series> _series = new List<Series>();
         public List<Series> Series
         {
@@ -52,6 +60,13 @@ namespace AudioMark.ViewModels
             set => this.RaiseAndSetIfChanged(ref _dynamicRender, value);
         }
 
+        private bool _measurementRunning;
+        public bool MeasurementRunning
+        {
+            get => _measurementRunning;
+            set => this.RaiseAndSetIfChanged(ref _measurementRunning, value);
+        }
+
         private List<IMeasurement> _storedMeasurements = new List<IMeasurement>();
 
         public MainWindowViewModel()
@@ -62,6 +77,7 @@ namespace AudioMark.ViewModels
             Measurements = new MeasurementsPanelViewModel();
             Measurements.WhenRunningStatusChanged.Subscribe(success =>
             {
+                MeasurementRunning = Measurements.Running;
                 if (Measurements.Running)
                 {
                     TopPanel.SetActiveMeasurement(Measurements.Measurement, Session.Items.Count);
@@ -75,9 +91,9 @@ namespace AudioMark.ViewModels
                     if (success)
                     {
                         _storedMeasurements.Add(Measurements.Measurement);
-                        Series.Add(new Views.GraphView.Series()
+                        Series.Add(new Series()
                         {
-                            Data = ((IMeasurement<SpectralData>)Measurements.Measurement).Data,
+                            Data = ((IMeasurement<SpectralData>)Measurements.Measurement).Result,
                             ColorIndex = _storedMeasurements.Count - 1,
                             Visible = true
                         });                        
@@ -106,12 +122,18 @@ namespace AudioMark.ViewModels
                 }
             });
 
+            Measurements.WhenAnalysisOptionsChanged.Subscribe(_ =>
+            {
+                UpdateGraphView(null);
+                Session.UpdateMeasurement(Measurements.Measurement);
+            });
+
             Session = new SessionPanelViewModel();
             Session.WhenSessionItemAdded.Subscribe((item) =>
             {
                 Series.Add(new Series()
                 {
-                    Data = ((IMeasurement<SpectralData>)item.Measurement).Data,
+                    Data = ((IMeasurement<SpectralData>)item.Measurement).Result,
                     ColorIndex = _storedMeasurements.Count,
                     Visible = true
                 });
@@ -129,6 +151,7 @@ namespace AudioMark.ViewModels
 
                 _storedMeasurements.Remove(item.Measurement);
                 Series.Remove(Series.FirstOrDefault(s => s.ColorIndex == item.SeriesIndex));
+
                 UpdateGraphView(null);
             });
 
@@ -160,7 +183,7 @@ namespace AudioMark.ViewModels
 
         private void UpdateGraphView(SpectralData data)
         {
-            var storedDatas = _storedMeasurements.Cast<IMeasurement<SpectralData>>().Select(m => m.Data);
+            var storedDatas = _storedMeasurements.Cast<IMeasurement<SpectralData>>().Select(m => m.Result);
             Series.RemoveAll(s => !storedDatas.Contains(s.Data));
 
             if (data != null)
@@ -183,6 +206,8 @@ namespace AudioMark.ViewModels
         private void HideAllPanels()
         {
             MeasurementsPanelVisible = false;
+            Measurements.Reset();
+
             SettingsPanelVisible = false;
         }
 
@@ -201,6 +226,11 @@ namespace AudioMark.ViewModels
 
             HideAllPanels();
             SettingsPanelVisible = !initialValue;
+        }
+
+        public void ToggleSession()
+        {
+            SessionPanelVisible = !SessionPanelVisible;
         }
     }
 }

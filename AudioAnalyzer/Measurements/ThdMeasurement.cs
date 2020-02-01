@@ -11,54 +11,33 @@ using AudioMark.Core.AudioData;
 using System.Diagnostics;
 using MathNet.Numerics;
 using System.Linq;
+using AudioMark.Core.Measurements.Settings;
+using AudioMark.Core.Measurements.Analysis;
+using AudioMark.Core.Measurements.Common;
+using AudioMark.Core.Measurements.StopConditions;
 
 namespace AudioMark.Core.Measurements
 {
-    [Serializable]
-    public class InputOutputLevel
-    {
-        public double OutputLevel { get; set; } = -AppSettings.Current.Device.ClippingLevel;
-        public bool MatchInputLevel { get; set; } = true;
-        public double InputLevel { get; set; } = 3.0;
-        public SignalLevelMode InputLevelMode { get; set; } = SignalLevelMode.dBFS;
-
-        public override string ToString()
-        {
-            if (MatchInputLevel)
-            {
-                return $"In {InputLevel}{InputLevelMode}";
-            }
-            return $"Out {OutputLevel}dBTP";
-        }
-    }
-
     [Measurement("Total Harmonic Distortion")]
     public class ThdMeasurement : MeasurementBase<SpectralData>
     {
-       
         private Activity<SpectralData> _dataActivity;
         public SineGenerator TestSignalGenerator { get; set; }
         public SineGenerator WarmupSignalGenerator { get; set; }
 
-        public override SpectralData Data => (AnalysisResult as ThdAnalysisResult)?.Data;
+        public override SpectralData Result => AnalysisResult?.Data;
 
         public new ThdMeasurementSettings Settings
         {
             get => (ThdMeasurementSettings)base.Settings;
         }
 
-        public ThdMeasurement(ThdMeasurementSettings settings): base(settings)
+        public ThdMeasurement(ThdMeasurementSettings settings) : base(settings)
         {
-            /* TODO: Remove try/catch */
-            try
-            {
-                Name = $"THD - {Settings.TestSignalOptions.InputOutputOptions}@{Settings.TestSignalOptions.Frequency}hz";
-            }
-            catch { }
+            Name = $"{DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss")} - THD@{Settings.TestSignalOptions.Frequency}hz";
         }
 
         public ThdMeasurement(ThdMeasurementSettings settings, ThdAnalysisResult result) : base(settings, result) { }
-        
 
         protected override void Initialize()
         {
@@ -74,18 +53,13 @@ namespace AudioMark.Core.Measurements
                 WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.WarmUpSignalOptions.Frequency, Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp());
             }
 
-            if (Settings.TestSignalOptions.InputOutputOptions.MatchInputLevel)
-            {
-                /* TODO: Add input level tune activity */
-            }
-
             if (Settings.WarmUpEnabled && Settings.WarmUpDurationSeconds > 0)
             {
                 RegisterActivity(CreateWarmUpActivity());
             }
 
             _dataActivity = CreateAcquisitionActivity();
-            RegisterActivity(_dataActivity);             
+            RegisterActivity(_dataActivity);
         }
 
         private Activity<SpectralData> CreateSetupActivity()
@@ -127,27 +101,38 @@ namespace AudioMark.Core.Measurements
 
             var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
             sink.Data.DefaultValue = SpectralData.DefaultValueType.Mean;
+            SetCorrectionProfile(sink.Data);
+
             dataActivity.AddSink(AppSettings.Current.Device.PrimaryInputChannel, sink);
 
-            if (Settings.StopConditions.Value.TimeoutEnabled)
-            {
-                dataActivity.RegisterStopCondition(new TimeoutStopCondition(Settings.StopConditions.Value.Timeout * 1000));
-            }
-            if (Settings.StopConditions.Value.ToleranceMatchingEnabled)
-            {
-                dataActivity.RegisterStopCondition(new ToleranceAchievedStopCondition(sink.Data, Settings.StopConditions.Value.Tolerance, Settings.StopConditions.Value.Confidence));
-            }
+            Settings.ApplyStopConditions(dataActivity, sink.Data);
 
             return dataActivity;
         }
 
-        protected override IAnalysisResult Analyze()
+        private void SetCorrectionProfile(SpectralData target)
+        {
+            if (Settings.ApplyCorrectionProfile && Settings.CorrectionProfile != null)
+            {
+                target.SetCorrectionProfile(Settings.CorrectionProfile, (data, index) =>
+                    !data.GetFrequencyIndices(Settings.TestSignalOptions.Frequency, Settings.WindowHalfSize).Contains(index));
+            }
+            else
+            {
+                target.SetCorrectionProfile(null, null);
+            }
+        }
+
+        public override void UpdateAnalysisResult()
         {
             var result = new ThdAnalysisResult();
-            var data = ((SpectralDataProcessor)_dataActivity.GetSink(AppSettings.Current.Device.PrimaryInputChannel)).Data;
+
+            var data = Result == null ? ((SpectralDataProcessor)_dataActivity.GetSink(AppSettings.Current.Device.PrimaryInputChannel)).Data : Result;
+            SetCorrectionProfile(data);
+
             result.Data = data;
 
-            var first = data.AtFrequency(Settings.TestSignalOptions.Frequency, Settings.AnalysisOptions.WindowHalfSize);
+            var first = data.AtFrequency(Settings.TestSignalOptions.Frequency, Settings.WindowHalfSize);
             var evens = new List<SpectralData.StatisticsItem>();
             var odds = new List<SpectralData.StatisticsItem>();
 
@@ -157,7 +142,8 @@ namespace AudioMark.Core.Measurements
             while (freq < data.MaxFrequency)
             {
                 var label = string.Empty;
-                if (harmonic == 2) {
+                if (harmonic == 2)
+                {
                     label = "2nd";
                 }
                 else if (harmonic == 3)
@@ -169,12 +155,12 @@ namespace AudioMark.Core.Measurements
                     label = harmonic + "th";
                 }
 
-                var values = data.AtFrequency(freq, Settings.AnalysisOptions.WindowHalfSize).ToList();
+                var values = data.AtFrequency(freq, Settings.WindowHalfSize).ToList();
                 values[(int)Math.Ceiling((double)values.Count() / 2) - 1].Label = $"{label}";
 
                 if (harmonic.IsEven())
                 {
-                    evens.AddRange(values);                    
+                    evens.AddRange(values);
                 }
                 else
                 {
@@ -184,22 +170,21 @@ namespace AudioMark.Core.Measurements
                 harmonic++;
                 freq = harmonic * Settings.TestSignalOptions.Frequency;
 
-                if (Settings.AnalysisOptions.LimitMaxFrequency)
+                if (Settings.LimitMaxFrequency)
                 {
-                    if (freq > Settings.AnalysisOptions.MaxFrequency)
+                    if (freq > Settings.MaxFrequency)
                     {
                         break;
                     }
                 }
 
-                if (Settings.AnalysisOptions.LimitMaxHarmonics)
+                if (Settings.LimitMaxHarmonics)
                 {
-                    if (harmonic - 1 > Settings.AnalysisOptions.MaxHarmonics)
+                    if (harmonic - 1 > Settings.MaxHarmonics)
                     {
                         break;
                     }
                 }
-
             }
 
             var baseSquareSum = first.Sum(x => x.Mean * x.Mean);
@@ -210,14 +195,14 @@ namespace AudioMark.Core.Measurements
             var thdr = thdf / Math.Sqrt(1.0 + thdf * thdf);
 
             result.ThdFPercentage = 100.0 * thdf;
-            result.ThdFDb = 20.0 * Math.Log10(thdf);
+            result.ThdFDb = -20.0 * Math.Log10(1.0 / thdf);
 
             result.ThdRPercentage = 100.0 * thdr;
-            result.ThdRDb = 20.0 * Math.Log10(thdr);
+            result.ThdRDb = -20.0 * Math.Log10(1.0 / thdr);
 
             result.EvenToOdd = evensSquareSum / oddsSquareSum;
 
-            return result;
+            AnalysisResult = result;
         }
     }
 }

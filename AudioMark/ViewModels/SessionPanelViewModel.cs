@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels
 {
@@ -119,6 +120,12 @@ namespace AudioMark.ViewModels
             }
 
             return Unit.Default;
+        }
+
+        public void UpdateMeasurement(IMeasurement measurement)
+        {
+            var item = Items.First(x => x.Measurement == measurement);
+            item.Update();
         }
     }
 }

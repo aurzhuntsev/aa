@@ -36,5 +36,6 @@ namespace AudioMark.Core.AudioData
 
         void Start();
         void Stop();
+        void ResetBuffers();
     }
 }

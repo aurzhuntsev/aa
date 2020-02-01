@@ -1,16 +1,20 @@
 ﻿using AudioMark.Core.AudioData;
 using AudioMark.Core.Common;
 using AudioMark.Core.Generators;
+using AudioMark.Core.Measurements.Analysis;
+using AudioMark.Core.Measurements.Settings.Common;
 using AudioMark.Core.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AudioMark.Core.Measurements
+namespace AudioMark.Core.Measurements.Common
 {
     /* TODO: Refactor a bit */
     public abstract class MeasurementBase<TResult> : IMeasurement<TResult>
@@ -79,7 +83,7 @@ namespace AudioMark.Core.Measurements
 
         public IAnalysisResult AnalysisResult { get; protected set; }
 
-        public abstract TResult Data { get; }
+        public abstract TResult Result { get; }
         public IMeasurementSettings Settings { get; private set; }
 
         private int _dataDiscardCounter = 0;
@@ -119,8 +123,7 @@ namespace AudioMark.Core.Measurements
             _running = true;
 
             _adapter.SetWriteHandler(OnAdapterWrite);
-            _adapter.SetReadHandler(OnAdapterRead);
-            _adapter.Start();
+            _adapter.SetReadHandler(OnAdapterRead);            
 
             await Task.Run(() =>
             {
@@ -165,6 +168,15 @@ namespace AudioMark.Core.Measurements
                     CurrentActivity = activity;
                     CurrentActivity.SetStopConditions();
 
+                    if (!_adapter.Running)
+                    {
+                        _adapter.Start();
+                    }
+                    else
+                    {
+                        _adapter.ResetBuffers();                        
+                    }
+
                     _activityWaitHandle.WaitOne();
                     _activityWaitHandle.Reset();
 
@@ -172,7 +184,7 @@ namespace AudioMark.Core.Measurements
 
                 if (CompletedActivitiesCount == _activities.Count)
                 {
-                    AnalysisResult = Analyze();
+                    UpdateAnalysisResult();
                     OnAnalysisComplete?.Invoke(this, AnalysisResult);
                 }
 
@@ -221,8 +233,7 @@ namespace AudioMark.Core.Measurements
             _activities.Add(activity);
         }
 
-        protected abstract void Initialize();
-        protected abstract IAnalysisResult Analyze();
+        protected abstract void Initialize();        
 
         protected void InvokeDataUpdate(TResult data)
         {
@@ -249,7 +260,7 @@ namespace AudioMark.Core.Measurements
         }
 
         private void OnAdapterRead(IAudioDataAdapter sender, double[] buffer, int length, bool discard)
-        {
+        {            
             if (!_running)
             {
                 return;
@@ -260,6 +271,7 @@ namespace AudioMark.Core.Measurements
             {
                 _lastStopConditionsChecked = DateTime.Now;
 
+                /* TODO: Implement in a separate thread */
                 Task.Run(() =>
                 {
                     lock (_stopConditionCheckSync)
@@ -279,27 +291,12 @@ namespace AudioMark.Core.Measurements
                 {
                     if (DataSinks[channel] != null)
                     {
-                        DataSinks[channel].Add(buffer[channel]);
+                        DataSinks[channel].Add(buffer[channel]);                        
                     }
                 }
             }
-        }
+        }       
 
-        public void SaveToFile(string fileName)
-        {
-            var formatter = new BinaryFormatter();            
-            using (var streamWriter = new StreamWriter(fileName, false))
-            {
-                var container = new MeasurementSerializationContainer()
-                {
-                    TypeName = GetType().Name,
-                    Name = Name,
-                    Settings = Settings,
-                    Result = AnalysisResult
-                };
-
-                formatter.Serialize(streamWriter.BaseStream, container);                
-            }
-        }
+        public abstract void UpdateAnalysisResult();
     }
 }

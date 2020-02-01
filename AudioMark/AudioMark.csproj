@@ -8,7 +8,6 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Compile Update="**\*.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
@@ -28,13 +27,18 @@
     <AvaloniaResource Remove="Views\GraphView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementsPanelView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
+    <AvaloniaResource Remove="Views\Reports\NoiseReportView.xaml" />
     <AvaloniaResource Remove="Views\Reports\ThdReportView.xaml" />
     <AvaloniaResource Remove="Views\SessionPanelView.xaml" />
     <AvaloniaResource Remove="Views\SettingsPanelView.xaml" />
-    <AvaloniaResource Remove="Views\Settings\DeviceSettings.xaml" />
+    <AvaloniaResource Remove="Views\Settings\DeviceSettingsView.xaml" />
+    <AvaloniaResource Remove="Views\Settings\DevicesSettingsView.xaml" />
+    <AvaloniaResource Remove="Views\Settings\FftSettingsView.xaml" />
     <AvaloniaResource Remove="Views\TopPanelView.xaml" />
     <None Remove="Controls\NumberBox.xaml" />
     <None Remove="Controls\PropertySection.xaml" />
@@ -48,13 +52,18 @@
     <None Remove="Views\GraphView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
+    <None Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
+    <None Remove="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementsPanelView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
+    <None Remove="Views\Reports\NoiseReportView.xaml" />
     <None Remove="Views\Reports\ThdReportView.xaml" />
     <None Remove="Views\SessionPanelView.xaml" />
     <None Remove="Views\SettingsPanelView.xaml" />
-    <None Remove="Views\Settings\DeviceSettings.xaml" />
+    <None Remove="Views\Settings\DeviceSettingsView.xaml" />
+    <None Remove="Views\Settings\DevicesSettingsView.xaml" />
+    <None Remove="Views\Settings\FftSettingsView.xaml" />
     <None Remove="Views\TopPanelView.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -140,12 +149,37 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\Settings\DeviceSettings.xaml">
+    <EmbeddedResource Include="Views\Settings\DeviceSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\MeasurementSettings\Common\CorrectionProfileView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\Common\StopConditionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Reports\NoiseReportView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Settings\DevicesSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Settings\FftSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -167,6 +201,9 @@
     </Compile>
     <Compile Update="Views\SettingsPanelView.xaml.cs">
       <DependentUpon>SettingsPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Settings\DeviceSettingsView.xaml.cs">
+      <DependentUpon>DeviceSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\TopPanelView.xaml.cs">
       <DependentUpon>TopPanelView.xaml</DependentUpon>

@@ -1,11 +1,13 @@
 ﻿using AudioMark.Common;
 using AudioMark.Core.Common;
 using AudioMark.Core.Measurements;
+using AudioMark.Core.Measurements.Settings.Common;
 using Avalonia.Threading;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels.Common
 {
@@ -25,12 +27,6 @@ namespace AudioMark.ViewModels.Common
             }
         }
 
-        public double InputLevel
-        {
-            get => Model.InputLevel;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.InputLevel, value);
-        }
-
         private double _levelDbTp;
         public double LevelDbTp
         {
@@ -45,12 +41,7 @@ namespace AudioMark.ViewModels.Common
             set => this.RaiseAndSetIfChanged(ref _levelDbFs, value);
         }
 
-        public SignalLevelMode InputLevelMode
-        {
-            get => Model.InputLevelMode;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.InputLevelMode, value);
-        }
-
+        
         private bool _isTunerActive;
         public bool IsTunerActive
         {

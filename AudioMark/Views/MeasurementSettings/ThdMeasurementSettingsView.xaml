@@ -107,8 +107,28 @@
 
             <TextBlock Classes="Inline" Grid.Column="0">Harmonic detection window:</TextBlock>
             <StackPanel Grid.Column="1"  Orientation="Horizontal">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52">1</TextBox>
+              <cc:NumberBox MinValue="0" Value="{Binding HarmonicDetectionWindow}" Width="64" Classes="Inline Mr" />
               <TextBlock Classes="Inline">bin(s)</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <Grid HorizontalAlignment="Stretch" ColumnDefinitions="3*,2*,16" RowDefinitions="*,*">
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0" IsChecked="{Binding LimitMaxHarmonics}">
+              Limit max. harmonics
+            </CheckBox>
+            
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding LimitMaxHarmonics}">
+              <cc:NumberBox Classes="Iniline Mr" MinValue="0" Value="{Binding MaxHarmonics}" Width="64" />
+              <TextBlock Classes="Inline">harmonics</TextBlock>
+            </StackPanel>
+              
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="1" IsChecked="{Binding LimitMaxFrequency}">
+              Limit max. frequency
+            </CheckBox>
+          
+          <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding LimitMaxFrequency}">
+              <TextBox Classes="Inline Mr" Width="54" Text="{Binding MaxFrequency}" TextAlignment="Right" />
+              <TextBlock Classes="Inline">Hz</TextBlock>
             </StackPanel>
           </Grid>
 
@@ -122,49 +142,7 @@
         <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
       </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
-        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
-          <CheckBox Classes="Inline" IsChecked="{Binding OverrideStopConditionsSettings}">Override global settings</CheckBox>
-
-          <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="3*" />
-              <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="16" />
-            </Grid.ColumnDefinitions>
-
-            <CheckBox Grid.Row="0" Grid.Column="0" Classes="Inline" IsChecked="{Binding StopOnTimeoutEnabled}">Stop on time out:</CheckBox>
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-              <TextBox Classes="Inline" Width="54" Text="{Binding StopOnTimeout}"  Margin="0 0 2 0"/>
-              <TextBlock Classes="Inline">seconds</TextBlock>
-            </StackPanel>
-          </Grid>
-
-          <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="3*" />
-              <ColumnDefinition Width="2*" />
-              <ColumnDefinition Width="16" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition />
-              <RowDefinition />
-            </Grid.RowDefinitions>
-
-            <CheckBox Grid.Row="0" Grid.Column="0" Classes="Inline" IsChecked="{Binding StopOnToleranceEnabled}">Stop when a tolerance of:</CheckBox>
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-              <TextBox Classes="Inline" Width="54" Text="{Binding StopOnTolerance}" Margin="0 0 2 0"/>
-              <TextBlock Classes="Inline">%</TextBlock>
-            </StackPanel>
-
-            <TextBlock Grid.Row="1" Grid.Column="0" Classes="Inline">...is achieved with a confedence of:</TextBlock>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-              <TextBox Classes="Inline" Width="54" Text="{Binding StopOnConfidence}"  Margin="0 0 2 0"/>
-              <TextBlock Classes="Inline">%</TextBlock>
-            </StackPanel>
-
-          </Grid>
-
-        </StackPanel>
+        <vmc:StopConditionsView DataContext="{Binding StopConditions}" />
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 

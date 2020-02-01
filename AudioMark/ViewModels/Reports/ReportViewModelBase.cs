@@ -9,5 +9,6 @@ namespace AudioMark.ViewModels.Reports
     public abstract class ReportViewModelBase : ViewModelBase
     {
         public abstract string GetText();
+        public abstract void Update();
     }
 }

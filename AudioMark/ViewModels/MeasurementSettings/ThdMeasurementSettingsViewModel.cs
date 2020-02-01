@@ -1,11 +1,14 @@
 ﻿using AudioMark.Common;
+using AudioMark.Core.Common;
 using AudioMark.Core.Measurements;
+using AudioMark.Core.Measurements.Settings;
 using AudioMark.ViewModels.Common;
 using AudioMark.ViewModels.MeasurementSettings.Common;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels.MeasurementSettings
 {
@@ -22,6 +25,17 @@ namespace AudioMark.ViewModels.MeasurementSettings
         {
             get => _isCompleted;
             set => this.RaiseAndSetIfChanged(ref _isCompleted, value);
+        }
+
+        private IMeasurement _measurement;
+        public override IMeasurement Measurement
+        {
+            get => _measurement;
+            set
+            {
+                _measurement = value;
+                CorrectionProfile.Target = (_measurement as IMeasurement<SpectralData>).Result;
+            }
         }
 
         #region Test signal options
@@ -83,63 +97,70 @@ namespace AudioMark.ViewModels.MeasurementSettings
 
         #region Stop conditions options
 
-        public bool OverrideStopConditionsSettings
+       
+        public CorrectionProfileViewModel CorrectionProfile { get; }
+        
+        public int HarmonicDetectionWindow
         {
-            get => Model.StopConditions.Overriden;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Overriden, value, nameof(OverrideStopConditionsSettings));
-        }
-
-        public bool StopOnTimeoutEnabled
-        {
-            get => Model.StopConditions.Value.TimeoutEnabled;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Value.TimeoutEnabled, value, nameof(StopOnTimeoutEnabled));
-
-        }
-
-        public int StopOnTimeout
-        {
-            get => Model.StopConditions.Value.Timeout;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Value.Timeout, value, nameof(StopOnTimeout));
-        }
-
-        public bool StopOnToleranceEnabled
-        {
-            get => Model.StopConditions.Value.ToleranceMatchingEnabled;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.StopConditions.Value.ToleranceMatchingEnabled, value, nameof(StopOnToleranceEnabled));
-        }
-
-        public double StopOnTolerance
-        {
-            get => Model.StopConditions.Value.Tolerance * 100.0;
+            get => Model.WindowHalfSize;
             set
             {
-                Model.StopConditions.Value.Tolerance = value / 100.0;
-                this.RaisePropertyChanged(nameof(StopOnTolerance));
+                this.RaiseAndSetIfPropertyChanged(() => Model.WindowHalfSize, value, nameof(HarmonicDetectionWindow));
+                _whenAnalysisOptionsChanged.OnNext(this);
             }
         }
 
-        public double StopOnConfidence
+        public bool LimitMaxHarmonics
         {
-            get => Model.StopConditions.Value.Confidence * 100.0;
+            get => Model.LimitMaxHarmonics;
             set
             {
-                Model.StopConditions.Value.Confidence = value / 100.0;
-                this.RaisePropertyChanged(nameof(StopOnConfidence));
+                this.RaiseAndSetIfPropertyChanged(() => Model.LimitMaxHarmonics, value, nameof(LimitMaxHarmonics)); 
+                _whenAnalysisOptionsChanged.OnNext(this);
             }
         }
 
-        public CorrectionProfileViewModel CorrectionProfile { get; } = new CorrectionProfileViewModel();
+        public int MaxHarmonics
+        {
+            get => Model.MaxHarmonics;
+            set
+            {
+                this.RaiseAndSetIfPropertyChanged(() => Model.MaxHarmonics, value, nameof(MaxHarmonics));
+                _whenAnalysisOptionsChanged.OnNext(this);
+            }
+        }
+
+        public bool LimitMaxFrequency
+        {
+            get => Model.LimitMaxFrequency;
+            set
+            {
+                this.RaiseAndSetIfPropertyChanged(() => Model.LimitMaxFrequency, value, nameof(LimitMaxFrequency));
+                _whenAnalysisOptionsChanged.OnNext(this);
+            }
+        }
+
+        public double MaxFrequency
+        {
+            get => Model.MaxFrequency;
+            set
+            {
+                this.RaiseAndSetIfPropertyChanged(() => Model.MaxFrequency, value, nameof(MaxFrequency));
+                _whenAnalysisOptionsChanged.OnNext(this);
+            }
+        }
+
+        public StopConditionsViewModel StopConditions { get; }
 
         #endregion
-
-        public ThdMeasurementSettingsViewModel()
-        {
-
-        }
-
         public ThdMeasurementSettingsViewModel(ThdMeasurementSettings settings) : base()
         {
             Settings = settings;
+
+            CorrectionProfile = new CorrectionProfileViewModel(Model);
+            CorrectionProfile.WhenChanged.Subscribe(_ => _whenAnalysisOptionsChanged.OnNext(this));
+
+            StopConditions = new StopConditionsViewModel(Model);
         }
     }
 }

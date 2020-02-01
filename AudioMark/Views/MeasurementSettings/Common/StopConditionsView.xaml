@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.MeasurementSettings.Common.StopConditionsView">
+  <StackPanel Orientation="Vertical">
+    <CheckBox Classes="Inline" IsChecked="{Binding OverrideStopConditionsSettings}">Override global settings</CheckBox>
+    <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="16" />
+      </Grid.ColumnDefinitions>
+      <CheckBox Grid.Row="0" Grid.Column="0" Classes="Inline" IsChecked="{Binding StopOnTimeoutEnabled}">Stop on time out:</CheckBox>
+      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding StopOnTimeoutEnabled}">
+        <TextBox Classes="Inline" Width="54" Text="{Binding StopOnTimeout}"  Margin="0 0 2 0"/>
+        <TextBlock Classes="Inline">seconds</TextBlock>
+      </StackPanel>
+    </Grid>
+
+    <Grid HorizontalAlignment="Stretch" IsEnabled="{Binding OverrideStopConditionsSettings}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" />
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="16" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+      <CheckBox Grid.Row="0" Grid.Column="0" Classes="Inline" IsChecked="{Binding StopOnToleranceEnabled}">Stop when a tolerance of:</CheckBox>
+      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding StopOnToleranceEnabled}">
+        <TextBox Classes="Inline" Width="54" Text="{Binding StopOnTolerance}" Margin="0 0 2 0"/>
+        <TextBlock Classes="Inline">%</TextBlock>
+      </StackPanel>
+      <TextBlock Grid.Row="1" Grid.Column="0" Classes="Inline" IsEnabled="{Binding StopOnToleranceEnabled}">...is achieved with a confedence of:</TextBlock>
+      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" IsEnabled="{Binding StopOnToleranceEnabled}">
+        <TextBox Classes="Inline" Width="54" Text="{Binding StopOnConfidence}"  Margin="0 0 2 0"/>
+        <TextBlock Classes="Inline">%</TextBlock>
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>

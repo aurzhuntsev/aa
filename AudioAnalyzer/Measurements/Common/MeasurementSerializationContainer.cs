@@ -1,8 +1,10 @@
-﻿using System;
+﻿using AudioMark.Core.Measurements.Analysis;
+using AudioMark.Core.Measurements.Settings.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AudioMark.Core.Measurements
+namespace AudioMark.Core.Measurements.Common
 {
     [Serializable]
     internal class MeasurementSerializationContainer

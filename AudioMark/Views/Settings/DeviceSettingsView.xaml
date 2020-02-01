@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="clr-namespace:AudioMark.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AudioMark.Views.Settings.DeviceSettings">
+             x:Class="AudioMark.Views.Settings.DeviceSettingsView">
   <UserControl.Styles>
     <Style Selector="TextBlock.Ml">
       <Setter Property="Margin" Value="4 0 0 0" />

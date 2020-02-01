@@ -5,8 +5,9 @@ using System.Linq;
 using System.Threading;
 using AudioMark.Core.Common;
 using AudioMark.Core.Generators;
+using AudioMark.Core.Measurements.StopConditions;
 
-namespace AudioMark.Core.Measurements
+namespace AudioMark.Core.Measurements.Common
 {
     public class Activity<TSink>
     {        

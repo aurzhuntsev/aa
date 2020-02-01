@@ -182,7 +182,7 @@ namespace AudioMark.Views.GraphView
             }
 
             BuildBins();
-            _seriesRenderer.Render();
+            //_seriesRenderer.Render();
         }
 
         public static readonly AvaloniaProperty<int> LeftLeftProperty = AvaloniaProperty.Register<GraphView, int>(nameof(LeftLeft));

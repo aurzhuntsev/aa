@@ -16,9 +16,10 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0" IsChecked="{Binding ApplyCorrectionProfile}">Apply correction profile:</CheckBox>
+    <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0"               
+              IsChecked="{Binding ApplyCorrectionProfile}">Apply correction profile:</CheckBox>
 
-    <TextBlock Grid.Column="0" Grid.Row="1" Classes="Inline" Text="{Binding ProfileFileName}" MaxWidth="160" HorizontalAlignment="Left" />
+    <TextBlock Grid.Column="0" Grid.Row="1" Classes="Inline" Text="{Binding ProfileName}" ToolTip.Tip="{Binding ProfileName}" MaxWidth="160" HorizontalAlignment="Left" />
     <Button Classes="Inline Icon LoadIcon" Grid.Column="1" Grid.Row="1" Width="54" HorizontalAlignment="Left" Command="{Binding Load}">Load...</Button>
   </Grid>
 </UserControl>

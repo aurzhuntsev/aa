@@ -55,12 +55,25 @@
         <gv:GraphView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Series="{Binding Series}" ActiveSeries="{Binding ActiveSeries}" DynamicRender="{Binding DynamicRender, Mode=TwoWay}" />
         <v:MeasurementsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Measurements}"
           IsVisible="{Binding MeasurementsPanelVisible}" />
-        <v:SettingsPanelView VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Settings}"
+        <v:SettingsPanelView IsEnabled="{Binding !MeasurementRunning}" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="351" Content="{Binding Settings}"
           IsVisible="{Binding SettingsPanelVisible}" />
-        <v:SessionPanelView VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="351" Content="{Binding Session}" />
+        <v:SessionPanelView IsEnabled="{Binding !MeasurementRunning}" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="351" Content="{Binding Session}"
+          IsVisible="{Binding SessionPanelVisible}" />
       </Panel>
 
       <Border Grid.Column="2" Grid.Row="0" BorderThickness="2 0 0 0"  BorderBrush="{DynamicResource Level3BackgroundBrush}" Background="{DynamicResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Background="{StaticResource Level2BackgroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <StackPanel.Styles>
+            <Style Selector="Button.Icon /template/ Border#iconBorder">
+              <Setter Property="Width" Value="18" />
+              <Setter Property="Height" Value="18" />
+              <Setter Property="Margin" Value="-4 0 0 0" />
+              <Setter Property="Padding" Value="2 2 2 2" />
+            </Style>
+
+          </StackPanel.Styles>
+          <Button Classes="Inline Icon NoText ListIcon"  Command="{Binding ToggleSession}" />                    
+        </StackPanel>
       </Border>
     </Grid>
 

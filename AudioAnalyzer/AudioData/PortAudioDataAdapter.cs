@@ -217,7 +217,7 @@ namespace AudioMark.Core.AudioData
                 SuggestedLatency = AppSettings.Current.Device.OutputDevice.LatencyMilliseconds / 1000.0
             };
 
-            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002);
+            stream = new PortAudioStream(inputStreamParameters, outputStreamParameters, AppSettings.Current.Device.SampleRate, 0, 0x00000002 | 0x00000008);
             stream.OnRead += OnRead;
             stream.OnWrite += OnWrite;
             stream.OnError += OnError;

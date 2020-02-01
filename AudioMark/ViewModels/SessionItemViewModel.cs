@@ -10,6 +10,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels
 {
@@ -68,7 +69,6 @@ namespace AudioMark.ViewModels
             get => _whenSelectionChanged.AsObservable();
         }
 
-
         public ReportViewModelBase Report
         {
             get => (ReportViewModelBase)DefaultForModel(Measurement.AnalysisResult);
@@ -117,7 +117,7 @@ namespace AudioMark.ViewModels
 
                 if (!string.IsNullOrEmpty(fileName))
                 {
-                    Measurement.SaveToFile(fileName);
+                    MeasurementsFactory.Save(fileName, Measurement);                    
                 }
             }
             catch (Exception e)
@@ -142,6 +142,11 @@ namespace AudioMark.ViewModels
         {
             Selected = !Selected;
             _whenSelectionChanged.OnNext(this);
+        }
+
+        public void Update()
+        {
+            this.RaisePropertyChanged(nameof(Report));
         }
     }
 }

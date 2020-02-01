@@ -1,37 +1,57 @@
 ﻿using AudioMark.Common;
+using AudioMark.Core.Common;
 using AudioMark.Core.Measurements;
+using AudioMark.Core.Measurements.Settings.Common;
+using AudioMark.Core.Settings;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
+using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels.MeasurementSettings.Common
 {
     public class CorrectionProfileViewModel : ViewModelBase
     {
-        public IMeasurement Measurement { get; private set; }
+        private ICorrectionProfile _model;
+        public SpectralData Target { get; set; }
 
-        private bool _applyCorrectionProfile;
-        public bool ApplyCorrectionProfile
+        private Subject<Unit> _whenChanged = new Subject<Unit>();
+        public IObservable<Unit> WhenChanged
         {
-            get => _applyCorrectionProfile;
-            set => this.RaiseAndSetIfChanged(ref _applyCorrectionProfile, value);
+            get => _whenChanged.AsObservable();
         }
 
-        private string _profileFileName;
-        public string ProfileFileName
+        public bool ApplyCorrectionProfile
         {
-            get => _profileFileName;
-            set => this.RaiseAndSetIfChanged(ref _profileFileName, value);
-        } 
+            get => _model.ApplyCorrectionProfile;
+            set
+            {
+                this.RaiseAndSetIfPropertyChanged(() => _model.ApplyCorrectionProfile, value, nameof(ApplyCorrectionProfile));
+                _whenChanged.OnNext(Unit.Default);
+            }
+        }
 
-        public CorrectionProfileViewModel()
+        public SpectralData CorrectionProfile
         {
-            ProfileFileName = "(no profile loaded)";
+            get => _model.CorrectionProfile;
+            set => this.RaiseAndSetIfPropertyChanged(() => _model.CorrectionProfile, value, nameof(CorrectionProfile));
+        }
+
+        public string ProfileName
+        {
+            get => _model.CorrectionProfileName;
+            set => this.RaiseAndSetIfPropertyChanged(() => _model.CorrectionProfileName, value, nameof(ProfileName));
+        }
+
+        public CorrectionProfileViewModel(ICorrectionProfile model)
+        {
+            _model = model;
         }
 
         public async Task<Unit> Load()
@@ -56,11 +76,16 @@ namespace AudioMark.ViewModels.MeasurementSettings.Common
 
                 if (fileNames != null && fileNames.Any())
                 {
-                    Measurement = MeasurementsFactory.Load(fileNames[0]);
-                    ProfileFileName = Measurement.Name;
+                    var profile = MeasurementsFactory.Load(fileNames[0]);
+                    CorrectionProfile = profile.AnalysisResult.Data;
+                    ProfileName = profile.Name;
 
-                    ApplyCorrectionProfile = true;
-                    /* TODO: Finish */
+                    ValidateCorrectionProfile();
+
+                    _model.ApplyCorrectionProfile = true;                    
+                    this.RaisePropertyChanged(nameof(ApplyCorrectionProfile));
+                    
+                    _whenChanged.OnNext(Unit.Default);                    
                 }
             }
             catch (Exception e)
@@ -69,6 +94,28 @@ namespace AudioMark.ViewModels.MeasurementSettings.Common
             }
 
             return Unit.Default;
+        }
+
+        private void ValidateCorrectionProfile()
+        {
+            int targetSampleRate = (Target == null) ? AppSettings.Current.Device.SampleRate : Target.MaxFrequency * 2;
+            int targetWindowSize = (Target == null) ? AppSettings.Current.Fft.WindowSize : Target.Size;
+            var errorText = new StringBuilder();
+
+            if (targetSampleRate != CorrectionProfile.MaxFrequency * 2)
+            {
+                errorText.AppendLine($"Profile sample rate ({CorrectionProfile.MaxFrequency * 2}Hz) does not match the one of the selected measurement ({targetSampleRate}Hz)");
+            }
+            if (targetWindowSize != CorrectionProfile.Size)
+            {
+                errorText.AppendLine($"Profile FFT window size ({CorrectionProfile.Size}) does not match the one of the selected measurement ({targetWindowSize})");
+            }
+
+            if (errorText.Length != 0)
+            {
+                CorrectionProfile = null;
+                throw new Exception(errorText.ToString());
+            }
         }
     }
 }

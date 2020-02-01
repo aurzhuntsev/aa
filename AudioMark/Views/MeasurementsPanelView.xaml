@@ -3,19 +3,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="450"
-             x:Class="AudioMark.Views.MeasurementsPanelView"> 
+             x:Class="AudioMark.Views.MeasurementsPanelView">
   <Panel HorizontalAlignment="Stretch" Background="{DynamicResource Level2BackgroundBrush}">
     <StackPanel Orientation="Vertical" Width="350">
       <ComboBox Classes="Inline" Name="measurements" Items="{Binding Items}"
                 HorizontalAlignment="Stretch" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                 Height="22" FontSize="12"
-                BorderThickness="0 0 0 2" Margin="0 0 0 4">
+                BorderThickness="0 0 0 2" Margin="0 0 0 4"  IsEnabled="{Binding !IsCompleted}">
       </ComboBox>
-      <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
-        <Button Classes="Inline Icon NoText LoadIcon"/>
-        <Button Classes="Inline Icon NoText SaveIcon"/>
-        <Button Classes="Inline Icon NoText RefreshIcon"/>
-
+      <StackPanel Orientation="Horizontal" Margin="0 0 0 4" IsEnabled="{Binding !IsCompleted}">
+        <StackPanel Orientation="Horizontal" IsEnabled="{Binding !Running}">
+          <Button Classes="Inline Icon NoText LoadIcon"/>
+          <Button Classes="Inline Icon NoText SaveIcon"/>
+          <Button Classes="Inline Icon NoText RefreshIcon"/>
+        </StackPanel>
         <Button Classes="Inline Icon PlayIcon" Command="{Binding Run}" Margin="10 0 0 0" IsVisible="{Binding !Running}" >
           Run
         </Button>
@@ -24,11 +25,11 @@
         </Button>
       </StackPanel>
 
-      <Grid ColumnDefinitions="300,*" IsVisible="{Binding IsCompleted}">
+      <Grid ColumnDefinitions="300,*" IsVisible="{Binding IsCompleted}" IsEnabled="{Binding !Running}">
         <TextBlock FontWeight="Bold" Grid.Column="0" Text="{Binding Measurement.Name}" />
         <Button Grid.Column="1" HorizontalAlignment="Right" Classes="Inline NoText Icon CancelIcon" Command="{Binding CancelSelection}" />
       </Grid>
-      <ScrollViewer>
+      <ScrollViewer  IsEnabled="{Binding !Running}">
         <ContentControl Content="{Binding Content}" />
       </ScrollViewer>
     </StackPanel>
