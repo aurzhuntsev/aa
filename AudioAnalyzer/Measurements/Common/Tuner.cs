@@ -59,39 +59,44 @@ namespace AudioMark.Core.Measurements.Common
             double previousValue = double.NaN;
             double powerNorm = (double)UpdatesPerSecond / AppSettings.Current.Device.SampleRate;
 
-            _adapter.SetReadHandler((sender, buffer, length, discard) =>
+            _adapter.SetReadHandler((sender, args) =>
             {
-                var value = Math.Abs(buffer[AppSettings.Current.Device.PrimaryInputChannel - 1]);
-                if (value > maxValue)
+                for (var frame = 0; frame < args.Frames; frame++)
                 {
-                    maxValue = value;
-                }
-
-                if (!double.IsNaN(previousValue))
-                {
-                    power += (Math.Min(previousValue, value) + 0.5 * Math.Abs(value - previousValue));
-                }
-                previousValue = value;
-
-                _counter++;
-                if (_counter == AppSettings.Current.Device.SampleRate / UpdatesPerSecond)
-                {
-                    OnReading?.Invoke(this, new Reading()
+                    var value = Math.Abs(args.Buffer[frame * args.Channels + AppSettings.Current.Device.PrimaryInputChannel - 1]);
+                    if (value > maxValue)
                     {
-                        InputLevelDbFs = power == 1.0 ? 0 : 10.0 * Math.Log10(1.0 / (powerNorm * power)),
-                        InputLevelDbTp = maxValue == 1.0 ? 0 : 20.0 * Math.Log10(1.0 / maxValue)
-                    });
+                        maxValue = value;
+                    }
 
-                    _counter = 0;
-                    maxValue = double.MinValue;
-                    power = 0.0;
+                    if (!double.IsNaN(previousValue))
+                    {
+                        power += (Math.Min(previousValue, value) + 0.5 * Math.Abs(value - previousValue));
+                    }
+                    previousValue = value;
+
+                    _counter++;
+                    if (_counter == AppSettings.Current.Device.SampleRate / UpdatesPerSecond)
+                    {
+                        OnReading?.Invoke(this, new Reading()
+                        {
+                            InputLevelDbFs = power == 1.0 ? 0 : 10.0 * Math.Log10(1.0 / (powerNorm * power)),
+                            InputLevelDbTp = maxValue == 1.0 ? 0 : 20.0 * Math.Log10(1.0 / maxValue)
+                        });
+
+                        _counter = 0;
+                        maxValue = double.MinValue;
+                        power = 0.0;
+                    }
                 }
             });
 
-            _adapter.SetWriteHandler((sender, buffer, discard) =>
+            _adapter.SetWriteHandler((sender, args) =>
             {
-                buffer[AppSettings.Current.Device.PrimaryOutputChannel - 1] = _generator.Next();
-                return buffer.Length;
+                for (var frame = 0; frame < args.Frames; frame++)
+                {
+                    args.Buffer[frame * args.Channels + AppSettings.Current.Device.PrimaryOutputChannel - 1] = _generator.Next();
+                }
             });
 
             _adapter.SetErrorHandler((sender, e) =>

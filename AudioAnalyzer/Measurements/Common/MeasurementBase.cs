@@ -34,7 +34,7 @@ namespace AudioMark.Core.Measurements.Common
         }
 
         public Activity<TResult> CurrentActivity { get; protected set; }
-        
+
         protected volatile bool _running;
         public bool Running
         {
@@ -112,7 +112,7 @@ namespace AudioMark.Core.Measurements.Common
             Settings = settings;
             AnalysisResult = result;
         }
-      
+
         public async Task Run()
         {
             _activities.Clear();
@@ -123,12 +123,12 @@ namespace AudioMark.Core.Measurements.Common
             _running = true;
 
             _adapter.SetWriteHandler(OnAdapterWrite);
-            _adapter.SetReadHandler(OnAdapterRead);            
+            _adapter.SetReadHandler(OnAdapterRead);
 
             await Task.Run(() =>
             {
                 var index = 0;
-                
+
                 for (index = 0; index < _activities.Count; index++)
                 {
                     if (!_running)
@@ -174,7 +174,7 @@ namespace AudioMark.Core.Measurements.Common
                     }
                     else
                     {
-                        _adapter.ResetBuffers();                        
+                        _adapter.ResetBuffers();
                     }
 
                     _activityWaitHandle.WaitOne();
@@ -233,34 +233,34 @@ namespace AudioMark.Core.Measurements.Common
             _activities.Add(activity);
         }
 
-        protected abstract void Initialize();        
+        protected abstract void Initialize();
 
         protected void InvokeDataUpdate(TResult data)
         {
             OnDataUpdate.Invoke(this, data);
         }
 
-        private int OnAdapterWrite(IAudioDataAdapter sender, double[] buffer, bool discard)
+        private void OnAdapterWrite(object sender, AudioDataEventArgs args)
         {
             if (!_running)
             {
-                return 0;
+                return;
             }
 
-            for (var channel = 0; channel < Generators.Length; channel++)
+            for (var frame = 0; frame < args.Frames; frame++)
             {
-                if (Generators[channel] != null)
+                for (var channel = 0; channel < Generators.Length; channel++)
                 {
-                    buffer[channel] = Generators[channel].Next();
+                    if (Generators[channel] != null)
+                    {
+                        args.Buffer[frame * args.Channels + channel] = Generators[channel].Next();
+                    }
                 }
             }
-
-            /* TODO: fix return semantic */
-            return buffer.Length;
         }
 
-        private void OnAdapterRead(IAudioDataAdapter sender, double[] buffer, int length, bool discard)
-        {            
+        private void OnAdapterRead(object sender, AudioDataEventArgs args)
+        {
             if (!_running)
             {
                 return;
@@ -283,19 +283,22 @@ namespace AudioMark.Core.Measurements.Common
 
             if (_dataDiscardCounter < DataSamplesToDiscard)
             {
-                _dataDiscardCounter++;
+                _dataDiscardCounter += args.Length;
             }
             else
             {
-                for (var channel = 0; channel < DataSinks.Length; channel++)
+                for (var frame = 0; frame < args.Frames; frame++)
                 {
-                    if (DataSinks[channel] != null)
+                    for (var channel = 0; channel < DataSinks.Length; channel++)
                     {
-                        DataSinks[channel].Add(buffer[channel]);                        
+                        if (DataSinks[channel] != null)
+                        {
+                            DataSinks[channel].Add(args.Buffer[frame * args.Channels + channel]);
+                        }
                     }
                 }
             }
-        }       
+        }
 
         public abstract void UpdateAnalysisResult();
     }

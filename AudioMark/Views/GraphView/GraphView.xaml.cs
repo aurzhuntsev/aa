@@ -141,11 +141,11 @@ namespace AudioMark.Views.GraphView
                 int binWidth = 0;
                 int startingBin = 2;
                 int bins = 0;
-                var k = _viewContext.MaxFrequency / _viewContext.SpectrumBins;
+                var k = (double)_viewContext.MaxFrequency / _viewContext.SpectrumBins;
 
                 while (startingBin + bins < _viewContext.SpectrumBins)
                 {
-                    while (currentOffset == (binWidth = _viewContext.FreqToViewX((startingBin + bins) * k)))
+                    while (currentOffset >= (binWidth = _viewContext.FreqToViewX((startingBin + bins) * k)))
                     {
                         bins++;
                     }

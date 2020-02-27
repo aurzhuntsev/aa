@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using static PortAudioWrapper.Imports;
 
 namespace PortAudioWrapper
@@ -19,9 +20,6 @@ namespace PortAudioWrapper
         const double BufferScaleFactor = 2.0;
         const int CallbackThreadWaitTimeoutMilliseconds = 3000;
 
-        const int Int24MinValue = -8388608;
-        const int Int24MaxValue = 8388607;
-
         public override bool IsInvalid => handle == IntPtr.Zero;
 
         private UnmanagedStruct<PaStreamParameters> InputParameters = new UnmanagedStruct<PaStreamParameters>();
@@ -34,7 +32,7 @@ namespace PortAudioWrapper
 
         private PaStreamCallback _nativeCallback;
 
-        private EventWaitHandle _callbackWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+        private EventWaitHandle _callbackWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
         private Thread _callbackThread = null;
         private volatile bool _callbackProcessed = false;
         private volatile bool _running = false;
@@ -101,7 +99,7 @@ namespace PortAudioWrapper
         {
             _running = true;
 
-            _callbackThread = new Thread(CallbackHandler);
+            _callbackThread = new Thread(CallbackHandlerAsync);
             _callbackThread.Start();
 
             Imports.Pa_StartStream(handle);
@@ -126,7 +124,7 @@ namespace PortAudioWrapper
             Pa_AbortStream(handle);
         }
 
-        private void CallbackHandler(object obj)
+        private void CallbackHandlerAsync(object obj)
         {
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
@@ -144,21 +142,28 @@ namespace PortAudioWrapper
             {
                 try
                 {
+                    var now = DateTime.Now.Ticks;
                     _callbackWaitHandle.WaitOne(CallbackThreadWaitTimeoutMilliseconds);
-                    _callbackWaitHandle.Reset();
 
-                    int actualReadLength = _lastFramesCount * _inputChannelsCount;
+                    var readTask = Task.Run(() =>
+                    {
+                        int actualReadLength = _lastFramesCount * _inputChannelsCount;
+                        ReadFromBuffer(_inputBuffer, _readEventArgs.Buffer, actualReadLength, _inputSampleFormat);
+                        _readEventArgs.ActualLength = actualReadLength;
+                        _readEventArgs.Errors = _callbackError;
+                        OnRead?.Invoke(this, _readEventArgs);
+                    });
 
-                    ReadBuffer(_readEventArgs.Buffer, _inputBuffer, actualReadLength);
-                    _readEventArgs.ActualLength = actualReadLength;
-                    _readEventArgs.Errors = _callbackError;
-                    OnRead?.Invoke(this, _readEventArgs);
+                    var writeTask = Task.Run(() =>
+                    {
+                        int actualWriteLength = _lastFramesCount * _outputChannelsCount;
+                        _writeEventArgs.ActualLength = actualWriteLength;
+                        _writeEventArgs.Errors = _callbackError;
+                        OnWrite?.Invoke(this, _writeEventArgs);
+                        WriteToBuffer(_outputBuffer, _writeEventArgs.Buffer, actualWriteLength);
+                    });
 
-                    int actualWriteLength = _lastFramesCount * _outputChannelsCount;
-                    _writeEventArgs.ActualLength = actualWriteLength;
-                    _writeEventArgs.Errors = _callbackError;
-                    OnWrite?.Invoke(this, _writeEventArgs);
-                    WriteBuffer(_outputBuffer, _writeEventArgs.Buffer, actualWriteLength);
+                    Task.WaitAll(readTask, writeTask);
 
                     _callbackError = 0;
                     _callbackProcessed = true;
@@ -176,11 +181,11 @@ namespace PortAudioWrapper
             }
         }
 
-        private void WriteBuffer(byte[] outputBuffer, double[] buffer, int actualWriteLength)
+        private void WriteToBuffer(byte[] outputBuffer, double[] buffer, int actualWriteLength)
         {
-            if (_outputSampleFormat == PaSampleFormat.PaFloat32)
+            for (var i = 0; i < actualWriteLength; i++)
             {
-                for (var i = 0; i < actualWriteLength; i++)
+                if (_outputSampleFormat == PaSampleFormat.PaFloat32)
                 {
                     var bytes = BitConverter.GetBytes((float)buffer[i]);
                     for (var j = 0; j < 4; j++)
@@ -188,10 +193,7 @@ namespace PortAudioWrapper
                         outputBuffer[4 * i + j] = bytes[j];
                     }
                 }
-            }
-            else if (_outputSampleFormat == PaSampleFormat.PaInt16)
-            {
-                for (var i = 0; i < actualWriteLength; i++)
+                else if (_outputSampleFormat == PaSampleFormat.PaInt16)
                 {
                     var bytes = BitConverter.GetBytes((short)(buffer[i] * Int16.MaxValue));
                     for (var j = 0; j < 2; j++)
@@ -199,10 +201,7 @@ namespace PortAudioWrapper
                         outputBuffer[2 * i + j] = bytes[j];
                     }
                 }
-            }
-            else if (_outputSampleFormat == PaSampleFormat.PaInt24)
-            {
-                for (var i = 0; i < actualWriteLength; i++)
+                else if (_outputSampleFormat == PaSampleFormat.PaInt24)
                 {
                     var value = (uint)(buffer[i] * int.MaxValue) >> 8;
                     outputBuffer[3 * i + 0] = (byte)(value & 0xFF);
@@ -212,31 +211,24 @@ namespace PortAudioWrapper
             }
         }
 
-        private void ReadBuffer(double[] buffer, byte[] inputBuffer, int actualReadLength)
+        private void ReadFromBuffer(byte[] inputBuffer, double[] buffer, int actualReadLength, PaSampleFormat sampleFormat)
         {
-            if (_inputSampleFormat == PaSampleFormat.PaFloat32)
+            for (var i = 0; i < actualReadLength; i++)
             {
-                for (var i = 0; i < actualReadLength; i++)
+                if (sampleFormat == PaSampleFormat.PaFloat32)
                 {
-                    _readEventArgs.Buffer[i] = (double)System.BitConverter.ToSingle(_inputBuffer, i * 4);
+                    buffer[i] = BitConverter.ToSingle(_inputBuffer, i * 4);
                 }
-            }
-            else if (_inputSampleFormat == PaSampleFormat.PaInt16)
-            {
-                for (var i = 0; i < actualReadLength; i++)
+                else if (sampleFormat == PaSampleFormat.PaInt16)
                 {
-                    _readEventArgs.Buffer[i] = (double)(System.BitConverter.ToInt16(_inputBuffer, i * 2)) / Int16.MaxValue;
+                    buffer[i] = BitConverter.ToInt16(_inputBuffer, i * 2) / Int16.MaxValue;
                 }
-            }
-            else if (_inputSampleFormat == PaSampleFormat.PaInt24)
-            {
-                for (var i = 0; i < actualReadLength; i++)
+                else if (sampleFormat == PaSampleFormat.PaInt24)
                 {
                     int val = (_inputBuffer[i * 3 + 0] | (_inputBuffer[i * 3 + 1] << 8) | (_inputBuffer[i * 3 + 2] << 16)) << 8;
-                    _readEventArgs.Buffer[i] = (double)val / int.MaxValue;
+                    buffer[i] = (double)val / int.MaxValue;
                 }
             }
-
         }
 
         protected override bool ReleaseHandle()
@@ -246,8 +238,11 @@ namespace PortAudioWrapper
 
         private unsafe int NativeCallbackHandler(IntPtr input, IntPtr output, uint frameCount, IntPtr timeInfo, uint statusFlags, IntPtr userData)
         {
+            var latencyMode = System.Runtime.GCSettings.LatencyMode;
             try
             {
+                System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
+
                 if (!_running)
                 {
                     return (int)PaStreamCallbackResult.PaComplete;
@@ -275,6 +270,10 @@ namespace PortAudioWrapper
                 _running = false;
 
                 return (int)PaStreamCallbackResult.PaComplete;
+            }
+            finally
+            {
+                System.Runtime.GCSettings.LatencyMode = latencyMode;
             }
         }
 

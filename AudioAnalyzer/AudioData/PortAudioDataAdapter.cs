@@ -240,59 +240,29 @@ namespace AudioMark.Core.AudioData
                 return;
             }
 
-            int read = 0;
-            while (read < e.ActualLength)
+            base.OnRead?.Invoke(this, new AudioDataEventArgs()
             {
-                if (!InputBuffer.WriteNoWait((buffer) =>
-                {
-                    for (var i = 0; i < buffer.Length; i++)
-                    {
-                        buffer[i] = e.Buffer[read];
-                        read++;
-                    }
-                    return buffer.Length;
-                }))
-                {
-                    DiscardInput = true;
-                    InputWaitHandle.Set();
-                    break;
-                };
-            }
-
-            if (e.Errors != 0)
-            {
-                DiscardInput = true;
-            }
-
-            InputWaitHandle.Set();
+                Buffer = e.Buffer,
+                Channels = AppSettings.Current.Device.InputDevice.ChannelsCount,
+                Length = e.ActualLength,
+                Discard = e.Errors != 0
+            });
         }
 
         private new void OnWrite(object sender, PortAudioStreamEventArgs e)
         {
-            int wrote = 0;
-            while (wrote < e.ActualLength)
+            if (!Running)
             {
-                if (!OutputBuffer.ReadNoWait((buffer, length) =>
-                {
-                    for (var i = 0; i < length; i++)
-                    {
-                        e.Buffer[wrote] = buffer[i];
-                        wrote++;
-                    }
-                }))
-                {
-                    DiscardOutput = true;
-                    OutputWaitHandle.Set();
-                    break;
-                }
+                return;
             }
 
-            if (e.Errors != 0)
+            base.OnWrite?.Invoke(this, new AudioDataEventArgs()
             {
-                DiscardInput = true;
-            }
-
-            OutputWaitHandle.Set();
+                Buffer = e.Buffer,
+                Channels = AppSettings.Current.Device.OutputDevice.ChannelsCount,
+                Length = e.ActualLength,
+                Discard = e.Errors != 0
+            });
         }
 
         private new void OnError(object sender, Exception e)

@@ -24,11 +24,8 @@ namespace AudioMark.Core.AudioData
         protected EventWaitHandle OutputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);                
         protected bool DiscardOutput { get; set; }
 
-        private Thread inputProcessingThread = null;                
-        private Thread outputProcessingThread = null;        
-
-        public DataReadEventHandler OnRead { get; private set; }
-        public DataWriteEventHandler OnWrite { get; private set; }
+        public EventHandler<AudioDataEventArgs> OnRead { get; private set; }
+        public EventHandler<AudioDataEventArgs> OnWrite { get; private set; }
 
         public EventHandler<Exception> OnError { get; private set; }
 
@@ -59,58 +56,11 @@ namespace AudioMark.Core.AudioData
                 }
 
                 running = true;
-
-                if (OnRead != null)
-                {
-                    inputProcessingThread = new Thread(() =>
-                    {
-                        Thread.CurrentThread.Priority = ThreadPriority.Highest;
-                        while (running)
-                        {
-                            InputWaitHandle.WaitOne();
-                            InputWaitHandle.Reset();
-
-                            while (InputBuffer.Read((buffer, length) =>
-                            {
-                                OnRead(this, buffer, length, DiscardInput);
-                            })) { };
-
-                            DiscardInput = false;
-                        }
-                    });
-
-                    inputProcessingThread.Start();
-                }
-
-                if (OnWrite != null)
-                {
-                    outputProcessingThread = new Thread(() =>
-                    {
-                        Thread.CurrentThread.Priority = ThreadPriority.Highest;
-                        while (running)
-                        {
-                            OutputWaitHandle.WaitOne();
-                            OutputWaitHandle.Reset();
-
-                            while (OutputBuffer.Write((buffer) =>
-                            {
-                                return OnWrite(this, buffer, DiscardOutput);
-                            })) { };
-
-                            DiscardOutput = false;
-                        }
-                    });
-
-                    outputProcessingThread.Start();
-                }
-
+              
                 StartDevices();
             }
             catch (Exception e)
             {
-                InputWaitHandle.Set();
-                OutputWaitHandle.Set();
-
                 running = false;
                 throw e;
             }
@@ -120,9 +70,6 @@ namespace AudioMark.Core.AudioData
         {
             running = false;            
             StopDevices();
-
-            InputWaitHandle.Set();
-            OutputWaitHandle.Set();
 
             ResetBuffers();
         }
@@ -148,15 +95,7 @@ namespace AudioMark.Core.AudioData
             /* TODO: Implement actual validation (e.g. missing device) */
         }
 
-        public void FillOutputBuffer()
-        {
-            while (OutputBuffer.Write((buffer) =>
-            {
-                return OnWrite(this, buffer, false);
-            })) { };
-        }
-
-        public void SetReadHandler(DataReadEventHandler readHandler)
+        public void SetReadHandler(EventHandler<AudioDataEventArgs> readHandler)
         {
             if (Running)
             {
@@ -166,7 +105,7 @@ namespace AudioMark.Core.AudioData
             OnRead = readHandler;
         }
 
-        public void SetWriteHandler(DataWriteEventHandler writeHandler)
+        public void SetWriteHandler(EventHandler<AudioDataEventArgs> writeHandler)
         {
             if (Running)
             {

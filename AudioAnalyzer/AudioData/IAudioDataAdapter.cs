@@ -5,19 +5,29 @@ using static AudioMark.Core.Settings.Device;
 
 namespace AudioMark.Core.AudioData
 {
-    public delegate void DataReadEventHandler(IAudioDataAdapter sender, double[] data, int length, bool discard);
-    public delegate int DataWriteEventHandler(IAudioDataAdapter sender, double[] data, bool discard);
+    public class AudioDataEventArgs: EventArgs
+    {
+        public double[] Buffer { get; set; }
+        public int Length { get; set; }
+        public int Channels { get; set; }        
+        public bool Discard { get; set; }
+
+        public int Frames
+        {
+            get => Length / Channels;
+        }
+    }
 
     public interface IAudioDataAdapter
     {
         bool Running { get; }
                
-        DataReadEventHandler OnRead { get; }
-        DataWriteEventHandler OnWrite { get; }
+        EventHandler<AudioDataEventArgs> OnRead { get; }
+        EventHandler<AudioDataEventArgs> OnWrite { get; }
         EventHandler<Exception> OnError { get; }
 
-        void SetReadHandler(DataReadEventHandler readHandler);
-        void SetWriteHandler(DataWriteEventHandler writeHandler);
+        void SetReadHandler(EventHandler<AudioDataEventArgs> readHandler);
+        void SetWriteHandler(EventHandler<AudioDataEventArgs> writeHandler);
         void SetErrorHandler(EventHandler<Exception> errorHandler);
 
         IEnumerable<string> EnumerateSystemApis();
@@ -29,9 +39,7 @@ namespace AudioMark.Core.AudioData
         bool ValidateInputDevice(DeviceInfo device);
         bool ValidateOutputDevice(DeviceInfo device);
 
-        void Initialize();
-        void FillOutputBuffer();
-
+        void Initialize();        
         void ValidateDeviceSettings();
 
         void Start();
