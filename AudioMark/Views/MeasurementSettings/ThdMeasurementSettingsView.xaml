@@ -34,16 +34,6 @@
 
           <vmc:InputOutputLevelView DataContext="{Binding TestSignalInputOutputLevelOptions}" />
 
-        </StackPanel>
-      </cc:PropertySection.Properties>
-    </cc:PropertySection>
-
-    <cc:PropertySection Expanded="true">
-      <cc:PropertySection.Title>
-        <TextBlock Classes="PropertyTitle">Warm-up signal</TextBlock>
-      </cc:PropertySection.Title>
-      <cc:PropertySection.Properties>
-        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
           <Grid HorizontalAlignment="Stretch">
 
             <Grid.ColumnDefinitions>
@@ -68,25 +58,7 @@
               <TextBlock Classes="Inline">seconds</TextBlock>
             </StackPanel>
 
-            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="2"
-                      IsEnabled="{Binding WarmUpEnabled}"
-                      IsChecked="{Binding !OverrideWarmUpSignalOptions}"
-                      >Use test signal options</CheckBox>
-
-            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="3">Warm-up signal frequency:</TextBlock>
-            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
-                       IsEnabled="{Binding WarmupSignalOptionsEnabled}"
-                       Text="{Binding WarmUpSignalFrequency}"/>
-              <TextBlock Classes="Inline">hz</TextBlock>
-            </StackPanel>
-
           </Grid>
-
-          <Panel IsEnabled="{Binding WarmupSignalOptionsEnabled}">
-            <vmc:InputOutputLevelView IsEnabled="{Binding WarmupSignalOptionsEnabled}"
-              DataContext="{Binding WarmUpSignalInputOutputLevelOptions}"/>
-          </Panel>
 
         </StackPanel>
       </cc:PropertySection.Properties>
@@ -116,17 +88,17 @@
             <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0" IsChecked="{Binding LimitMaxHarmonics}">
               Limit max. harmonics
             </CheckBox>
-            
+
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" IsEnabled="{Binding LimitMaxHarmonics}">
               <cc:NumberBox Classes="Iniline Mr" MinValue="0" Value="{Binding MaxHarmonics}" Width="64" />
               <TextBlock Classes="Inline">harmonics</TextBlock>
             </StackPanel>
-              
+
             <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="1" IsChecked="{Binding LimitMaxFrequency}">
               Limit max. frequency
             </CheckBox>
-          
-          <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding LimitMaxFrequency}">
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding LimitMaxFrequency}">
               <TextBox Classes="Inline Mr" Width="54" Text="{Binding MaxFrequency}" TextAlignment="Right" />
               <TextBlock Classes="Inline">Hz</TextBlock>
             </StackPanel>

@@ -80,7 +80,9 @@ namespace PortAudioWrapper
         paOutputOverflow = 0x00000008,
         paPrimingOutput = 0x00000010,
 
-        paCallbackNotProcessed = 0x00000020,
-        paCallbackException = 0x00000040
+        paCallbackReadNotProcessed = 0x00000020,
+        paCallbackWriteNotProcessed = 0x00000040,
+
+        paCallbackException = 0x00000080
     }
 }

@@ -57,8 +57,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
             get => Model.WarmUpEnabled;
             set
             {
-                this.RaiseAndSetIfPropertyChanged(() => Model.WarmUpEnabled, value);
-                this.RaisePropertyChanged(nameof(WarmupSignalOptionsEnabled));
+                this.RaiseAndSetIfPropertyChanged(() => Model.WarmUpEnabled, value);                
             }
         }
 
@@ -68,31 +67,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
             set => this.RaiseAndSetIfPropertyChanged(() => Model.WarmUpDurationSeconds, value);
         }
 
-        public bool OverrideWarmUpSignalOptions
-        {
-            get => Model.OverrideWarmUpSignalOptions;
-            set
-            {
-                this.RaiseAndSetIfPropertyChanged(() => Model.OverrideWarmUpSignalOptions, value);
-                this.RaisePropertyChanged(nameof(WarmupSignalOptionsEnabled));
-            }
-        }
-
-        public bool WarmupSignalOptionsEnabled
-        {
-            get => OverrideWarmUpSignalOptions && WarmUpEnabled;
-        }
-
-        public double WarmUpSignalFrequency
-        {
-            get => Model.WarmUpSignalOptions.Frequency;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.WarmUpSignalOptions.Frequency, value, nameof(WarmUpSignalFrequency));
-        }
-
-        public InputOutputLevelViewModel WarmUpSignalInputOutputLevelOptions
-        {
-            get => new InputOutputLevelViewModel(Model.WarmUpSignalOptions.InputOutputOptions);
-        }
+        
         #endregion
 
         #region Stop conditions options

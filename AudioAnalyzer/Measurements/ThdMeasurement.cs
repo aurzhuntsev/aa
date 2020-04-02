@@ -22,8 +22,7 @@ namespace AudioMark.Core.Measurements
     public class ThdMeasurement : MeasurementBase<SpectralData>
     {
         private Activity<SpectralData> _dataActivity;
-        public SineGenerator TestSignalGenerator { get; set; }
-        public SineGenerator WarmupSignalGenerator { get; set; }
+        public SineGenerator TestSignalGenerator { get; set; }        
 
         public override SpectralData Result => AnalysisResult?.Data;
 
@@ -44,21 +43,14 @@ namespace AudioMark.Core.Measurements
             RegisterActivity(CreateSetupActivity());
 
             TestSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.TestSignalOptions.Frequency, Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp());
-            if (!Settings.OverrideWarmUpSignalOptions)
-            {
-                WarmupSignalGenerator = TestSignalGenerator;
-            }
-            else
-            {
-                WarmupSignalGenerator = new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.WarmUpSignalOptions.Frequency, Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp());
-            }
-
+            
             if (Settings.WarmUpEnabled && Settings.WarmUpDurationSeconds > 0)
             {
                 RegisterActivity(CreateWarmUpActivity());
             }
 
             _dataActivity = CreateAcquisitionActivity();
+            
             RegisterActivity(_dataActivity);
         }
 
@@ -82,7 +74,7 @@ namespace AudioMark.Core.Measurements
         private Activity<SpectralData> CreateWarmUpActivity()
         {
             var warmUpActivity = new Activity<SpectralData>("Warming up...");
-            warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, WarmupSignalGenerator);
+            warmUpActivity.AddGenerator(AppSettings.Current.Device.PrimaryOutputChannel, TestSignalGenerator);
 
             var sink = new SpectralDataProcessor(Settings.Fft.Value.WindowSize, Settings.Fft.Value.WindowOverlapFactor, AppSettings.Current.Device.SampleRate / 2);
             sink.Data.DefaultValue = SpectralData.DefaultValueType.Last;

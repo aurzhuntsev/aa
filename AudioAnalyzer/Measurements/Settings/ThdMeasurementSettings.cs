@@ -14,10 +14,8 @@ namespace AudioMark.Core.Measurements.Settings
     public class ThdMeasurementSettings : IMeasurementSettings, IGlobalOptions, ICorrectionProfile
     {
         public SignalSettings TestSignalOptions { get; set; } = new SignalSettings();
-      
-        public SignalSettings WarmUpSignalOptions { get; set; } = new SignalSettings();
+              
         public bool WarmUpEnabled { get; set; } = true;
-        public bool OverrideWarmUpSignalOptions { get; set; } = false;
         public int WarmUpDurationSeconds { get; set; } = 10;
 
         public string CorrectionProfileName { get; set; }

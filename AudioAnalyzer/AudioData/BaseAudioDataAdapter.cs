@@ -13,17 +13,6 @@ namespace AudioMark.Core.AudioData
         private volatile bool running = false;
         public bool Running => running;
 
-        private int ringBufferSize = 2;
-        protected double[] xb = null;
-
-        protected RingBuffer InputBuffer { get; set; }
-        protected EventWaitHandle InputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);        
-        protected bool DiscardInput { get; set; }
-
-        protected RingBuffer OutputBuffer { get; set; }
-        protected EventWaitHandle OutputWaitHandle { get; set; } = new EventWaitHandle(false, EventResetMode.ManualReset);                
-        protected bool DiscardOutput { get; set; }
-
         public EventHandler<AudioDataEventArgs> OnRead { get; private set; }
         public EventHandler<AudioDataEventArgs> OnWrite { get; private set; }
 
@@ -41,9 +30,7 @@ namespace AudioMark.Core.AudioData
         }
 
         public virtual void Initialize()
-        {            
-            InputBuffer = new RingBuffer((int)(ringBufferSize * AppSettings.Current.Device.SampleRate * 0.001 * AppSettings.Current.Device.InputDevice.LatencyMilliseconds), AppSettings.Current.Device.InputDevice.ChannelsCount);
-            OutputBuffer = new RingBuffer((int)(ringBufferSize * AppSettings.Current.Device.SampleRate * 0.001 * AppSettings.Current.Device.OutputDevice.LatencyMilliseconds), AppSettings.Current.Device.OutputDevice.ChannelsCount);
+        {                        
         }
 
         public void Start()
@@ -130,8 +117,6 @@ namespace AudioMark.Core.AudioData
 
         public void ResetBuffers()
         {
-            InputBuffer.Clear();
-            OutputBuffer.Clear();
         }
     }
 }

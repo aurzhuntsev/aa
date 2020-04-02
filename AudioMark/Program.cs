@@ -20,8 +20,7 @@ namespace AudioMark
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
-                .UsePlatformDetect()
-                .UseSkia()
+                .UsePlatformDetect()                
                 .With(new Win32PlatformOptions { AllowEglInitialization = true })
                 .With(new X11PlatformOptions { UseGpu = true, UseEGL = true })
                 .With(new AvaloniaNativePlatformOptions { UseGpu = true })
