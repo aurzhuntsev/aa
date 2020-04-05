@@ -40,8 +40,8 @@ namespace AudioMark.ViewModels
             get => _whenRunningStatusChanged.AsObservable();
         }
 
-        private Subject<SpectralData> _whenDataUpdated = new Subject<SpectralData>();
-        public IObservable<SpectralData> WhenDataUpdated
+        private Subject<Spectrum> _whenDataUpdated = new Subject<Spectrum>();
+        public IObservable<Spectrum> WhenDataUpdated
         {
             get => _whenDataUpdated.AsObservable();
         }
@@ -118,7 +118,7 @@ namespace AudioMark.ViewModels
             {
                 if (IsCompleted)
                 {
-                    Measurement.UpdateAnalysisResult();
+                    Measurement.Update();
                 }
 
                 _whenAnalysisOptionsChanged.OnNext(Unit.Default);
@@ -157,7 +157,7 @@ namespace AudioMark.ViewModels
 
                 Measurement.OnDataUpdate += (sender, data) =>
                 {
-                    _whenDataUpdated.OnNext(data as SpectralData);
+                    _whenDataUpdated.OnNext(data as Spectrum);
                 };
 
                 Running = true;

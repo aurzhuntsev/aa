@@ -7,6 +7,6 @@ namespace AudioMark.Core.Measurements.Analysis
 {
     public interface IAnalysisResult
     {
-        SpectralData Data { get; }
+        Spectrum Data { get; }
     }
 }

@@ -28,10 +28,12 @@
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\ImdMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementsPanelView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
+    <AvaloniaResource Remove="Views\Reports\ImdReportView.xaml" />
     <AvaloniaResource Remove="Views\Reports\NoiseReportView.xaml" />
     <AvaloniaResource Remove="Views\Reports\ThdReportView.xaml" />
     <AvaloniaResource Remove="Views\SessionPanelView.xaml" />
@@ -53,10 +55,12 @@
     <None Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <None Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
+    <None Remove="Views\MeasurementSettings\ImdMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementsPanelView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
+    <None Remove="Views\Reports\ImdReportView.xaml" />
     <None Remove="Views\Reports\NoiseReportView.xaml" />
     <None Remove="Views\Reports\ThdReportView.xaml" />
     <None Remove="Views\SessionPanelView.xaml" />
@@ -180,6 +184,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\Settings\FftSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\ImdMeasurementSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Reports\ImdReportView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

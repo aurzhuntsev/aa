@@ -35,6 +35,7 @@ namespace AudioMark.ViewModels.Reports
         public override void Update()
         {
             this.RaisePropertyChanged(nameof(NoisePowerDbFs));
+            this.RaisePropertyChanged(nameof(AverageLevelDbTp));
         }
     }
 }

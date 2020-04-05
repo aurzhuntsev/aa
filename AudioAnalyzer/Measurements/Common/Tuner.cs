@@ -40,13 +40,17 @@ namespace AudioMark.Core.Measurements.Common
             get => _outputLevel;
             set
             {
-                _outputLevel = value;             
+                _outputLevel = value;
+                if (_generator != null)
+                {
+                    _generator.Amplitude = _outputLevel.FromDbTp();
+                }
             }
         }
 
         public Tuner()
         {
-            _adapter = AudioDataAdapterProvider.Get();         
+            _adapter = AudioDataAdapterProvider.Get();
         }
 
         public void Test()

@@ -8,6 +8,8 @@ namespace AudioMark.Core.Generators
     {
         public double SampleRate { get; private set; }
 
+        public double Amplitude { get; } = 0.0;
+
         public SilenceGenerator()
         {            
         }

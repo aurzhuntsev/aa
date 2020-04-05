@@ -12,12 +12,12 @@ using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels.MeasurementSettings
 {
-    [DefaultViewModel(typeof(ThdMeasurementSettings))]
-    public class ThdMeasurementSettingsViewModel : MeasurementSettingsViewModelBase
+    [DefaultViewModel(typeof(ImdModMeasurementSettings))]
+    public class ImdMeasurementSettingsViewModel : MeasurementSettingsViewModelBase
     {
-        public ThdMeasurementSettings Model
+        public ImdModMeasurementSettings Model
         {
-            get => (ThdMeasurementSettings)Settings;
+            get => (ImdModMeasurementSettings)Settings;
         }
 
         private bool _isCompleted;
@@ -43,6 +43,18 @@ namespace AudioMark.ViewModels.MeasurementSettings
         {
             get => Model.TestSignalOptions.Frequency;
             set => this.RaiseAndSetIfPropertyChanged(() => Model.TestSignalOptions.Frequency, value, nameof(TestSignalFrequency));
+        }
+
+        public double SecondarySignalFrequency
+        {
+            get => Model.SecondarySignalFrequency;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.SecondarySignalFrequency, value, nameof(SecondarySignalFrequency));
+        }
+
+        public double SignalsRate
+        {
+            get => Model.SignalsRate;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.SignalsRate, value, nameof(SignalsRate));
         }
 
         public InputOutputLevelViewModel TestSignalInputOutputLevelOptions
@@ -85,22 +97,12 @@ namespace AudioMark.ViewModels.MeasurementSettings
             }
         }
 
-        public bool LimitMaxHarmonics
+        public int MaxOrder
         {
-            get => Model.LimitMaxHarmonics;
+            get => Model.MaxOrder;
             set
             {
-                this.RaiseAndSetIfPropertyChanged(() => Model.LimitMaxHarmonics, value, nameof(LimitMaxHarmonics)); 
-                _whenAnalysisOptionsChanged.OnNext(this);
-            }
-        }
-
-        public int MaxHarmonics
-        {
-            get => Model.MaxHarmonics;
-            set
-            {
-                this.RaiseAndSetIfPropertyChanged(() => Model.MaxHarmonics, value, nameof(MaxHarmonics));
+                this.RaiseAndSetIfPropertyChanged(() => Model.MaxOrder, value, nameof(MaxOrder));
                 _whenAnalysisOptionsChanged.OnNext(this);
             }
         }
@@ -128,7 +130,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
         public StopConditionsViewModel StopConditions { get; }
 
         #endregion
-        public ThdMeasurementSettingsViewModel(ThdMeasurementSettings settings) : base()
+        public ImdMeasurementSettingsViewModel(ImdModMeasurementSettings settings) : base()
         {
             Settings = settings;
 

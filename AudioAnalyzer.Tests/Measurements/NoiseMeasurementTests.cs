@@ -18,11 +18,11 @@ namespace AudioAnalyzer.Tests.Measurements
             AppSettings.TestMode = true;
         }
 
-        private NoiseMeasurement CreateNoiseMeasurement() 
+        private (Spectrum, NoiseMeasurementSettings) CreateNoiseMeasurement() 
         {
             const int size = 1000;            
 
-            var data = new SpectralData(size, size);
+            var data = new Spectrum(size, size);
             var arr = new double[size];
             arr[100] = 0.1;
             arr[200] = 0.1;
@@ -31,26 +31,23 @@ namespace AudioAnalyzer.Tests.Measurements
 
             data.Set(arr);
 
-            var result = new NoiseAnalysisResult()
-            {
-                Data = data
-            };
-
             var settings = new NoiseMeasurementSettings()
             {                
             };
 
-            return new NoiseMeasurement(settings, result);
+            return (data, settings);
         }
 
         [Test]
         public void ShouldProperlyComputeNoisePower()
         {
             var msmt = CreateNoiseMeasurement();
-            msmt.UpdateAnalysisResult();
 
-            var result = msmt.AnalysisResult as NoiseAnalysisResult;
-            Assert.LessOrEqual(Math.Abs(-20.0 * Math.Log10(1.0 / Math.Sqrt(0.04)) - result.NoisePowerDbFs), double.Epsilon);
+            msmt.Item2.LimitHighFrequency = true;
+            msmt.Item2.HighFrequency = 1000;
+
+            var result = (new NoiseAnalytics()).Analyze(msmt.Item1, msmt.Item2) as NoiseAnalysisResult;
+            Assert.LessOrEqual(Math.Abs(-10.0 * Math.Log10(1.0 / Math.Sqrt(0.04 / 1000.0)) - result.NoisePowerDbFs), double.Epsilon);
             Assert.LessOrEqual(Math.Abs(-20.0 * Math.Log10(1.0 / (0.4 / 1000.0)) - result.AverageLevelDbTp), double.Epsilon);
         }
 
@@ -59,13 +56,11 @@ namespace AudioAnalyzer.Tests.Measurements
         {
             var msmt = CreateNoiseMeasurement();
 
-            msmt.Settings.LimitHighFrequency = true;
-            msmt.Settings.HighFrequency = 200;
+            msmt.Item2.LimitHighFrequency = true;
+            msmt.Item2.HighFrequency = 200;
 
-            msmt.UpdateAnalysisResult();
-
-            var result = msmt.AnalysisResult as NoiseAnalysisResult;
-            Assert.LessOrEqual(Math.Abs(-20.0 * Math.Log10(1.0 / Math.Sqrt(0.01)) - result.NoisePowerDbFs), double.Epsilon);
+            var result = (new NoiseAnalytics()).Analyze(msmt.Item1, msmt.Item2) as NoiseAnalysisResult;
+            Assert.LessOrEqual(Math.Abs(-10.0 * Math.Log10(1.0 / Math.Sqrt(0.01 / 200.0)) - result.NoisePowerDbFs), double.Epsilon);
             Assert.LessOrEqual(Math.Abs(-20.0 * Math.Log10(1.0 / (0.1 / 200.0)) - result.AverageLevelDbTp), double.Epsilon);
         }
     }

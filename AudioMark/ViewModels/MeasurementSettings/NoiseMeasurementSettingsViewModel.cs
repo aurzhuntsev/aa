@@ -34,7 +34,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
             set
             {
                 _measurement = value;
-                CorrectionProfile.Target = (_measurement as IMeasurement<SpectralData>).Result;
+                CorrectionProfile.Target = _measurement.Result;
             }
         }
 

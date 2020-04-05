@@ -1,0 +1,132 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AudioMark.Views.MeasurementSettings.ImdMeasurementSettingsView">
+  <StackPanel Orientation="Vertical">
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Test signal</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
+          <Grid HorizontalAlignment="Stretch" RowDefinitions="*,*,*">
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Classes="Inline" Grid.Column="0">F1 frequency:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       Text="{Binding TestSignalFrequency}"/>
+              <TextBlock Classes="Inline" >hz</TextBlock>
+            </StackPanel>
+
+            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="1">F2 frequency:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal" Grid.Row="1">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       Text="{Binding SecondarySignalFrequency}"/>
+              <TextBlock Classes="Inline" >hz</TextBlock>
+            </StackPanel>
+
+            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="2">F2:F1 rate:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal" Grid.Row="2">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       Text="{Binding SignalsRate}"/>
+              <TextBlock Classes="Inline" ></TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <vmc:InputOutputLevelView DataContext="{Binding TestSignalInputOutputLevelOptions}" />
+
+          <Grid HorizontalAlignment="Stretch">
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="0" IsChecked="{Binding WarmUpEnabled}">Enable warm-up</CheckBox>
+
+            <TextBlock Grid.Column="0" Grid.Row="1">Warm-up duration:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
+                       IsEnabled="{Binding WarmUpEnabled}" Text="{Binding WarmUpDurationSeconds}"/>
+              <TextBlock Classes="Inline">seconds</TextBlock>
+            </StackPanel>
+
+          </Grid>
+
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Analysis</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <Grid HorizontalAlignment="Stretch" RowDefinitions="*,*">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Classes="Inline" Grid.Column="0">Harmonic detection window:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal">
+              <cc:NumberBox MinValue="0" Value="{Binding HarmonicDetectionWindow}" Width="64" Classes="Inline Mr" />
+              <TextBlock Classes="Inline">bin(s)</TextBlock>
+            </StackPanel>
+
+            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="1">Max modulation order:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal" Grid.Row="1">
+              <cc:NumberBox MinValue="2" Value="{Binding MaxOrder}" Width="64" Classes="Inline Mr" />
+              <TextBlock Classes="Inline"></TextBlock>
+            </StackPanel>
+
+          </Grid>
+
+          <Grid HorizontalAlignment="Stretch" ColumnDefinitions="3*,2*,16" RowDefinitions="*">
+            <CheckBox Classes="Inline" Grid.Column="0" Grid.Row="1" IsChecked="{Binding LimitMaxFrequency}">
+              Limit max. frequency
+            </CheckBox>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding LimitMaxFrequency}">
+              <TextBox Classes="Inline Mr" Width="54" Text="{Binding MaxFrequency}" TextAlignment="Right" />
+              <TextBlock Classes="Inline">Hz</TextBlock>
+            </StackPanel>
+          </Grid>
+
+          <vmc:CorrectionProfileView DataContext="{Binding CorrectionProfile}"/>
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <vmc:StopConditionsView DataContext="{Binding StopConditions}" />
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+  </StackPanel>
+</UserControl>

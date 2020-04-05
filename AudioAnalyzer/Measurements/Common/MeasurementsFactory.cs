@@ -29,7 +29,7 @@ namespace AudioMark.Core.Measurements.Common
 
         private static List<MeasurementListItem> measurements = new List<MeasurementListItem>();
 
-        public static void Register<T, TSettings, TReport, TResult>() where T : MeasurementBase<TResult> where TSettings : IMeasurementSettings where TReport : IAnalysisResult
+        public static void Register<T, TSettings, TReport, TResult>() where T : MeasurementBase where TSettings : IMeasurementSettings where TReport : IAnalysisResult
         {
             var type = typeof(T);
 
@@ -146,8 +146,9 @@ namespace AudioMark.Core.Measurements.Common
 
         static MeasurementsFactory()
         {
-            Register<ThdMeasurement, ThdMeasurementSettings, ThdAnalysisResult, SpectralData>();
-            Register<NoiseMeasurement, NoiseMeasurementSettings, NoiseAnalysisResult, SpectralData>();
+            Register<NoiseMeasurement, NoiseMeasurementSettings, NoiseAnalysisResult, Spectrum>();
+            Register<ThdMeasurement, ThdMeasurementSettings, ThdAnalysisResult, Spectrum>();
+            Register<ImdModMeasurement, ImdModMeasurementSettings, ImdAnalysisResult, Spectrum>();
         }
     }
 }

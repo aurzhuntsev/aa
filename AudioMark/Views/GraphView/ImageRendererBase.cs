@@ -172,7 +172,7 @@ namespace AudioMark.Views.GraphView
 
         protected abstract void RenderInternal(SKCanvas canvas);
 
-        protected double GetSeriesValue(SpectralData series, Bin bin)
+        protected double GetSeriesValue(Spectrum series, Bin bin)
         {
             var indices = Enumerable.Range(bin.From, bin.To - bin.From);
             var sequence = indices.Select(i => series.Statistics[i]);

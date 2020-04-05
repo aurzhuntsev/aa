@@ -13,6 +13,11 @@ namespace AudioMark.ViewModels.Reports
     {
         public ThdAnalysisResult Model { get; set; }
 
+        public string ThdN
+        {
+            get => $"{Model.TotalThdPlusNoiseDb.ToString("F4")}dB ({Model.TotalThdPlusNoisePercentage.ToString("F8")}%)";
+        }
+
         /* TODO: Some neat rounding */
         public string ThdF
         {
@@ -23,12 +28,7 @@ namespace AudioMark.ViewModels.Reports
         {
             get => $"{Model.ThdRDb.ToString("F4")}dB ({Model.ThdRPercentage.ToString("F8")}%)";
         }
-
-        public string EvenToOdd
-        {
-            get => Model.EvenToOdd.ToString("F4"); 
-        }
-
+        
         public ThdReportViewModel(ThdAnalysisResult model)
         {
             Model = model;
@@ -41,9 +41,9 @@ namespace AudioMark.ViewModels.Reports
 
         public override void Update()
         {
+            this.RaisePropertyChanged(nameof(ThdN));
             this.RaisePropertyChanged(nameof(ThdF));
-            this.RaisePropertyChanged(nameof(ThdR));
-            this.RaisePropertyChanged(nameof(EvenToOdd));            
+            this.RaisePropertyChanged(nameof(ThdR));            
         }
     }
 }

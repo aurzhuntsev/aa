@@ -11,7 +11,7 @@ namespace AudioAnalyzer.Tests.Common
         [Test]
         public void ShouldPopulateCorrectSpectralDataStats()
         {
-            var data = new SpectralData(1, 1);
+            var data = new Spectrum(1, 1);
             for (var i = 1; i < 10; i++)
             {
                 data.Set(new double[] { i });

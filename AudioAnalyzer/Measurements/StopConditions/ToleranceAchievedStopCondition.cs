@@ -22,7 +22,7 @@ namespace AudioMark.Core.Measurements.StopConditions
 
         private const int MinimalNormalCdfSampleSize = 30;
 
-        public SpectralData Data { get; private set; }
+        public Spectrum Data { get; private set; }
         public double Tolerance { get; private set; }
         public double Confidence { get; private set; }
 
@@ -30,16 +30,13 @@ namespace AudioMark.Core.Measurements.StopConditions
         private DateTime _lastUpdated;
 
         private TimeSpan? _remaining = null;
-
-        public event EventHandler OnMet;
-        public event EventHandler<Exception> OnError;
-
+        
         public TimeSpan? Remaining
         {
             get => _remaining;
         }
 
-        public ToleranceAchievedStopCondition(SpectralData data, double tolerance, double confidence)
+        public ToleranceAchievedStopCondition(Spectrum data, double tolerance, double confidence)
         {
             Data = data;
             Tolerance = tolerance;
@@ -83,13 +80,13 @@ namespace AudioMark.Core.Measurements.StopConditions
             return double.NaN;
         }
 
-        public void Check()
+        public bool Check()
         {
             try
             {
                 if (Data.Count < 2)
                 {
-                    return;
+                    return false;
                 }
 
                 var k = StudentT.InvCDF(0.0, 1.0, Data.Count - 1, 0.5 * (Confidence + 1.0)) / Math.Sqrt(Data.Count);
@@ -97,7 +94,7 @@ namespace AudioMark.Core.Measurements.StopConditions
 
                 var hasMissingCondition = false;
                 var maxRemaining = long.MinValue;
-                for (var i = 2; i < Data.Size; i++)
+                for (var i = 0; i < Data.Size; i++)
                 {
                     var confidenceInterval = k * Data.Statistics[i].StandardDeviation;
                     var toleranceInterval = Data.Statistics[i].Mean * Tolerance;
@@ -125,22 +122,24 @@ namespace AudioMark.Core.Measurements.StopConditions
                 }
 
                 if (!hasMissingCondition)
-                {
-                    OnMet?.Invoke(this, null);
+                {                    
+                    return true;
                 }
 
                 if (maxRemaining != long.MinValue)
                 {
-                    /* TODO: Make it more viable; maybe don't show if more than 60 minutes or smth like that */
+                    /* TODO: Make it more viable; maybe don't show an estimate if more than 60 minutes is remaining or smth like that */
                     if (_remaining == null || _remaining.Value.Ticks > maxRemaining)
                     {
                         _remaining = new TimeSpan(maxRemaining);
                     }
                 }
+
+                return false;
             }
             catch (Exception e)
             {
-                OnError?.Invoke(this, e);
+                return true;
             }
         }
 

@@ -8,7 +8,10 @@ namespace AudioMark.Core.Measurements.Analysis
     [Serializable]
     public class ThdAnalysisResult: IAnalysisResult
     {
-        public SpectralData Data { get; set; }
+        public Spectrum Data { get; set; }
+
+        public double TotalThdPlusNoisePercentage { get; set; }
+        public double TotalThdPlusNoiseDb { get; set; }
 
         public double ThdFDb { get; set; }
         public double ThdFPercentage { get; set; }
@@ -16,16 +19,17 @@ namespace AudioMark.Core.Measurements.Analysis
         public double ThdRDb { get; set; }
         public double ThdRPercentage { get; set; }
 
-        public double EvenToOdd { get; set; }
+        public double FundamentalDb { get; set; }
+        public List<double> Harmonics { get; set; }
 
         public override string ToString()
         {
             var result = new StringBuilder();
 
+            result.AppendLine($"THD+N:\t{TotalThdPlusNoiseDb}dB ({TotalThdPlusNoisePercentage}%)");
             result.AppendLine($"THDf:\t{ThdFDb}dB ({ThdFPercentage}%)");
             result.AppendLine($"THDr:\t{ThdRDb}dB ({ThdRPercentage}%)");
-            result.AppendLine($"Even/odd:\t{EvenToOdd}");
-
+        
             return result.ToString();
         }
     }

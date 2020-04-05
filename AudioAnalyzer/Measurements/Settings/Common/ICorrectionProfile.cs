@@ -8,7 +8,7 @@ namespace AudioMark.Core.Measurements.Settings.Common
     public interface ICorrectionProfile
     {
         string CorrectionProfileName { get; set; }
-        SpectralData CorrectionProfile { get; set; }
+        Spectrum CorrectionProfile { get; set; }
         bool ApplyCorrectionProfile { get; set; }
     }
 }

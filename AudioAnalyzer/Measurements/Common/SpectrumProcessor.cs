@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace AudioMark.Core.Measurements.Common
 {
     /* TODO: Implement error handling */
-    public class SpectralDataProcessor : IDataSink<SpectralData>
+    public class SpectrumProcessor
     {
         internal class ProcessingItem
         {
@@ -19,10 +19,9 @@ namespace AudioMark.Core.Measurements.Common
             public SemaphoreSlim Semaphore { get; } = new SemaphoreSlim(1, 1);
         }
 
-        public bool Silent { get; set; }
-        public SpectralData Data { get; set; }
+        public Spectrum Data { get; set; }
 
-        public event EventHandler<SpectralData> OnItemProcessed;
+        public event EventHandler<Spectrum> OnItemProcessed;
 
         private readonly int MaxTasks = Math.Max(1, Environment.ProcessorCount - 1);
 
@@ -31,7 +30,7 @@ namespace AudioMark.Core.Measurements.Common
         public int MaxFrequency { get; set; }
 
         private int CorrectedWindowSize => WindowSize % 2 == 0 ? WindowSize + 2 : WindowSize + 1;
-        
+
         private RingBuffer _buffer = null;
 
         private double[] _accumulator = null;
@@ -39,7 +38,7 @@ namespace AudioMark.Core.Measurements.Common
 
         private List<ProcessingItem> _processingItems;
 
-        public SpectralDataProcessor(int windowSize, double overlapFactor, int maxFrequency)
+        public SpectrumProcessor(int windowSize, double overlapFactor, int maxFrequency)
         {
             WindowSize = windowSize;
             OverlapFactor = overlapFactor;
@@ -59,7 +58,7 @@ namespace AudioMark.Core.Measurements.Common
 
             _processingItems = new List<ProcessingItem>();
 
-            Data = new SpectralData(WindowSize, MaxFrequency);
+            Data = new Spectrum(WindowSize, MaxFrequency);
         }
 
         public void Add(double value)
@@ -137,16 +136,9 @@ namespace AudioMark.Core.Measurements.Common
                             {
                                 processingItem.Data[i] = Math.Abs(processingItem.Data[i] / AppSettings.Current.Fft.WindowSize);
                             }
-
-                            processingItem.Data[0] = 0.0;
-                            processingItem.Data[1] = 0.0;
-
+                            
                             Data.Set(processingItem.Data);
-
-                            if (!Silent)
-                            {
-                                OnItemProcessed?.Invoke(this, Data);
-                            }
+                            OnItemProcessed?.Invoke(this, Data);
                         }
                         finally
                         {

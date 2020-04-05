@@ -7,7 +7,7 @@ namespace AudioMark.Views.GraphView
 {
     public class Series
     {
-        public SpectralData Data { get; set; }
+        public Spectrum Data { get; set; }
         public int ColorIndex { get; set; }
         public bool Visible { get; set; }
     }

@@ -7,7 +7,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using AudioMark.Core.Measurements.Common;
 
 namespace AudioAnalyzer.Tests.Measurements
 {
@@ -19,27 +18,22 @@ namespace AudioAnalyzer.Tests.Measurements
             AppSettings.TestMode = true;
         }
 
-        private ThdMeasurement Create100HzThdMeasurement()
+        private (Spectrum, ThdMeasurementSettings) Create100HzThdAnalyticsParams()
         {
             const int size = 1000;
             const int baseFreq = 100;
 
-            var data = new SpectralData(size, size);
+            var data = new Spectrum(size, size);
             var arr = new double[size];
             arr[baseFreq] = 1.0;
-            arr[baseFreq + 1] = 1.0;
-            arr[baseFreq - 1] = 1.0;
 
             arr[baseFreq * 2] = 0.2;
             arr[baseFreq * 3] = 0.2;
             arr[baseFreq * 4] = 0.2;
             arr[baseFreq * 5] = 0.2;
-            data.Set(arr);
 
-            var result = new ThdAnalysisResult()
-            {
-                Data = data
-            };
+            arr[444] = 0.1;
+            data.Set(arr);
 
             var settings = new ThdMeasurementSettings()
             {
@@ -49,7 +43,7 @@ namespace AudioAnalyzer.Tests.Measurements
                 },
             };
 
-            return new ThdMeasurement(settings, result);
+            return (data, settings);
         }
 
         private void AssertResultMatchesThdOf(double value, ThdAnalysisResult result)
@@ -62,50 +56,54 @@ namespace AudioAnalyzer.Tests.Measurements
         }
 
         [Test]
+        public void ShouldProperlyComputeThdN()
+        {
+            var p = Create100HzThdAnalyticsParams();
+            var result = (new ThdAnalytics()).Analyze(p.Item1, p.Item2) as ThdAnalysisResult;
+
+            Assert.LessOrEqual(Math.Abs(Math.Sqrt(0.17) / Math.Sqrt(1.17) - result.TotalThdPlusNoisePercentage / 100.0), 1E-14d); // rounding issues :(
+            Assert.LessOrEqual(Math.Abs(-(Math.Sqrt(0.17) / Math.Sqrt(1.17)).ToDbTp() - result.TotalThdPlusNoiseDb), 1E-14d);
+        }
+
+        [Test]
         public void ShouldCreateCorrectThdAnalysisReport()
         {
-            var thd = Create100HzThdMeasurement();
-            thd.UpdateAnalysisResult();
-
-            var result = thd.AnalysisResult as ThdAnalysisResult;
+            var p = Create100HzThdAnalyticsParams();
+            var result = (new ThdAnalytics()).Analyze(p.Item1, p.Item2) as ThdAnalysisResult;                         
             AssertResultMatchesThdOf(0.4, result);    
         }
 
         [Test]
         public void ShouldCorrectlyApplyMaxFrequencyLimit()
         {
-            var thd = Create100HzThdMeasurement();
-            thd.Settings.LimitMaxFrequency = true;
-            thd.Settings.MaxFrequency = 300.0;
+            var p = Create100HzThdAnalyticsParams();
+            p.Item2.LimitMaxFrequency = true;
+            p.Item2.MaxFrequency = 300.0;
 
-            thd.UpdateAnalysisResult();
+            var result = (new ThdAnalytics()).Analyze(p.Item1, p.Item2) as ThdAnalysisResult;
 
-            var result = thd.AnalysisResult as ThdAnalysisResult;
-            AssertResultMatchesThdOf(0.2 * Math.Sqrt(2.0), result);
+            AssertResultMatchesThdOf(0.2, result);
         }
 
         [Test]
         public void ShouldCorrectlyApplyMaxHarmonicsLimit()
         {
-            var thd = Create100HzThdMeasurement();
-            thd.Settings.LimitMaxHarmonics = true;
-            thd.Settings.MaxHarmonics = 2;
+            var p = Create100HzThdAnalyticsParams();
+            p.Item2.LimitMaxHarmonics = true;
+            p.Item2.MaxHarmonics = 2;
 
-            thd.UpdateAnalysisResult();
-
-            var result = thd.AnalysisResult as ThdAnalysisResult;
+            var result = (new ThdAnalytics()).Analyze(p.Item1, p.Item2) as ThdAnalysisResult;
             AssertResultMatchesThdOf(0.2 * Math.Sqrt(2.0), result);
         }
 
         [Test]
         public void ShouldProperlyUseWindowSize()
         {
-            var thd = Create100HzThdMeasurement();
+            var p = Create100HzThdAnalyticsParams();
 
-            thd.Settings.WindowHalfSize = 1;
-            thd.UpdateAnalysisResult();
+            p.Item2.WindowHalfSize = 1;
 
-            var result = thd.AnalysisResult as ThdAnalysisResult;
+            var result = (new ThdAnalytics()).Analyze(p.Item1, p.Item2) as ThdAnalysisResult;
             AssertResultMatchesThdOf(0.4 / Math.Sqrt(3.0), result);        
         }
     }

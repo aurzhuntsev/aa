@@ -17,11 +17,11 @@ namespace AudioMark.Core.Measurements.Settings
             InputOutputOptions = new InputOutputLevel() { OutputLevel = -100.0 }
         };
 
-        public bool LimitHighFrequency { get; set; }
-        public double HighFrequency { get; set; } = AppSettings.Current.Device.SampleRate / 2.0;
+        public bool LimitHighFrequency { get; set; } = true;
+        public double HighFrequency { get; set; } = 20000.0;
 
         public string CorrectionProfileName { get; set; }
-        public SpectralData CorrectionProfile { get; set; }
+        public Spectrum CorrectionProfile { get; set; }
         public bool ApplyCorrectionProfile { get; set; }
 
         public OverridableSettings<AudioMark.Core.Settings.StopConditions> StopConditions { get; } = new OverridableSettings<AudioMark.Core.Settings.StopConditions>(AppSettings.Current.StopConditions);

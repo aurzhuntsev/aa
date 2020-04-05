@@ -19,7 +19,7 @@ namespace AudioMark.ViewModels.MeasurementSettings.Common
     public class CorrectionProfileViewModel : ViewModelBase
     {
         private ICorrectionProfile _model;
-        public SpectralData Target { get; set; }
+        public Spectrum Target { get; set; }
 
         private Subject<Unit> _whenChanged = new Subject<Unit>();
         public IObservable<Unit> WhenChanged
@@ -37,7 +37,7 @@ namespace AudioMark.ViewModels.MeasurementSettings.Common
             }
         }
 
-        public SpectralData CorrectionProfile
+        public Spectrum CorrectionProfile
         {
             get => _model.CorrectionProfile;
             set => this.RaiseAndSetIfPropertyChanged(() => _model.CorrectionProfile, value, nameof(CorrectionProfile));

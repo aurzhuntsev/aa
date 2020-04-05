@@ -6,7 +6,7 @@ using System.Text;
 namespace AudioMark.Core.Common
 {
     [Serializable]
-    public class SpectralData
+    public class Spectrum
     {
         [Serializable]
         public class StatisticsItem
@@ -34,10 +34,10 @@ namespace AudioMark.Core.Common
 
         private StatisticsItem[] _statistics;
         private StatisticsItem[] _correctedStatistics;        
-        private SpectralData _correctionProfile;
+        private Spectrum _correctionProfile;
 
         [NonSerialized]
-        private Func<SpectralData, int, bool> _correctionApplicableItemSelector;
+        private Func<Spectrum, int, bool> _correctionApplicableItemSelector;
 
         public int Size { get; set; }
         public int MaxFrequency { get; set; }
@@ -60,7 +60,7 @@ namespace AudioMark.Core.Common
             }
         }
 
-        public SpectralData(int size, int maxFrequency)
+        public Spectrum(int size, int maxFrequency)
         {
             Size = size;
             MaxFrequency = maxFrequency;
@@ -150,7 +150,7 @@ namespace AudioMark.Core.Common
             }
         }
 
-        public void SetCorrectionProfile(SpectralData profile, Func<SpectralData, int, bool> applicableItemSelector)
+        public void SetCorrectionProfile(Spectrum profile, Func<Spectrum, int, bool> applicableItemSelector)
         {
             if (profile == null)
             {
@@ -188,6 +188,21 @@ namespace AudioMark.Core.Common
         public IEnumerable<StatisticsItem> AtFrequency(double frequency, int windowHalfSize = 0)
         {
             return GetFrequencyIndices(frequency, windowHalfSize).Select(i => Statistics[i]);
+        }
+        
+        public double RssAtFrequency(double frequency, Func<StatisticsItem, double> selector, int windowHalfSize = 0)
+        {
+            if (windowHalfSize == 0)
+            {
+                return GetFrequencyIndices(frequency, windowHalfSize)
+                    .Select(x => selector(Statistics[x]))
+                    .First();
+            }
+            return Math.Sqrt(
+                GetFrequencyIndices(frequency, windowHalfSize)
+                    .Select(x => selector(Statistics[x]) * selector(Statistics[x]))
+                    .Sum()
+                );
         }
 
         public Func<StatisticsItem, double> GetDefaultValueSelector()

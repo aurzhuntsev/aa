@@ -93,7 +93,7 @@ namespace AudioMark.ViewModels
                         _storedMeasurements.Add(Measurements.Measurement);
                         Series.Add(new Series()
                         {
-                            Data = ((IMeasurement<SpectralData>)Measurements.Measurement).Result,
+                            Data = Measurements.Measurement.Result,
                             ColorIndex = _storedMeasurements.Count - 1,
                             Visible = true
                         });                        
@@ -133,7 +133,7 @@ namespace AudioMark.ViewModels
             {
                 Series.Add(new Series()
                 {
-                    Data = ((IMeasurement<SpectralData>)item.Measurement).Result,
+                    Data = item.Measurement.Result,
                     ColorIndex = _storedMeasurements.Count,
                     Visible = true
                 });
@@ -181,9 +181,9 @@ namespace AudioMark.ViewModels
             });
         }
 
-        private void UpdateGraphView(SpectralData data)
+        private void UpdateGraphView(Spectrum data)
         {
-            var storedDatas = _storedMeasurements.Cast<IMeasurement<SpectralData>>().Select(m => m.Result);
+            var storedDatas = _storedMeasurements.Cast<IMeasurement>().Select(m => m.Result);
             Series.RemoveAll(s => !storedDatas.Contains(s.Data));
 
             if (data != null)

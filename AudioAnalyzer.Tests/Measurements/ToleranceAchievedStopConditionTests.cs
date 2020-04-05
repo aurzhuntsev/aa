@@ -16,7 +16,7 @@ namespace AudioAnalyzer.Tests.Measurements
         [Test]
         public void SHouldProperlyEstimateTimeRemaining()
         {
-            var target = new ToleranceAchievedStopCondition(new SpectralData(1, 1), 0, 0);
+            var target = new ToleranceAchievedStopCondition(new Spectrum(1, 1), 0, 0);
             var methodInfo = target.GetType()
                 .GetMethod("EstimateRemainingTime", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -58,18 +58,13 @@ namespace AudioAnalyzer.Tests.Measurements
                 200500
             };
 
-            var data = new SpectralData(1, 1);
+            var data = new Spectrum(1, 1);
             var target = new ToleranceAchievedStopCondition(data, 0.05, 0.95);
-            bool met = false;
-            target.OnMet += (s, e) =>
-            {
-                met = true;
-            };
-
+            var met = false;
             foreach (var s in source)
             {
                 data.Set(new[] { s });
-                target.Check();
+                met = target.Check();
 
                 if (met)
                 {
