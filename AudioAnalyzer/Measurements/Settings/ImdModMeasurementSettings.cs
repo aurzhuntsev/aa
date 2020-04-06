@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements.Settings
 {
-    public class ImdModMeasurementSettings : IMeasurementSettings, IGlobalOptions, ICorrectionProfile, IWarmable
+    public class ImdModMeasurementSettings : IImdSettings
     {
         public SignalSettings TestSignalOptions { get; set; } = new SignalSettings();
 
@@ -29,6 +29,9 @@ namespace AudioMark.Core.Measurements.Settings
 
         public OverridableSettings<AudioMark.Core.Settings.StopConditions> StopConditions { get; } = new OverridableSettings<AudioMark.Core.Settings.StopConditions>(AppSettings.Current.StopConditions);
         public OverridableSettings<Fft> Fft { get; } = new OverridableSettings<Fft>(AppSettings.Current.Fft);
+
+        public double F1Frequency => TestSignalOptions.Frequency;
+        public double F2Frequency => SecondarySignalFrequency;
 
         public ImdModMeasurementSettings()
         {

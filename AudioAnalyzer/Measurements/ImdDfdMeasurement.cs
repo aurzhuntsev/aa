@@ -11,19 +11,19 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements
 {
-    [Measurement("Intermodulation Distortion (MOD)")]
-    public class ImdModMeasurement : SingleMeasurement
+    [Measurement("Intermodulation Distortion (DFD)")]
+    public class ImdDfdMeasurement : SingleMeasurement
     {
-        public new ImdModMeasurementSettings Settings
+        public new ImdDfdMeasurementSettings Settings
         {
-            get => (ImdModMeasurementSettings)base.Settings;
+            get => (ImdDfdMeasurementSettings)base.Settings;
         }
 
-        public ImdModMeasurement(IMeasurementSettings settings) : base(settings)
+        public ImdDfdMeasurement(IMeasurementSettings settings) : base(settings)
         {
         }
 
-        public ImdModMeasurement(IMeasurementSettings settings, IAnalysisResult result) : base(settings, result)
+        public ImdDfdMeasurement(IMeasurementSettings settings, IAnalysisResult result) : base(settings, result)
         {
         }
 
@@ -33,7 +33,7 @@ namespace AudioMark.Core.Measurements
         }
 
         protected override IGenerator GetGenerator()
-        {
+        { 
             return new CompositeGenerator(
                 AppSettings.Current.Device.SampleRate,
                 Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp(),

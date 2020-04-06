@@ -149,6 +149,10 @@ namespace AudioMark.Core.Measurements.Common
             Register<NoiseMeasurement, NoiseMeasurementSettings, NoiseAnalysisResult, Spectrum>();
             Register<ThdMeasurement, ThdMeasurementSettings, ThdAnalysisResult, Spectrum>();
             Register<ImdModMeasurement, ImdModMeasurementSettings, ImdAnalysisResult, Spectrum>();
+            Register<ImdDfdMeasurement, ImdDfdMeasurementSettings, ImdAnalysisResult, Spectrum>();
+            
+            /* TODO: Do I need to apply non-rectangular FFT window for that one to work? */
+            //Register<ImdDinMeasurement, ImdDinMeasurementSettings, ImdAnalysisResult, Spectrum>();
         }
     }
 }

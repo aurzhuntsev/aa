@@ -5,45 +5,45 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements.Analysis
 {
-    public class ImdAnalysisResult : IAnalysisResult
-    {
-        public Spectrum Data { get; set; }
-
-        public Dictionary<int, double> OrderedImd { get; set; }        
-        
-        public double F1Db { get; set; }
-        public double F2Db { get; set; }
-
-        public double TotalImdPlusNoiseDb { get; set; }
-        public double TotalImdPlusNoisePercentage { get; set; }
-
-        public int MaxOrder { get; set; }
+    public class ImdAnalysisResult : AnalysisResultBase
+    {        
+        [AnalysisResultField("Bandwidth, hz")]
         public double Bandwidth { get; set; }
 
+        [AnalysisResultField("Max. order")]
+        public int MaxOrder { get; set; }
+
+        [AnalysisResultField("F1 frequency, hz")]
+        public double F1Frequency { get; set; }
+
+        [AnalysisResultField("F1 level, dB")]
+        public double F1Db { get; set; }
+
+        [AnalysisResultField("F2 frequency, hz")]
+        public double F2Frequency { get; set; }
+
+        [AnalysisResultField("F2 level, dB")]
+        public double F2Db { get; set; }
+
+        [AnalysisResultField("IMD+N, dB")]
+        public double TotalImdPlusNoiseDb { get; set; }
+
+        [AnalysisResultField("IMD+N, %")]
+        public double TotalImdPlusNoisePercentage { get; set; }
+
+        [AnalysisResultField("IMD div F2, dB")]
         public double ImdF2ForGivenOrderDb { get; set; }
+
+        [AnalysisResultField("IMD div F2, %")]
         public double ImdF2ForGivenOrderPercentage { get; set; }
 
+        [AnalysisResultField("IMD div F1+F2, dB")]
         public double ImdF1F2ForGivenOrderDb { get; set; }
+
+        [AnalysisResultField("IMD div F1+F2, %")]
         public double ImdF1F2ForGivenOrderPercentage { get; set; }
 
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine($"Bandwidth:\t{Bandwidth}hz");
-            sb.AppendLine($"Max IMD order:\t{MaxOrder}");
-            sb.AppendLine($"IMD+N:\t{TotalImdPlusNoiseDb}dB");
-            sb.AppendLine($"IMD (div F2):\t{ImdF2ForGivenOrderDb}dB");
-            sb.AppendLine($"IMD (div F1+F2):\t{ImdF1F2ForGivenOrderDb}dB");
-            
-            sb.AppendLine($"F1:\t{F1Db}dB");
-            sb.AppendLine($"F2:\t{F2Db}dB");
-
-            foreach (var key in OrderedImd.Keys)
-            {
-                sb.AppendLine($"{key} order:\t{OrderedImd[key]}dB");
-            }
-
-            return sb.ToString();
-        }
+        [AnalysisResultDictionary("{0} order IMD")]
+        public Dictionary<int, double> OrderedImd { get; set; }                                           
     }
 }

@@ -6,31 +6,39 @@ using System.Text;
 namespace AudioMark.Core.Measurements.Analysis
 {
     [Serializable]
-    public class ThdAnalysisResult: IAnalysisResult
-    {
-        public Spectrum Data { get; set; }
+    public class ThdAnalysisResult: AnalysisResultBase
+    {        
+        [AnalysisResultField("Bandwidth, hz")]
+        public double Bandwidth { get; set; }
 
-        public double TotalThdPlusNoisePercentage { get; set; }
-        public double TotalThdPlusNoiseDb { get; set; }
+        [AnalysisResultField("No. harmonics")]
+        public int NumberOfHarmonics { get; set; }
 
+        [AnalysisResultField("Fundamental signal, hz")]
+        public double FundamentalFrequency { get; set; }
+
+        [AnalysisResultField("Fundamental signal, dB")]
+        public double FundamentalDb { get; set; }
+
+        [AnalysisResultField("THD+N, dB")] 
+        public double ThdNDb { get; set; }
+
+        [AnalysisResultField("THD+N, %")]
+        public double ThdNPercentage { get; set; }
+
+        [AnalysisResultField("THDf, dB")]
         public double ThdFDb { get; set; }
+        
+        [AnalysisResultField("THDf, %")]
         public double ThdFPercentage { get; set; }
 
+        [AnalysisResultField("THDr, dB")]
         public double ThdRDb { get; set; }
+
+        [AnalysisResultField("THDr, %")]
         public double ThdRPercentage { get; set; }
-
-        public double FundamentalDb { get; set; }
-        public List<double> Harmonics { get; set; }
-
-        public override string ToString()
-        {
-            var result = new StringBuilder();
-
-            result.AppendLine($"THD+N:\t{TotalThdPlusNoiseDb}dB ({TotalThdPlusNoisePercentage}%)");
-            result.AppendLine($"THDf:\t{ThdFDb}dB ({ThdFPercentage}%)");
-            result.AppendLine($"THDr:\t{ThdRDb}dB ({ThdRPercentage}%)");
         
-            return result.ToString();
-        }
+        [AnalysisResultDictionary("{0} harmonic, dB")]
+        public Dictionary<int, double> Harmonics { get; set; }
     }
 }

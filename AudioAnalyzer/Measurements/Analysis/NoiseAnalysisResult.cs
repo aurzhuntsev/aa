@@ -6,20 +6,15 @@ using System.Text;
 namespace AudioMark.Core.Measurements.Analysis
 {
     [Serializable]
-    public class NoiseAnalysisResult : IAnalysisResult
+    public class NoiseAnalysisResult : AnalysisResultBase
     {
-        public Spectrum Data { get; set; }
+        [AnalysisResultField("Bandwidth, hz")]
+        public double Bandwidth { get; set; }
+
+        [AnalysisResultField("Noise power, dB")]
         public double NoisePowerDbFs { get; set; }
+
+        [AnalysisResultField("Average level, dB")]
         public double AverageLevelDbTp { get; set; }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine($"Noise power:\t{NoisePowerDbFs}");
-            sb.AppendLine($"Average level:\t{AverageLevelDbTp}");
-
-            return sb.ToString();
-        }
     }
 }

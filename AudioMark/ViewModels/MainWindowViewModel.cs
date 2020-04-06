@@ -101,6 +101,9 @@ namespace AudioMark.ViewModels
                         {
                             Session.AddMeasurement(Measurements.Measurement, _storedMeasurements.Count - 1);
                         });
+
+                        Measurements.SetCompletedMeasurement(Measurements.Measurement);
+                        SessionPanelVisible = true;
                     }
 
                     ActiveSeries = null;

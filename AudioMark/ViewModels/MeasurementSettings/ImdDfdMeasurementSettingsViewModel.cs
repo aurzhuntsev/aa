@@ -12,12 +12,12 @@ using AudioMark.Core.Measurements.Common;
 
 namespace AudioMark.ViewModels.MeasurementSettings
 {
-    [DefaultViewModel(typeof(ImdModMeasurementSettings))]
-    public class ImdMeasurementSettingsViewModel : MeasurementSettingsViewModelBase
+    [DefaultViewModel(typeof(ImdDfdMeasurementSettings))]
+    public class ImdDfdMeasurementSettingsViewModel : MeasurementSettingsViewModelBase
     {
-        public ImdModMeasurementSettings Model
+        public ImdDfdMeasurementSettings Model
         {
-            get => (ImdModMeasurementSettings)Settings;
+            get => (ImdDfdMeasurementSettings)Settings;
         }
 
         private bool _isCompleted;
@@ -45,10 +45,10 @@ namespace AudioMark.ViewModels.MeasurementSettings
             set => this.RaiseAndSetIfPropertyChanged(() => Model.TestSignalOptions.Frequency, value, nameof(TestSignalFrequency));
         }
 
-        public double SecondarySignalFrequency
+        public double FrequencyDifference
         {
-            get => Model.SecondarySignalFrequency;
-            set => this.RaiseAndSetIfPropertyChanged(() => Model.SecondarySignalFrequency, value, nameof(SecondarySignalFrequency));
+            get => Model.FrequencyDifference;
+            set => this.RaiseAndSetIfPropertyChanged(() => Model.FrequencyDifference, value, nameof(FrequencyDifference));
         }
 
         public double SignalsRate
@@ -130,7 +130,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
         public StopConditionsViewModel StopConditions { get; }
 
         #endregion
-        public ImdMeasurementSettingsViewModel(ImdModMeasurementSettings settings) : base()
+        public ImdDfdMeasurementSettingsViewModel(ImdDfdMeasurementSettings settings) : base()
         {
             Settings = settings;
 

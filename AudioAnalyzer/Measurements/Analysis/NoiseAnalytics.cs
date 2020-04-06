@@ -17,10 +17,12 @@ namespace AudioMark.Core.Measurements.Analysis
 
             if (settings is NoiseMeasurementSettings noiseSettings)
             {
+                var maxFrequency = noiseSettings.LimitHighFrequency ? noiseSettings.HighFrequency : data.Size;
                 var right = noiseSettings.LimitHighFrequency ? result.Data.GetFrequencyIndices(noiseSettings.HighFrequency, 0).First() : result.Data.Size;
                 var sum = Enumerable.Range(0, right).Sum(s => result.Data.Statistics[s].Mean * result.Data.Statistics[s].Mean);
                 var avg = Enumerable.Range(0, right).Average(s => result.Data.Statistics[s].Mean);
 
+                result.Bandwidth = maxFrequency;
                 result.NoisePowerDbFs = -Math.Sqrt(sum / right).ToDbTp() * 0.5;
                 result.AverageLevelDbTp = -avg.ToDbTp();
 

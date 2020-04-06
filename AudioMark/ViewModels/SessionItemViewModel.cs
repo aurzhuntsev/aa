@@ -11,6 +11,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using AudioMark.Core.Measurements.Common;
+using AudioMark.Core.Measurements.Analysis;
 
 namespace AudioMark.ViewModels
 {
@@ -69,9 +70,9 @@ namespace AudioMark.ViewModels
             get => _whenSelectionChanged.AsObservable();
         }
 
-        public ReportViewModelBase Report
+        public AnalysisResultViewModel Report
         {
-            get => (ReportViewModelBase)DefaultForModel(Measurement.AnalysisResult);
+            get => new AnalysisResultViewModel((AnalysisResultBase)Measurement.AnalysisResult);
         }
 
         public SessionItemViewModel(IMeasurement measurement)
@@ -145,7 +146,7 @@ namespace AudioMark.ViewModels
         }
 
         public void Update()
-        {
+        {            
             this.RaisePropertyChanged(nameof(Report));
         }
     }

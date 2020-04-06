@@ -28,14 +28,14 @@
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
-    <AvaloniaResource Remove="Views\MeasurementSettings\ImdMeasurementSettingsView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\ImdDfdMeasurementSettingsView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\ImdModMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementsPanelView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
-    <AvaloniaResource Remove="Views\Reports\ImdReportView.xaml" />
-    <AvaloniaResource Remove="Views\Reports\NoiseReportView.xaml" />
-    <AvaloniaResource Remove="Views\Reports\ThdReportView.xaml" />
+    <AvaloniaResource Remove="Views\Reports\AnalysisResultView.xaml" />
     <AvaloniaResource Remove="Views\SessionPanelView.xaml" />
     <AvaloniaResource Remove="Views\SettingsPanelView.xaml" />
     <AvaloniaResource Remove="Views\Settings\DeviceSettingsView.xaml" />
@@ -55,14 +55,14 @@
     <None Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <None Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
-    <None Remove="Views\MeasurementSettings\ImdMeasurementSettingsView.xaml" />
+    <None Remove="Views\MeasurementSettings\ImdDfdMeasurementSettingsView.xaml" />
+    <None Remove="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml" />
+    <None Remove="Views\MeasurementSettings\ImdModMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementsPanelView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\InputOutputLevelView.xaml" />
-    <None Remove="Views\Reports\ImdReportView.xaml" />
-    <None Remove="Views\Reports\NoiseReportView.xaml" />
-    <None Remove="Views\Reports\ThdReportView.xaml" />
+    <None Remove="Views\Reports\AnalysisResultView.xaml" />
     <None Remove="Views\SessionPanelView.xaml" />
     <None Remove="Views\SettingsPanelView.xaml" />
     <None Remove="Views\Settings\DeviceSettingsView.xaml" />
@@ -128,11 +128,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\Reports\ThdReportView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\TopPanelView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -173,11 +168,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\Reports\NoiseReportView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\Settings\DevicesSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -188,12 +178,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MeasurementSettings\ImdMeasurementSettingsView.xaml">
+    <EmbeddedResource Include="Views\MeasurementSettings\ImdModMeasurementSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\Reports\ImdReportView.xaml">
+    <EmbeddedResource Include="Views\Reports\AnalysisResultView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\ImdDfdMeasurementSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -209,6 +209,12 @@
     </Compile>
     <Compile Update="Views\Common\Input.xaml.cs">
       <DependentUpon>Input.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml.cs">
+      <DependentUpon>ImdDinMeasurementSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MeasurementSettings\ImdModMeasurementSettingsView.xaml.cs">
+      <DependentUpon>ImdModMeasurementSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MeasurementSettings\ThdMeasurementSettingsView.xaml.cs">
       <DependentUpon>ThdMeasurementSettingsView.xaml</DependentUpon>

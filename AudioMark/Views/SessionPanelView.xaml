@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Controls"
              xmlns:v="clr-namespace:AudioMark.Views"
+             xmlns:vr="clr-namespace:AudioMark.Views.Reports"
              mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="450"
              x:Class="AudioMark.Views.SessionPanelView" Name="SessionPanel">
   <StackPanel Background="{DynamicResource Level2BackgroundBrush}" Name="Container"
@@ -72,7 +73,7 @@
                     <ColumnDefinition Width="20" />
                   </Grid.ColumnDefinitions>
 
-                  <ContentControl Content="{Binding Report}" />
+                  <vr:AnalysisResultView DataContext="{Binding Report}" />
 
                   <Button Grid.Column="1"
                           VerticalAlignment="Top"

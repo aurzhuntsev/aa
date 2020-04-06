@@ -20,17 +20,24 @@ namespace AudioMark.Core.Measurements.Analysis
             }
 
             var result = new ThdAnalysisResult();
-            result.Data = data;
+            result.Data = data;            
 
             var f = thdSettings.TestSignalOptions.Frequency;
+            result.FundamentalFrequency = f;
+
             var fi = data.GetFrequencyIndices(f, thdSettings.WindowHalfSize);
+            
             var frss = data.RssAtFrequency(f, x => x.Mean, thdSettings.WindowHalfSize);
+            result.FundamentalDb = frss;
+
             double totalThd = 0.0;
             double total = 0.0;
 
             var maxFrequency = thdSettings.LimitMaxFrequency ? thdSettings.MaxFrequency : data.MaxFrequency;
+            var right = data.GetFrequencyIndices(maxFrequency, 1).First();
+            result.Bandwidth = maxFrequency;
 
-            for (var i = 0; i < maxFrequency; i++)
+            for (var i = 0; i < right; i++)
             {
                 total += Math.Pow(data.Statistics[i].Mean, 2.0);
 
@@ -41,8 +48,8 @@ namespace AudioMark.Core.Measurements.Analysis
             }
             totalThd = Math.Sqrt(totalThd) / Math.Sqrt(total);
 
-            result.TotalThdPlusNoisePercentage = 100.0 * totalThd;
-            result.TotalThdPlusNoiseDb = -totalThd.ToDbTp();
+            result.ThdNPercentage = 100.0 * totalThd;
+            result.ThdNDb = -totalThd.ToDbTp();
 
             var freq = 2.0 * f;
             var harm = 2;
@@ -70,7 +77,14 @@ namespace AudioMark.Core.Measurements.Analysis
             result.ThdFDb = -thdf.ToDbTp();
 
             result.ThdRPercentage = 100.0 * thdr;
-            result.ThdRDb = -thdr.ToDbTp();            
+            result.ThdRDb = -thdr.ToDbTp();
+
+            result.Harmonics = new Dictionary<int, double>();
+            for (var i = 0; i < harmonics.Count; i++)
+            {
+                result.Harmonics.Add(i + 2, -harmonics[i].ToDbTp());
+            }
+            result.NumberOfHarmonics = harmonics.Count();
 
             return result;
         }

@@ -125,6 +125,7 @@ namespace AudioMark.ViewModels
         public void UpdateMeasurement(IMeasurement measurement)
         {
             var item = Items.First(x => x.Measurement == measurement);
+            item.Measurement.Update();
             item.Update();
         }
     }

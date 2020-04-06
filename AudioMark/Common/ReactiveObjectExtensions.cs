@@ -12,7 +12,7 @@ namespace AudioMark.Common
         {
             var constExpression = Expression.Constant(value);
             var assignExpression = Expression.Assign(selector.Body, constExpression);
-            var lambda = Expression.Lambda(assignExpression);
+            var lambda = Expression.Lambda(assignExpression);            
 
             lambda.Compile().DynamicInvoke();
 

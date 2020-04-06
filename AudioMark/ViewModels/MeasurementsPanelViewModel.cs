@@ -145,7 +145,8 @@ namespace AudioMark.ViewModels
                 Measurement = MeasurementsFactory.Create(Items[SelectedIndex], Content.Settings);
                 Measurement.OnComplete += (sender, success) =>
                 {
-                    Running = false;
+                    Running = false;                    
+
                     _whenRunningStatusChanged.OnNext(success);
                 };
 

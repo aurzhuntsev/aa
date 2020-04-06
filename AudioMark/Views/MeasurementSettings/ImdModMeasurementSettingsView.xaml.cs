@@ -2,11 +2,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace AudioMark.Views.Reports
+namespace AudioMark.Views.MeasurementSettings
 {
-    public class ThdReportView : UserControl
+    public class ImdModMeasurementSettingsView : UserControl
     {
-        public ThdReportView()
+        public ImdModMeasurementSettingsView()
         {
             this.InitializeComponent();
         }

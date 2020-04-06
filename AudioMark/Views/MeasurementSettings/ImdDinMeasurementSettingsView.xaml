@@ -5,7 +5,7 @@
              xmlns:cc="clr-namespace:AudioMark.Controls"
              xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AudioMark.Views.MeasurementSettings.ImdMeasurementSettingsView">
+             x:Class="AudioMark.Views.MeasurementSettings.ImdDinMeasurementSettingsView">
   <StackPanel Orientation="Vertical">
 
     <cc:PropertySection Expanded="true">
@@ -34,13 +34,6 @@
               <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
                        Text="{Binding SecondarySignalFrequency}"/>
               <TextBlock Classes="Inline" >hz</TextBlock>
-            </StackPanel>
-
-            <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="2">F2:F1 rate:</TextBlock>
-            <StackPanel Grid.Column="1"  Orientation="Horizontal" Grid.Row="2">
-              <TextBox Classes="Inline" TextAlignment="Right" Margin="0 0 2 0" Width="52"
-                       Text="{Binding SignalsRate}"/>
-              <TextBlock Classes="Inline" ></TextBlock>
             </StackPanel>
           </Grid>
 

@@ -12,7 +12,7 @@ namespace AudioMark.Core.Measurements.Analysis
     {
         public IAnalysisResult Analyze(Spectrum data, IMeasurementSettings settings)
         {
-            var imdSettings = settings as ImdModMeasurementSettings;
+            var imdSettings = settings as IImdSettings;
             if (imdSettings == null)
             {
                 throw new InvalidOperationException();
@@ -22,8 +22,8 @@ namespace AudioMark.Core.Measurements.Analysis
             result.Data = data;
 
             var maxFrequency = imdSettings.LimitMaxFrequency ? imdSettings.MaxFrequency : data.MaxFrequency;
-            var f1 = imdSettings.TestSignalOptions.Frequency;
-            var f2 = imdSettings.SecondarySignalFrequency;
+            var f1 = imdSettings.F1Frequency;
+            var f2 = imdSettings.F2Frequency;
             var f1i = data.GetFrequencyIndices(f1, imdSettings.WindowHalfSize);
             var f2i = data.GetFrequencyIndices(f2, imdSettings.WindowHalfSize);
             var f1rss = data.RssAtFrequency(f1, x => x.Mean, imdSettings.WindowHalfSize);
@@ -32,7 +32,8 @@ namespace AudioMark.Core.Measurements.Analysis
             /* Total IMD+Noise is full bandwidth except F1 and F2 frequencies */
             double totalImd = 0.0;
             double total = 0.0;
-            for (var f = 0; f < maxFrequency; f++)
+            var right = data.GetFrequencyIndices(maxFrequency, 0).First();
+            for (var f = 0; f < right; f++)
             {
                 total += Math.Pow(data.Statistics[f].Mean, 2.0);
 
@@ -77,6 +78,9 @@ namespace AudioMark.Core.Measurements.Analysis
 
             result.F1Db = -f1rss.ToDbTp();
             result.F2Db = -f2rss.ToDbTp();
+            result.F1Frequency = f1;
+            result.F2Frequency = f2;
+
             result.MaxOrder = imdSettings.MaxOrder;
             result.Bandwidth = maxFrequency;
 
@@ -87,7 +91,7 @@ namespace AudioMark.Core.Measurements.Analysis
                 orders[i] = -orders[i].ToDbTp();
             }
             sumOfOrders = Math.Sqrt(sumOfOrders);
-            result.OrderedImd = orders;
+            result.OrderedImd = orders.OrderBy(o => o.Key).ToDictionary(k => k.Key, v => v.Value); 
 
             result.ImdF2ForGivenOrderPercentage = (sumOfOrders / f1rss) * 100.0;
             result.ImdF2ForGivenOrderDb = -(sumOfOrders / f1rss).ToDbTp();

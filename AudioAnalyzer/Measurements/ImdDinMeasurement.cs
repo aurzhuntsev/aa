@@ -11,19 +11,19 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements
 {
-    [Measurement("Intermodulation Distortion (MOD)")]
-    public class ImdModMeasurement : SingleMeasurement
+    [Measurement("Intermodulation Distortion (DIN)")]
+    public class ImdDinMeasurement : SingleMeasurement
     {
-        public new ImdModMeasurementSettings Settings
+        public new ImdDinMeasurementSettings Settings
         {
-            get => (ImdModMeasurementSettings)base.Settings;
+            get => (ImdDinMeasurementSettings)base.Settings;
         }
 
-        public ImdModMeasurement(IMeasurementSettings settings) : base(settings)
+        public ImdDinMeasurement(IMeasurementSettings settings) : base(settings)
         {
         }
 
-        public ImdModMeasurement(IMeasurementSettings settings, IAnalysisResult result) : base(settings, result)
+        public ImdDinMeasurement(IMeasurementSettings settings, IAnalysisResult result) : base(settings, result)
         {
         }
 
@@ -33,11 +33,11 @@ namespace AudioMark.Core.Measurements
         }
 
         protected override IGenerator GetGenerator()
-        {
+        {            
             return new CompositeGenerator(
                 AppSettings.Current.Device.SampleRate,
                 Settings.TestSignalOptions.InputOutputOptions.OutputLevel.FromDbTp(),
-                new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.F1Frequency),
+                new PulseGenerator(AppSettings.Current.Device.SampleRate, Settings.F1Frequency, 0.5),
                 new SineGenerator(AppSettings.Current.Device.SampleRate, Settings.F2Frequency, Settings.SignalsRate)
             );
         }
