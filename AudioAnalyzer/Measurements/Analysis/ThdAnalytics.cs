@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Settings;
 using AudioMark.Core.Measurements.Settings.Common;
 using MathNet.Numerics;
@@ -27,8 +28,8 @@ namespace AudioMark.Core.Measurements.Analysis
 
             var fi = data.GetFrequencyIndices(f, thdSettings.WindowHalfSize);
             
-            var frss = data.RssAtFrequency(f, x => x.Mean, thdSettings.WindowHalfSize);
-            result.FundamentalDb = frss;
+            var frss = data.ValueAtFrequency(f, x => x.Mean, thdSettings.WindowHalfSize);
+            result.FundamentalDb = -frss.ToDbTp();
 
             double totalThd = 0.0;
             double total = 0.0;
@@ -57,7 +58,7 @@ namespace AudioMark.Core.Measurements.Analysis
 
             while (freq < maxFrequency)
             {               
-                harmonics.Add(data.RssAtFrequency(freq, x => x.Mean, thdSettings.WindowHalfSize));
+                harmonics.Add(data.ValueAtFrequency(freq, x => x.Mean, thdSettings.WindowHalfSize));
                 harm++;
                 freq = harm * thdSettings.TestSignalOptions.Frequency;
 

@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
@@ -121,6 +122,11 @@ namespace AudioMark.Views.GraphView
             {
                 try
                 {
+                    if (_skSurface == null)
+                    {
+                        return;
+                    }
+
                     RenderInternal(_skSurface.Canvas);
 
                     using (var image = _skSurface.Snapshot())

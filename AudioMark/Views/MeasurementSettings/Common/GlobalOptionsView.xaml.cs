@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace AudioMark.Views.MeasurementSettings.Common
 {
-    public class StopConditionsView : UserControl
+    public class GlobalOptionsView : UserControl
     {
-        public StopConditionsView()
+        public GlobalOptionsView()
         {
             this.InitializeComponent();
         }

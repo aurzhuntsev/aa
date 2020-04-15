@@ -125,54 +125,42 @@ namespace PortAudioWrapper
             Pa_AbortStream(handle);
         }
 
+        private volatile bool _pending = false;
+
         private void CallbackHandlerAsync(object obj)
         {
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
             _readEventArgs = new PortAudioStreamEventArgs();
-            //{
-            //    Buffer = new double[_inputBuffer.Length]
-            //};
-
             _writeEventArgs = new PortAudioStreamEventArgs();
-            //{
-            //    Buffer = new double[_outputBuffer.Length]
-            //};
 
             while (_running)
             {
                 try
                 {
-                    _callbackWaitHandle.WaitOne(CallbackThreadWaitTimeoutMilliseconds);
-
-                    var readTask = Task.Run(() =>
+                    if (_pending)
                     {
                         int actualReadLength = _lastFramesCount * _inputChannelsCount;
-                        //ReadFromBuffer(_inputBuffer, _readEventArgs.Buffer, actualReadLength, _inputSampleFormat);
                         _readEventArgs.Buffer = _inputBuffer;
                         _readEventArgs.ActualLength = actualReadLength;
                         _readEventArgs.Errors = _callbackError;
                         OnRead?.Invoke(this, _readEventArgs);
 
                         _callbackReadProcessed = true;
-                    });
 
-                    var writeTask = Task.Run(() =>
-                    {
                         int actualWriteLength = _lastFramesCount * _outputChannelsCount;
                         _writeEventArgs.Buffer = _outputBuffer;
                         _writeEventArgs.ActualLength = actualWriteLength;
                         _writeEventArgs.Errors = _callbackError;
                         OnWrite?.Invoke(this, _writeEventArgs);
 
-                        //WriteToBuffer(_writeEventArgs.Buffer, _outputBuffer, actualWriteLength);
-
                         _callbackWriteProcessed = true;
-                    });
 
-                    Task.WaitAll(readTask, writeTask);
+                        _callbackError = 0;
+                        _pending = false;
+                    }
 
-                    _callbackError = 0;
+                    Thread.Sleep(0);
                 }
                 catch (Exception e)
                 {
@@ -197,7 +185,7 @@ namespace PortAudioWrapper
                 }
                 else if (sampleFormat == PaSampleFormat.PaInt16)
                 {
-                   ((short*)outputBuffer)[i] = (short)(buffer[i] * Int16.MaxValue);
+                    ((short*)outputBuffer)[i] = (short)(buffer[i] * Int16.MaxValue);
                 }
                 else if (sampleFormat == PaSampleFormat.PaInt24)
                 {
@@ -219,7 +207,7 @@ namespace PortAudioWrapper
                 }
                 else if (sampleFormat == PaSampleFormat.PaInt16)
                 {
-                    buffer[i] = (double)((short*)inputBuffer)[i] / short.MaxValue;                      
+                    buffer[i] = (double)((short*)inputBuffer)[i] / short.MaxValue;
                 }
                 else if (sampleFormat == PaSampleFormat.PaInt24)
                 {
@@ -227,7 +215,7 @@ namespace PortAudioWrapper
                     (double)(
                      (inputBuffer[i * 3 + 0] << 8) |
                      (inputBuffer[i * 3 + 1] << 16) |
-                     (inputBuffer[i * 3 + 2] << 24)) / int.MaxValue;                                       
+                     (inputBuffer[i * 3 + 2] << 24)) / int.MaxValue;
                 }
             }
         }
@@ -267,7 +255,9 @@ namespace PortAudioWrapper
 
                 _callbackReadProcessed = false;
                 _callbackWriteProcessed = false;
-                _callbackWaitHandle.Set();
+                //_callbackWaitHandle.Set();
+                _pending = true;
+
 
                 return (int)PaStreamCallbackResult.PaContinue;
             }

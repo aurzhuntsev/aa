@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AudioMark.Core.Common
+namespace AudioMark.Core.Fft
 {
     [Serializable]
     public class Spectrum
@@ -33,7 +33,7 @@ namespace AudioMark.Core.Common
         private object _sync = new object();
 
         private StatisticsItem[] _statistics;
-        private StatisticsItem[] _correctedStatistics;        
+        private StatisticsItem[] _correctedStatistics;
         private Spectrum _correctionProfile;
 
         [NonSerialized]
@@ -65,11 +65,7 @@ namespace AudioMark.Core.Common
             Size = size;
             MaxFrequency = maxFrequency;
 
-            _statistics = new StatisticsItem[Size];            
-            for (var i = 0; i < size; i++)
-            {
-                _statistics[i] = new StatisticsItem();                
-            }
+            Reset();
         }
 
         public void Set(double[] values)
@@ -189,34 +185,37 @@ namespace AudioMark.Core.Common
         {
             return GetFrequencyIndices(frequency, windowHalfSize).Select(i => Statistics[i]);
         }
-        
-        public double RssAtFrequency(double frequency, Func<StatisticsItem, double> selector, int windowHalfSize = 0)
+
+        public double ValueAtFrequency(double frequency, Func<StatisticsItem, double> selector, int windowHalfSize = 0)
         {
-            if (windowHalfSize == 0)
-            {
-                return GetFrequencyIndices(frequency, windowHalfSize)
-                    .Select(x => selector(Statistics[x]))
-                    .First();
-            }
-            return Math.Sqrt(
-                GetFrequencyIndices(frequency, windowHalfSize)
-                    .Select(x => selector(Statistics[x]) * selector(Statistics[x]))
-                    .Sum()
-                );
+            return AtFrequency(frequency, windowHalfSize).Sum(i => selector(i));
         }
 
         public Func<StatisticsItem, double> GetDefaultValueSelector()
         {
             if (DefaultValue == DefaultValueType.Last)
             {
-                return s => s.LastValue;
+                return s => s != null ? s.LastValue : 0.0;
             }
             else if (DefaultValue == DefaultValueType.Mean)
             {
-                return s => s.Mean;
+                return s => s != null ? s.Mean : 0.0;
             }
 
             throw new Exception();
+        }
+
+        public void Reset()
+        {
+            _statistics = new StatisticsItem[Size];
+            for (var i = 0; i < Size; i++)
+            {
+                _statistics[i] = new StatisticsItem();
+            }
+
+            _correctedStatistics = null;
+
+            Count = 0;
         }
     }
 }

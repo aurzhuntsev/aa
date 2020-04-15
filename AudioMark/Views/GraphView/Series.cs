@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,9 +1,12 @@
 ﻿using AudioMark.Common;
+using AudioMark.Core.Common;
 using AudioMark.Core.Settings;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace AudioMark.ViewModels.Settings
@@ -11,9 +14,27 @@ namespace AudioMark.ViewModels.Settings
     public class FftSettingsViewModel : ViewModelBase
     {
         const double LowWindowSizePowMultiplier = (1.0 / 8.0);
-        const double HighWindowSizePowMultiplier = 2.0;
+        const double HighWindowSizePowMultiplier = 4.0;
 
-        public ObservableCollection<int> WindowSizesList { get; private set; }
+        public List<string> WindowFunctionsList { get; private set; }
+        public string WindowFunction
+        {
+            get
+            {
+                return typeof(WindowFunctions).GetFields(BindingFlags.Public | BindingFlags.Static)
+                    .First(f => f.Name == AppSettings.Current.Fft.WindowFunction.ToString())
+                    .GetCustomAttributes(typeof(StringAttribute)).Cast<StringAttribute>().First().Value;
+            }
+            set
+            {
+                var field = typeof(WindowFunctions).GetFields(BindingFlags.Public | BindingFlags.Static)
+                .First(f => (f.GetCustomAttributes(typeof(StringAttribute), false).First() as StringAttribute).Value == value);
+
+                AppSettings.Current.Fft.WindowFunction = (WindowFunctions)field.GetValue(null);
+            }
+        }
+       
+        public List<int> WindowSizesList { get; private set; }
         public int WindowSize
         {
             get => AppSettings.Current.Fft.WindowSize;
@@ -51,15 +72,21 @@ namespace AudioMark.ViewModels.Settings
         public FftSettingsViewModel()
         {
             UpdateWindowSizesList();
+            
+            WindowFunctionsList = typeof(WindowFunctions).GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Select(f => (f.GetCustomAttributes(typeof(StringAttribute), false).First() as StringAttribute).Value)
+                .ToList();
+
         }
 
         public void UpdateWindowSizesList()
         {
-            WindowSizesList = new ObservableCollection<int>();
+            WindowSizesList = new List<int>();
             for (var k = LowWindowSizePowMultiplier; k <= HighWindowSizePowMultiplier; k *= 2)
             {
                 WindowSizesList.Add((int)(AppSettings.Current.Device.SampleRate * k));
             }
+            
             this.RaisePropertyChanged(nameof(WindowSizesList));
 
             if (!WindowSizesList.Contains(AppSettings.Current.Fft.WindowSize))

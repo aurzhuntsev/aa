@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Analysis;
 using AudioMark.Core.Measurements.Settings.Common;
 using System;
@@ -25,9 +26,9 @@ namespace AudioMark.Core.Measurements.Common
         Spectrum Result { get; }
         IAnalysisResult AnalysisResult { get; }        
         
-        event EventHandler<Spectrum> OnDataUpdate;        
-        event EventHandler<bool> OnComplete;
-        event EventHandler<Exception> OnError;
+        event EventHandler<Spectrum> DataUpdate;        
+        event EventHandler<bool> Complete;
+        event EventHandler<Exception> Error;
 
         Task Run();
         void Stop();

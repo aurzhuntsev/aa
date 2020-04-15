@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements;
 using AudioMark.Core.Measurements.StopConditions;
 using MathNet.Numerics.Distributions;

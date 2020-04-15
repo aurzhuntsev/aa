@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements.Settings.Common
 {
-    public interface IMeasurementSettings
+    public interface IMeasurementSettings : IGlobalOptions
     {
     }
 }

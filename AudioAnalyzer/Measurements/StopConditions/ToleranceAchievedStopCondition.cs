@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Settings.Common;
 using AudioMark.Core.Settings;
 using System;
@@ -25,6 +26,6 @@ namespace AudioMark.Core.Measurements.Settings
         public bool ApplyCorrectionProfile { get; set; }
 
         public OverridableSettings<AudioMark.Core.Settings.StopConditions> StopConditions { get; } = new OverridableSettings<AudioMark.Core.Settings.StopConditions>(AppSettings.Current.StopConditions);
-        public OverridableSettings<Fft> Fft { get; } = new OverridableSettings<Fft>(AppSettings.Current.Fft);
+        public OverridableSettings<AudioMark.Core.Settings.Fft> Fft { get; } = new OverridableSettings<AudioMark.Core.Settings.Fft>(AppSettings.Current.Fft);
     }
 }

@@ -4,20 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AudioMark.Views.Settings.FftSettingsView">
-  <Grid ColumnDefinitions="2*,2*,16" RowDefinitions="*,*,*">
-    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="0">Window size:</TextBlock>
+  <Grid ColumnDefinitions="2*,2*,16" RowDefinitions="*, *,*,*">
+
+    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="0">Window function:</TextBlock>
     <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-      <ComboBox Classes="Inline" Width="52" Items="{Binding WindowSizesList}" SelectedItem="{Binding WindowSize}" />
+      <ComboBox Classes="Inline" Width="100" Items="{Binding WindowFunctionsList}" SelectedItem="{Binding WindowFunction}" />
+    </StackPanel>
+    
+    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="1">Window size:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+      <ComboBox Classes="Inline" Width="100" Items="{Binding WindowSizesList}" SelectedItem="{Binding WindowSize}" />
     </StackPanel>
 
-    <TextBlock Classes="Inline Mb" Grid.Column="0" Grid.Row="1">Frequency resolution:</TextBlock>
-    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+    <TextBlock Classes="Inline Mb" Grid.Column="0" Grid.Row="2">Frequency resolution:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
       <TextBlock Classes="Inline Mr" Text="{Binding FrequencyResolution}"></TextBlock>
       <TextBlock Classes="Inline">Hz per bin</TextBlock>
     </StackPanel>
 
-    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="2">Window overlap:</TextBlock>
-    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+    <TextBlock Classes="Inline" Grid.Column="0" Grid.Row="3">Window overlap:</TextBlock>
+    <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
       <TextBox Classes="Inline Mr" Width="52" Text="{Binding WindowOverlapFactorPercentage}" />
       <TextBlock Classes="Inline">%</TextBlock>
     </StackPanel>

@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

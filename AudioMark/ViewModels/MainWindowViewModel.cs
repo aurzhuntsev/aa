@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AudioMark.Core.Measurements.Common;
+using AudioMark.Core.Fft;
 
 namespace AudioMark.ViewModels
 {

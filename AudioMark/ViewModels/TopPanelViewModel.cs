@@ -42,7 +42,7 @@ namespace AudioMark.ViewModels
 
         public string CurrentActivity
         {
-            get => $"{_activeMeasurement?.CurrentActivityDescription} [{_activeMeasurement?.CurrentActivityIndex + 1}/{_activeMeasurement.ActivitiesCount}]";
+            get => $"{_activeMeasurement?.CurrentActivityDescription} [{_activeMeasurement?.CurrentActivityIndex + 1}/{_activeMeasurement?.ActivitiesCount}]";
         }
 
         public string Remaining
@@ -104,11 +104,13 @@ namespace AudioMark.ViewModels
 
         private void RaisePropertiesChanged()
         {
-            this.RaisePropertyChanged(nameof(SeriesIndex));
-            this.RaisePropertyChanged(nameof(Name));            
-            this.RaisePropertyChanged(nameof(CurrentActivity));
-            this.RaisePropertyChanged(nameof(Remaining));
-            this.RaisePropertyChanged(nameof(Elapsed));
+            Dispatcher.UIThread.Post(() => {
+                this.RaisePropertyChanged(nameof(SeriesIndex));
+                this.RaisePropertyChanged(nameof(Name));
+                this.RaisePropertyChanged(nameof(CurrentActivity));
+                this.RaisePropertyChanged(nameof(Remaining));
+                this.RaisePropertyChanged(nameof(Elapsed));
+            });
         }
     }
 }

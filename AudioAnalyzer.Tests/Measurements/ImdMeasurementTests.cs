@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Analysis;
 using AudioMark.Core.Measurements.Settings;
 using AudioMark.Core.Settings;

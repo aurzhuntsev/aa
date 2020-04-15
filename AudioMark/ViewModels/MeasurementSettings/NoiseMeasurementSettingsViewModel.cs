@@ -20,24 +20,6 @@ namespace AudioMark.ViewModels.MeasurementSettings
             get => (NoiseMeasurementSettings)Settings;
         }
 
-        private bool _isCompleted;
-        public override bool IsCompleted
-        {
-            get => _isCompleted;
-            set => this.RaiseAndSetIfChanged(ref _isCompleted, value);
-        }
-
-        private IMeasurement _measurement;
-        public override IMeasurement Measurement
-        {
-            get => _measurement;
-            set
-            {
-                _measurement = value;
-                CorrectionProfile.Target = _measurement.Result;
-            }
-        }
-
         public bool GenerateDummySignal
         {
             get => Model.GenerateDummySignal;
@@ -76,17 +58,8 @@ namespace AudioMark.ViewModels.MeasurementSettings
             }
         }
 
-        public CorrectionProfileViewModel CorrectionProfile { get; }
-        public StopConditionsViewModel StopConditions { get; }
-
-        public NoiseMeasurementSettingsViewModel(NoiseMeasurementSettings settings) : base()
-        {
-            Settings = settings;
-
-            CorrectionProfile = new CorrectionProfileViewModel(Model);
-            CorrectionProfile.WhenChanged.Subscribe(_ => _whenAnalysisOptionsChanged.OnNext(this));
-
-            StopConditions = new StopConditionsViewModel(Model);
+        public NoiseMeasurementSettingsViewModel(NoiseMeasurementSettings settings) : base(settings)
+        {            
         }
     }
 }

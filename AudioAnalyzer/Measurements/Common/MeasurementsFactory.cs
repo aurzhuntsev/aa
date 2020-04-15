@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Analysis;
 using AudioMark.Core.Measurements.Settings;
 using AudioMark.Core.Measurements.Settings.Common;
@@ -148,9 +149,12 @@ namespace AudioMark.Core.Measurements.Common
         {
             Register<NoiseMeasurement, NoiseMeasurementSettings, NoiseAnalysisResult, Spectrum>();
             Register<ThdMeasurement, ThdMeasurementSettings, ThdAnalysisResult, Spectrum>();
+            
             Register<ImdModMeasurement, ImdModMeasurementSettings, ImdAnalysisResult, Spectrum>();
             Register<ImdDfdMeasurement, ImdDfdMeasurementSettings, ImdAnalysisResult, Spectrum>();
-            
+
+            Register<FrequencyResponseMeasurement, FrequencyResponseMeasurementSettings, FrequencyResponseAnalysisResult, Spectrum>();
+
             /* TODO: Do I need to apply non-rectangular FFT window for that one to work? */
             //Register<ImdDinMeasurement, ImdDinMeasurementSettings, ImdAnalysisResult, Spectrum>();
         }

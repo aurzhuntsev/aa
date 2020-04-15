@@ -4,7 +4,7 @@ using AudioMark.Core.Settings;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using AudioMark.Core.Fft;
 namespace AudioMark.Core.Measurements.Settings
 {
     public class ImdDfdMeasurementSettings : IGlobalOptions, ICorrectionProfile, IWarmable, IImdSettings
@@ -28,10 +28,12 @@ namespace AudioMark.Core.Measurements.Settings
         public double MaxFrequency { get; set; } = 20000.0;
 
         public OverridableSettings<AudioMark.Core.Settings.StopConditions> StopConditions { get; } = new OverridableSettings<AudioMark.Core.Settings.StopConditions>(AppSettings.Current.StopConditions);
-        public OverridableSettings<Fft> Fft { get; } = new OverridableSettings<Fft>(AppSettings.Current.Fft);
+        public OverridableSettings<AudioMark.Core.Settings.Fft> Fft { get; } = new OverridableSettings<AudioMark.Core.Settings.Fft>(AppSettings.Current.Fft);
 
         public double F1Frequency => Math.Max(0, TestSignalOptions.Frequency - FrequencyDifference * 0.5);
         public double F2Frequency => TestSignalOptions.Frequency + FrequencyDifference * 0.5;
+
+        public double SignalDetectionThresholdDb { get; set; } = -30.0;
 
         public ImdDfdMeasurementSettings()
         {

@@ -11,9 +11,6 @@ namespace AudioMark.Core.Measurements.Analysis
         [AnalysisResultField("Bandwidth, hz")]
         public double Bandwidth { get; set; }
 
-        [AnalysisResultField("Noise power, dB")]
-        public double NoisePowerDbFs { get; set; }
-
         [AnalysisResultField("Average level, dB")]
         public double AverageLevelDbTp { get; set; }
     }

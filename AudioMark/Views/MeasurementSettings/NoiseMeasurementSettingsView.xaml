@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:vs="clr-namespace:AudioMark.Views.Settings;assembly=AudioMark"
              xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AudioMark.Views.MeasurementSettings.NoiseMeasurementSettingsView">
@@ -63,15 +64,7 @@
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 
-    <cc:PropertySection Expanded="true">
-      <cc:PropertySection.Title>
-        <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
-      </cc:PropertySection.Title>
-      <cc:PropertySection.Properties>
-        <vmc:StopConditionsView DataContext="{Binding StopConditions}" />
-      </cc:PropertySection.Properties>
-    </cc:PropertySection>
-
+    <vmc:GlobalOptionsView DataContext="{Binding .}" />
 
   </StackPanel>
 

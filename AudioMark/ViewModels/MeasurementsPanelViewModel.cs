@@ -15,6 +15,9 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using AudioMark.Core.Measurements.Common;
+using AudioMark.Common;
+using Avalonia.Threading;
+using AudioMark.Core.Fft;
 
 namespace AudioMark.ViewModels
 {
@@ -143,20 +146,25 @@ namespace AudioMark.ViewModels
                 }
 
                 Measurement = MeasurementsFactory.Create(Items[SelectedIndex], Content.Settings);
-                Measurement.OnComplete += (sender, success) =>
+                Measurement.Complete += (sender, success) =>
                 {
                     Running = false;                    
 
                     _whenRunningStatusChanged.OnNext(success);
                 };
 
-                Measurement.OnError += (sender, e) =>
+                Measurement.Error += (sender, e) =>
                 {
                     Running = false;
                     _whenRunningStatusChanged.OnNext(false);
+
+                    Dispatcher.UIThread.Post(async () =>
+                    {
+                        await Interactions.Error.Handle(e);
+                    });
                 };
 
-                Measurement.OnDataUpdate += (sender, data) =>
+                Measurement.DataUpdate += (sender, data) =>
                 {
                     _whenDataUpdated.OnNext(data as Spectrum);
                 };

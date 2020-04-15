@@ -26,8 +26,10 @@
     <AvaloniaResource Remove="Views\Common\Input.xaml" />
     <AvaloniaResource Remove="Views\GraphView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\Common\GlobalOptionsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
+    <AvaloniaResource Remove="Views\MeasurementSettings\FrequencyResponseMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ImdDfdMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml" />
     <AvaloniaResource Remove="Views\MeasurementSettings\ImdModMeasurementSettingsView.xaml" />
@@ -41,6 +43,7 @@
     <AvaloniaResource Remove="Views\Settings\DeviceSettingsView.xaml" />
     <AvaloniaResource Remove="Views\Settings\DevicesSettingsView.xaml" />
     <AvaloniaResource Remove="Views\Settings\FftSettingsView.xaml" />
+    <AvaloniaResource Remove="Views\Settings\StopConditionsView.xaml" />
     <AvaloniaResource Remove="Views\TopPanelView.xaml" />
     <None Remove="Controls\NumberBox.xaml" />
     <None Remove="Controls\PropertySection.xaml" />
@@ -53,8 +56,10 @@
     <None Remove="Views\Common\Input.xaml" />
     <None Remove="Views\GraphView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\CorrectionProfileView.xaml" />
+    <None Remove="Views\MeasurementSettings\Common\GlobalOptionsView.xaml" />
     <None Remove="Views\MeasurementSettings\Common\LevelMeter.xaml" />
     <None Remove="Views\MeasurementSettings\Common\StopConditionsView.xaml" />
+    <None Remove="Views\MeasurementSettings\FrequencyResponseMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\ImdDfdMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml" />
     <None Remove="Views\MeasurementSettings\ImdModMeasurementSettingsView.xaml" />
@@ -68,6 +73,7 @@
     <None Remove="Views\Settings\DeviceSettingsView.xaml" />
     <None Remove="Views\Settings\DevicesSettingsView.xaml" />
     <None Remove="Views\Settings\FftSettingsView.xaml" />
+    <None Remove="Views\Settings\StopConditionsView.xaml" />
     <None Remove="Views\TopPanelView.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -158,11 +164,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MeasurementSettings\Common\StopConditionsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\MeasurementSettings\NoiseMeasurementSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -198,6 +199,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\Settings\StopConditionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\Common\GlobalOptionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MeasurementSettings\FrequencyResponseMeasurementSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AudioAnalyzer\AudioMark.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +225,9 @@
     </Compile>
     <Compile Update="Views\Common\Input.xaml.cs">
       <DependentUpon>Input.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MeasurementSettings\FrequencyResponseMeasurementSettingsView.xaml.cs">
+      <DependentUpon>FrequencyResponseMeasurementSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MeasurementSettings\ImdDinMeasurementSettingsView.xaml.cs">
       <DependentUpon>ImdDinMeasurementSettingsView.xaml</DependentUpon>

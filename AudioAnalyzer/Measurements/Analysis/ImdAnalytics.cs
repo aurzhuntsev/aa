@@ -1,4 +1,5 @@
 ﻿using AudioMark.Core.Common;
+using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Settings;
 using AudioMark.Core.Measurements.Settings.Common;
 using System;
@@ -26,8 +27,8 @@ namespace AudioMark.Core.Measurements.Analysis
             var f2 = imdSettings.F2Frequency;
             var f1i = data.GetFrequencyIndices(f1, imdSettings.WindowHalfSize);
             var f2i = data.GetFrequencyIndices(f2, imdSettings.WindowHalfSize);
-            var f1rss = data.RssAtFrequency(f1, x => x.Mean, imdSettings.WindowHalfSize);
-            var f2rss = data.RssAtFrequency(f2, x => x.Mean, imdSettings.WindowHalfSize);
+            var f1rss = data.ValueAtFrequency(f1, x => x.Mean, imdSettings.WindowHalfSize);
+            var f2rss = data.ValueAtFrequency(f2, x => x.Mean, imdSettings.WindowHalfSize);
 
             /* Total IMD+Noise is full bandwidth except F1 and F2 frequencies */
             double totalImd = 0.0;
@@ -63,7 +64,7 @@ namespace AudioMark.Core.Measurements.Analysis
                     var f = n * f1 + m * f2;
                     if (f > 0 && f < maxFrequency)
                     {
-                        var imd = data.RssAtFrequency(f, x => x.Mean, imdSettings.WindowHalfSize);
+                        var imd = data.ValueAtFrequency(f, x => x.Mean, imdSettings.WindowHalfSize);
                         if (!orders.ContainsKey(o))
                         {
                             orders.Add(o, imd);

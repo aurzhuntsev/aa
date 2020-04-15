@@ -13,6 +13,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using AudioMark.Core.Measurements.Common;
+using AudioMark.Core.Fft;
 
 namespace AudioMark.ViewModels.MeasurementSettings.Common
 {

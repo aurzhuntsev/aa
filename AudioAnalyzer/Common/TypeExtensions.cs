@@ -16,6 +16,6 @@ namespace AudioMark.Core.Common
             }
 
             return ((StringAttribute)attribute).Value;
-        }
+        }        
     }
 }

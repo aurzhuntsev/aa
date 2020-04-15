@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cc="clr-namespace:AudioMark.Controls"
              xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
+             xmlns:vs="clr-namespace:AudioMark.Views.Settings;assembly=AudioMark"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AudioMark.Views.MeasurementSettings.ImdModMeasurementSettingsView">
   <StackPanel Orientation="Vertical">
@@ -124,7 +125,7 @@
         <TextBlock Classes="PropertyTitle">Stop conditions</TextBlock>
       </cc:PropertySection.Title>
       <cc:PropertySection.Properties>
-        <vmc:StopConditionsView DataContext="{Binding StopConditions}" />
+        <vs:StopConditionsView DataContext="{Binding StopConditions}" />
       </cc:PropertySection.Properties>
     </cc:PropertySection>
 

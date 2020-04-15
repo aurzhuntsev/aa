@@ -15,6 +15,7 @@ using AudioMark.Core.Measurements.Settings;
 using AudioMark.Core.Measurements.Analysis;
 using AudioMark.Core.Measurements.Common;
 using AudioMark.Core.Measurements.StopConditions;
+using AudioMark.Core.Fft;
 
 namespace AudioMark.Core.Measurements
 {

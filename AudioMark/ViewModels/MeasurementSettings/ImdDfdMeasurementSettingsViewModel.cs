@@ -20,24 +20,6 @@ namespace AudioMark.ViewModels.MeasurementSettings
             get => (ImdDfdMeasurementSettings)Settings;
         }
 
-        private bool _isCompleted;
-        public override bool IsCompleted
-        {
-            get => _isCompleted;
-            set => this.RaiseAndSetIfChanged(ref _isCompleted, value);
-        }
-
-        private IMeasurement _measurement;
-        public override IMeasurement Measurement
-        {
-            get => _measurement;
-            set
-            {
-                _measurement = value;
-                CorrectionProfile.Target = _measurement.Result;
-            }
-        }
-
         #region Test signal options
         public double TestSignalFrequency
         {
@@ -61,9 +43,7 @@ namespace AudioMark.ViewModels.MeasurementSettings
         {
             get => new InputOutputLevelViewModel(Model.TestSignalOptions.InputOutputOptions);
         }
-        #endregion
-
-        #region Warmup signal options
+        
         public bool WarmUpEnabled
         {
             get => Model.WarmUpEnabled;
@@ -79,14 +59,6 @@ namespace AudioMark.ViewModels.MeasurementSettings
             set => this.RaiseAndSetIfPropertyChanged(() => Model.WarmUpDurationSeconds, value);
         }
 
-        
-        #endregion
-
-        #region Stop conditions options
-
-       
-        public CorrectionProfileViewModel CorrectionProfile { get; }
-        
         public int HarmonicDetectionWindow
         {
             get => Model.WindowHalfSize;
@@ -127,17 +99,9 @@ namespace AudioMark.ViewModels.MeasurementSettings
             }
         }
 
-        public StopConditionsViewModel StopConditions { get; }
-
         #endregion
-        public ImdDfdMeasurementSettingsViewModel(ImdDfdMeasurementSettings settings) : base()
-        {
-            Settings = settings;
-
-            CorrectionProfile = new CorrectionProfileViewModel(Model);
-            CorrectionProfile.WhenChanged.Subscribe(_ => _whenAnalysisOptionsChanged.OnNext(this));
-
-            StopConditions = new StopConditionsViewModel(Model);
+        public ImdDfdMeasurementSettingsViewModel(ImdDfdMeasurementSettings settings) : base(settings)
+        {            
         }
     }
 }
