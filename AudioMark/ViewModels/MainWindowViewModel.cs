@@ -100,6 +100,7 @@ namespace AudioMark.ViewModels
                         });                        
                         Dispatcher.UIThread.Post(() =>
                         {
+                            Measurements.Measurement.Update();
                             Session.AddMeasurement(Measurements.Measurement, _storedMeasurements.Count - 1);
                         });
 
@@ -201,10 +202,10 @@ namespace AudioMark.ViewModels
                      };
                 this.RaisePropertyChanged(nameof(ActiveSeries));
             }
-            else
-            {
+            //else
+            //{
                 this.RaisePropertyChanged(nameof(Series));
-            }
+            //}
         }
 
         private void HideAllPanels()

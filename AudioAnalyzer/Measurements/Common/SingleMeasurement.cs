@@ -145,8 +145,6 @@ namespace AudioMark.Core.Measurements.Common
 
         protected override bool CheckSignalPresent(Spectrum data)
         {
-            return true;
-
             if (Settings is ITestSignal testSignal)
             {
                 var signalValue = -data.ValueAtFrequency(testSignal.TestSignalOptions.Frequency, x => x.LastValue, testSignal.WindowHalfSize).ToDbTp();
@@ -246,35 +244,39 @@ namespace AudioMark.Core.Measurements.Common
             if (!allInputSingnalsPresent)
             {
                 var expectedLoopbackDelay = Math.Max(
-                    4.0 * (AppSettings.Current.Device.InputDevice.LatencyMilliseconds + AppSettings.Current.Device.OutputDevice.LatencyMilliseconds),
+                    (AppSettings.Current.Device.InputDevice.LatencyMilliseconds + AppSettings.Current.Device.OutputDevice.LatencyMilliseconds),
                     2.0 * 1000.0 * Settings.Fft.Value.WindowSize / AppSettings.Current.Device.SampleRate
                 );
 
                 if (Elapsed.TotalMilliseconds > expectedLoopbackDelay)
                 {
-                    var channels = _testSignalPresentMap.Where(m => m.Value == false).Select(m => m.Key.ToString()).OrderBy(k => k);
+                    var channel = Sinks.First(s => s.Value == sink).Key;
+                    _testSignalPresentMap[channel] = CheckSignalPresent(sink.Data);
 
-                    var message = $"No test signal detected in channels {channels.Aggregate((a, b) => (a + ", " + b))}.";
-                    OnError(new Exception(message));
-                    Stop(true);
+                    if (!_testSignalPresentMap[channel])
+                    {
+                        var channels = _testSignalPresentMap.Where(m => m.Value == false).Select(m => m.Key.ToString()).OrderBy(k => k);
 
-                    return;
-                }
+                        var message = $"No test signal detected in channels {channels.Aggregate((a, b) => (a + ", " + b))}.";
+                        OnError(new Exception(message));
+                        Stop(true);
 
-                var channel = Sinks.First(s => s.Value == sink).Key;
-                _testSignalPresentMap[channel] = CheckSignalPresent(sink.Data);
+                        return;
+                    }
 
-                _inputSignalReceivedAt = DateTime.Now;
-                if (Settings is IWarmable warmable)
-                {
-                    _phase = Phase.WarmUp;
-                }
-                else
-                {
-                    _phase = Phase.Gathering;
-                }
 
-                sink.Data.Reset();
+                    _inputSignalReceivedAt = DateTime.Now;
+                    if (Settings is IWarmable warmable)
+                    {
+                        _phase = Phase.WarmUp;
+                    }
+                    else
+                    {
+                        SetGatheringPhase(sink);
+                    }
+
+                    sink.Data.Reset();
+                }                
             }
         }
 
@@ -288,12 +290,17 @@ namespace AudioMark.Core.Measurements.Common
             var warmUpDurationSeconds = warmable.WarmUpEnabled ? warmable.WarmUpDurationSeconds : 0;
             if (DateTime.Now.Subtract(_inputSignalReceivedAt).Duration().TotalSeconds >= warmUpDurationSeconds)
             {
-                SetStopConditions();
-                _phase = Phase.Gathering;
-
-                sink.Data.Reset();
-                sink.Data.DefaultValue = Spectrum.DefaultValueType.Mean;
+                SetGatheringPhase(sink);
             }
+        }
+
+        private void SetGatheringPhase(SpectrumProcessor sink)
+        {
+            SetStopConditions();
+            sink.Data.Reset();
+            sink.Data.DefaultValue = Spectrum.DefaultValueType.Mean;
+
+            _phase = Phase.Gathering;
         }
 
         private void ProcessGathering(SpectrumProcessor sink)

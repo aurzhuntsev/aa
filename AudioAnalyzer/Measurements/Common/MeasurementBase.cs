@@ -43,7 +43,7 @@ namespace AudioMark.Core.Measurements.Common
         }
 
         public string Name { get; set; }
-        public virtual Spectrum Result { get; }
+        public virtual Spectrum Result { get; protected set; }
 
         public IMeasurementSettings Settings { get; private set; }
         public IAnalysisResult AnalysisResult { get; protected set; }
@@ -94,7 +94,8 @@ namespace AudioMark.Core.Measurements.Common
                 StopInternal(interrupted);
 
                 _running = false;
-                _completionSource.SetResult(interrupted);
+                
+                _completionSource.TrySetResult(interrupted);
 
                 Complete?.Invoke(this, !interrupted);
             }

@@ -1,4 +1,5 @@
-﻿using AudioMark.Core.Measurements.Analysis;
+﻿using AudioMark.Core.Common;
+using AudioMark.Core.Measurements.Analysis;
 using AudioMark.Core.Measurements.Common;
 using AudioMark.Core.Measurements.Settings;
 using AudioMark.Core.Measurements.Settings.Common;
@@ -31,24 +32,54 @@ namespace AudioMark.Core.Measurements
 
             foreach (var freq in frequencies)
             {
-                var measurement = new FrequencyMeasurement(
-                    new FrequencyMeasurementSettings()
-                    {
-                        TestSignalOptions = new SignalSettings()
-                        {
-                            Frequency = freq,
-                            InputOutputOptions = new InputOutputLevel()
-                            {
-                                OutputLevel = Settings.TestSignalOptions.InputOutputOptions.OutputLevel
-                            }
-                        }
-                    });
+                var measurement = new FrequencyMeasurement(GetFrequencyMeasurementSettings(freq));
                 yield return measurement;
             }
         }
 
-        protected override void OnMeasurementComplete(SingleMeasurement measurement)
-        {            
+        private FrequencyMeasurementSettings GetFrequencyMeasurementSettings(double frequency)
+        {
+            return new FrequencyMeasurementSettings()
+            {
+                TestSignalOptions = new SignalSettings()
+                {
+                    Frequency = frequency,
+                    InputOutputOptions = new InputOutputLevel()
+                    {
+                        OutputLevel = Settings.TestSignalOptions.InputOutputOptions.OutputLevel
+                    }
+                },
+                WindowHalfSize = Settings.WindowHalfSize
+            };
+        }
+
+        public override void Update()
+        {
+            var previousFrequency = 0.0;
+            for (var i = 0; i < Measurements.Length; i++)
+            {
+                var measurement = Measurements[i];
+                var measurementSettings = measurement.Settings as FrequencyMeasurementSettings;          
+
+                measurementSettings.WindowHalfSize = Settings.WindowHalfSize;
+
+                measurement.Update();
+                var measurementResult = measurement.AnalysisResult as FrequencyAnalysisResult;
+
+                Result.SetAtFrequency(measurementSettings.TestSignalOptions.Frequency,
+                                      (-measurementResult.FrequencyValueDb).FromDbTp(),
+                                      x => x.Mean);
+                if (i > 0)
+                {
+                    Result.Interpolate(previousFrequency, measurementSettings.TestSignalOptions.Frequency, x => x.Mean);
+                }
+
+                previousFrequency = measurementSettings.TestSignalOptions.Frequency;
+            }
+
+            AnalysisResult = (new FrequencyResponseAnalytics()).Analyze(Result, Settings);
+
+            OnDataUpdate(Result);
         }
     }
 }

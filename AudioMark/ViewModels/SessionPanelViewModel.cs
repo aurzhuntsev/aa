@@ -51,7 +51,9 @@ namespace AudioMark.ViewModels
 
         public SessionItemViewModel AddMeasurement(IMeasurement measurement, int index)
         {
+            measurement.Update();
             var itemViewModel = new SessionItemViewModel(measurement) { SeriesIndex = index };
+
             itemViewModel.WhenRemoved.Subscribe(async item =>
             {
                 var result = await Interactions.Confirm.Handle("Do you really want to delete this measurement?");

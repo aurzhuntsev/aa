@@ -8,7 +8,7 @@ namespace AudioMark.Core.Measurements.Settings.Common
     {
         public static IEnumerable<double> GetFrequencies(this IRangeMeasurementSettings source)
         {
-            if (source.DistributionMode == DistributionMode.List)
+            if (source.DistributionMode == DistributionModes.List)
             {
                 foreach (var f in source.Frequencies)
                 {
@@ -23,7 +23,7 @@ namespace AudioMark.Core.Measurements.Settings.Common
 
             yield return source.LowFrequency;
 
-            if (source.DistributionMode == DistributionMode.Linear)
+            if (source.DistributionMode == DistributionModes.Linear)
             {
                 var step = (source.HighFrequency - source.LowFrequency) / (source.Points - 1);
                 
@@ -38,7 +38,7 @@ namespace AudioMark.Core.Measurements.Settings.Common
                     yield return value;
                 }                
             }
-            else if (source.DistributionMode == DistributionMode.Logarithmic)
+            else if (source.DistributionMode == DistributionModes.Logarithmic)
             {
                 var step = (Math.Log10(source.HighFrequency - source.LowFrequency)) / (source.Points - 1);
                 var previousValue = source.LowFrequency; 

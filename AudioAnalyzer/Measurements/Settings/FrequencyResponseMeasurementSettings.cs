@@ -9,10 +9,10 @@ namespace AudioMark.Core.Measurements.Settings
 {
     public class FrequencyResponseMeasurementSettings : IRangeMeasurementSettings, ICorrectionProfile, ITestSignal
     {
-        public double LowFrequency { get; set; } = 2000.0;
+        public double LowFrequency { get; set; } = 20.0;
         public double HighFrequency { get; set; } = 20000.0;
         public int Points { get; set; } = 25;
-        public DistributionMode DistributionMode { get; set; } = DistributionMode.Linear;
+        public DistributionModes DistributionMode { get; set; } = DistributionModes.Linear;
 
         public string CorrectionProfileName { get; set; }
         public Spectrum CorrectionProfile { get; set; }

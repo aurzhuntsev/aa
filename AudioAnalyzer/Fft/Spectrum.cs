@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace AudioMark.Core.Fft
@@ -216,6 +218,36 @@ namespace AudioMark.Core.Fft
             _correctedStatistics = null;
 
             Count = 0;
+        }
+
+        public void SetAtFrequency(double frequency, double value, Expression<Func<StatisticsItem, double>> selector)
+        {            
+            var index = GetFrequencyIndices(frequency, 0).First();
+            SetAtIndex(index, value, selector);  
+        }
+
+        private void SetAtIndex(int index, double value, Expression<Func<StatisticsItem, double>> selector)
+        {
+            var prop = (PropertyInfo)((MemberExpression)selector.Body).Member;
+            prop.SetValue(Statistics[index], value);
+        }
+
+        public void Interpolate(double startFrequency, double endFrequency, Expression<Func<StatisticsItem, double>> selector)
+        {
+            var startIndex = GetFrequencyIndices(startFrequency, 0).First();
+            var endIndex = GetFrequencyIndices(endFrequency, 0).First();
+            var l = selector.Compile();
+
+            var v0 = l(Statistics[startIndex]);
+            var v1 = l(Statistics[endIndex]);
+
+            var k = (v1 - v0) / (endIndex - startIndex);
+
+            for (var i = startIndex + 1; i < endIndex - 1; i++)
+            {
+                var v = v0 + k * (i - startIndex);
+                SetAtIndex(i, v, selector);
+            }
         }
     }
 }

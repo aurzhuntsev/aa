@@ -5,6 +5,8 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements.Analysis
 {
+    /* TODO: Add noise (and THD?) weighting */
+
     [Serializable]
     public class NoiseAnalysisResult : AnalysisResultBase
     {

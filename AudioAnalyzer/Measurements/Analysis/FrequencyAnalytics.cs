@@ -14,8 +14,7 @@ namespace AudioMark.Core.Measurements.Analysis
             var result = new FrequencyAnalysisResult();
             var frequencySettings = settings as ITestSignal;
 
-            result.FrequencyValueDb = 
-                -data.ValueAtFrequency(frequencySettings.TestSignalOptions.Frequency, x => x.Mean, frequencySettings.WindowHalfSize).ToDbTp();
+            result.FrequencyValueDb = -data.ValueAtFrequency(frequencySettings.TestSignalOptions.Frequency, x => x.Mean, frequencySettings.WindowHalfSize).ToDbTp();
 
             return result;
         }

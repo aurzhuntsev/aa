@@ -102,6 +102,7 @@ namespace AudioMark.Core.AudioData
             OnWrite = writeHandler;
         }
         
+        /* TODO: Use */
         public void SetErrorHandler(EventHandler<Exception> errorHandler)
         {
             if (Running)

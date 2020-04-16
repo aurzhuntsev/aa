@@ -4,9 +4,9 @@ using System.Text;
 
 namespace AudioMark.Core.Measurements.Settings.Common
 {
-    public enum DistributionMode
+    public enum DistributionModes
     {
-        Logarithmic, Linear, List
+        Linear, Logarithmic, List
     }
 
     public interface IRangeMeasurementSettings : IMeasurementSettings
@@ -14,7 +14,7 @@ namespace AudioMark.Core.Measurements.Settings.Common
         public double LowFrequency { get; set; }
         public double HighFrequency { get; set; }
         public int Points { get; set; }
-        public DistributionMode DistributionMode { get; set; }
+        public DistributionModes DistributionMode { get; set; }
         
         public double MinLogStep { get; set; }
         public List<double> Frequencies { get; }

@@ -2,7 +2,88 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cc="clr-namespace:AudioMark.Controls"
+             xmlns:vmc="clr-namespace:AudioMark.Views.MeasurementSettings.Common;assembly=AudioMark"
+             xmlns:vs="clr-namespace:AudioMark.Views.Settings;assembly=AudioMark"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AudioMark.Views.MeasurementSettings.FrequencyResponseMeasurementSettingsView">
-    Welcome to Avalonia!
+  <StackPanel Orientation="Vertical">
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Test signal</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical" IsEnabled="{Binding !IsCompleted}">
+          <vmc:InputOutputLevelView DataContext="{Binding TestSignalInputOutputLevelOptions}" />
+
+          <Grid HorizontalAlignment="Stretch" RowDefinitions="*,*,*,*,*">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.Row="0">Frequency, from:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Width="52" Text="{Binding FrequencyFrom}"/>
+              <TextBlock Classes="Inline Ml">Hz</TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Column="0" Grid.Row="1">Frequency, to:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Width="52" Text="{Binding FrequencyTo}"/>
+              <TextBlock Classes="Inline Ml">Hz</TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Column="0" Grid.Row="2">Distribution mode:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
+              <ComboBox Classes="Inline" Width="80" Items="{Binding DistributionModesList}" SelectedItem="{Binding DistributionMode}"/>
+            </StackPanel>
+
+            <TextBlock Grid.Column="0" Grid.Row="3" IsVisible="{Binding ShowNumberOfPoints}">No. of points:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="3"  IsVisible="{Binding ShowNumberOfPoints}" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Width="52" Text="{Binding NumberOfPoints}"/>
+            </StackPanel>
+
+            <TextBlock Grid.Column="0" Grid.Row="4" IsVisible="{Binding ShowMinLogStep}">Min. step:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="4"  IsVisible="{Binding ShowMinLogStep}" Orientation="Horizontal">
+              <TextBox Classes="Inline" TextAlignment="Right" Width="52" Text="{Binding MinLogStep}"/>
+              <TextBlock Classes="Inline Ml">Hz</TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Column="0" Grid.Row="4" IsVisible="{Binding ShowFrequenciesList}">Frequencies:</TextBlock>
+            <StackPanel Grid.Column="1" Grid.Row="4"  IsVisible="{Binding ShowFrequenciesList}" Orientation="Horizontal">
+              <TextBox Classes="Inline" Width="80" Text="{Binding FrequenciesList}"/>
+            </StackPanel>
+
+          </Grid>
+
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+
+    <cc:PropertySection Expanded="true">
+      <cc:PropertySection.Title>
+        <TextBlock Classes="PropertyTitle">Analysis</TextBlock>
+      </cc:PropertySection.Title>
+      <cc:PropertySection.Properties>
+        <StackPanel Orientation="Vertical">
+          <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="3*" />
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="16" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Classes="Inline" Grid.Column="0">Harmonic detection window:</TextBlock>
+            <StackPanel Grid.Column="1"  Orientation="Horizontal">
+              <cc:NumberBox MinValue="0" Value="{Binding HarmonicDetectionWindow}" Width="64" Classes="Inline Mr" />
+              <TextBlock Classes="Inline">bin(s)</TextBlock>
+            </StackPanel>
+          </Grid>
+
+        </StackPanel>
+      </cc:PropertySection.Properties>
+    </cc:PropertySection>
+  </StackPanel>
 </UserControl>

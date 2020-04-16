@@ -2,6 +2,7 @@
 using AudioMark.Core.Fft;
 using AudioMark.Core.Measurements.Analysis;
 using AudioMark.Core.Measurements.Settings.Common;
+using AudioMark.Core.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +14,16 @@ namespace AudioMark.Core.Measurements.Common
     {
         public override TimeSpan? Remaining => null;
 
-        private SingleMeasurement[] Measurements { get; set; }
+        protected SingleMeasurement[] Measurements { get; set; }
         private int ActiveMeasurementIndex { get; set; }
+
+        private double _previousCompletedFrequency;
 
         public CompositeMeasurement(IMeasurementSettings settings) : base(settings)
         {
         }
 
         internal CompositeMeasurement(IMeasurementSettings settings, IAnalysisResult result) : base(settings, result)
-        {
-        }
-
-        public override void Update()
         {
         }
 
@@ -39,11 +38,20 @@ namespace AudioMark.Core.Measurements.Common
             ActivitiesCount = Measurements.Count();
             ActiveMeasurementIndex = 0;
 
+            Result = new Spectrum(Settings.Fft.Value.WindowSize, AppSettings.Current.Device.SampleRate / 2);
+            Result.DefaultValue = Spectrum.DefaultValueType.Mean;
+
             RunNextMeasurement();
         }
 
         private void RunNextMeasurement()
         {            
+            if (!_running)
+            {
+                return;
+            }
+
+            /* TODO: monitor */
             var measurement = Measurements[ActiveMeasurementIndex];
             measurement.DataUpdate += OnActiveDataUpdate;
             measurement.Complete += OnActiveComplete;
@@ -58,8 +66,6 @@ namespace AudioMark.Core.Measurements.Common
 
         private void OnActiveComplete(object sender, bool e)
         {
-            OnMeasurementComplete(Measurements[ActiveMeasurementIndex]);
-
             ActiveMeasurementIndex++;
             if (ActiveMeasurementIndex < Measurements.Length - 1)
             {
@@ -67,6 +73,8 @@ namespace AudioMark.Core.Measurements.Common
             }
             else
             {
+                Update();
+                OnDataUpdate(Result);
                 OnComplete(true);
             }
         }
@@ -82,7 +90,6 @@ namespace AudioMark.Core.Measurements.Common
             activeMeasurement.Stop();
         }
 
-        protected abstract IEnumerable<SingleMeasurement> GetMeasurements();
-        protected abstract void OnMeasurementComplete(SingleMeasurement measurement);
+        protected abstract IEnumerable<SingleMeasurement> GetMeasurements();        
     }
 }

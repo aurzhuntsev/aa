@@ -12,8 +12,8 @@ namespace AudioMark.Core.Measurements.Settings
     {
         public SignalSettings TestSignalOptions { get; set; } = new SignalSettings();
         public int WindowHalfSize { get; set; } = 1;
-        public double SignalDetectionThresholdDb { get; set; } = -30.0;
-
+        public double SignalDetectionThresholdDb { get; set; } = -90.0;
+        
         public OverridableSettings<AudioMark.Core.Settings.StopConditions> StopConditions { get; } = new OverridableSettings<AudioMark.Core.Settings.StopConditions>(AppSettings.Current.StopConditions);
         public OverridableSettings<AudioMark.Core.Settings.Fft> Fft { get; } = new OverridableSettings<AudioMark.Core.Settings.Fft>(AppSettings.Current.Fft);
 
